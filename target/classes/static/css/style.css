@@ -1,0 +1,224 @@
+/* 全局样式 */
+body {
+    font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 主内容区 */
+main {
+    flex: 1;
+}
+
+/* 导航栏样式 */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+.navbar-nav .nav-link.active {
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #0a58ca;
+}
+
+/* 卡片样式 */
+.card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: none;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 500;
+}
+
+.card-title {
+    color: #0d6efd;
+    margin-bottom: 0.75rem;
+}
+
+/* 表格样式 */
+.table {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+/* 按钮样式 */
+.btn {
+    border-radius: 0.25rem;
+    font-weight: 500;
+    padding: 0.375rem 1rem;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline-primary {
+    color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0d6efd;
+    color: #fff;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* 表单样式 */
+.form-control {
+    border-radius: 0.25rem;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.form-text {
+    color: #6c757d;
+}
+
+/* 徽章样式 */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+/* 页脚样式 */
+footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+    background-color: #fff;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.25rem;
+    }
+    
+    .table-responsive {
+        border: none;
+    }
+    
+    .btn {
+        padding: 0.375rem 0.75rem;
+    }
+}
+
+/* 首页特殊样式 */
+.jumbotron {
+    background-color: #e9ecef;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.jumbotron h1 {
+    color: #0d6efd;
+}
+
+/* 图表容器样式 */
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+canvas {
+    max-height: 100%;
+    width: 100%;
+}
+
+/* 搜索框样式 */
+.search-container {
+    margin-bottom: 1.5rem;
+}
+
+/* 动画效果 */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+} 

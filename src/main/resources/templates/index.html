@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 最新版 Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <!-- Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36D399',
+                        accent: '#FFAB00',
+                        neutral: '#F8FAFC',
+                        'neutral-dark': '#334155'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .btn-primary {
+                @apply bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300;
+            }
+            .btn-secondary {
+                @apply bg-white border border-gray-300 hover:bg-gray-50 text-neutral-dark font-medium py-2 px-4 rounded-lg transition-all duration-300;
+            }
+            .stat-card {
+                @apply bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-inter">
+<div layout:fragment="content" class="container mx-auto px-4 py-8">
+    <!-- 欢迎区域 -->
+    <div class="bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-8 mb-8 transform transition-all duration-500 hover:shadow-lg">
+        <h1 class="text-[clamp(2rem,5vw,3rem)] font-bold text-neutral-dark mb-4">
+            欢迎使用<span class="text-primary">健身房管理系统</span>
+        </h1>
+        <p class="text-lg text-gray-600 mb-6 max-w-3xl">
+            本系统提供会员管理、教练管理、课程管理和预约管理等功能，帮助您高效管理健身房业务。
+        </p>
+        <div class="flex flex-wrap gap-3">
+            <a class="btn-primary flex items-center" th:href="@{/members}">
+                <i class="fa fa-users mr-2"></i> 会员管理
+            </a>
+            <a class="btn-primary flex items-center" th:href="@{/coaches}">
+                <i class="fa fa-user-circle mr-2"></i> 教练管理
+            </a>
+            <a class="btn-primary flex items-center" th:href="@{/courses}">
+                <i class="fa fa-calendar mr-2"></i> 课程管理
+            </a>
+            <a class="btn-primary flex items-center" th:href="@{/reservations}">
+                <i class="fa fa-book mr-2"></i> 预约管理
+            </a>
+            <a class="btn-primary flex items-center" th:href="@{/about}">
+                <i class="fa fa-info-circle mr-2"></i> 关于我们
+            </a>
+        </div>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="stat-card group">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <p class="text-gray-500 font-medium">会员总数</p>
+                    <h2 class="text-3xl font-bold text-neutral-dark mt-1" th:text="${memberCount}">0</h2>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <i class="fa fa-users text-xl"></i>
+                </div>
+            </div>
+            <a th:href="@{/members}" class="text-primary font-medium flex items-center opacity-80 group-hover:opacity-100 transition-opacity">
+                查看详情 <i class="fa fa-arrow-right ml-1 text-sm"></i>
+            </a>
+        </div>
+
+        <div class="stat-card group">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <p class="text-gray-500 font-medium">教练总数</p>
+                    <h2 class="text-3xl font-bold text-neutral-dark mt-1" th:text="${coachCount}">0</h2>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                    <i class="fa fa-user-circle text-xl"></i>
+                </div>
+            </div>
+            <a th:href="@{/coaches}" class="text-secondary font-medium flex items-center opacity-80 group-hover:opacity-100 transition-opacity">
+                查看详情 <i class="fa fa-arrow-right ml-1 text-sm"></i>
+            </a>
+        </div>
+
+        <div class="stat-card group">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <p class="text-gray-500 font-medium">课程总数</p>
+                    <h2 class="text-3xl font-bold text-neutral-dark mt-1" th:text="${courseCount}">0</h2>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+                    <i class="fa fa-calendar-check-o text-xl"></i>
+                </div>
+            </div>
+            <a th:href="@{/courses}" class="text-accent font-medium flex items-center opacity-80 group-hover:opacity-100 transition-opacity">
+                查看详情 <i class="fa fa-arrow-right ml-1 text-sm"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- 最新课程和快速导航 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- 最新课程 -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-neutral-dark">最新课程</h2>
+                    <a th:href="@{/courses}" class="text-primary text-sm font-medium hover:underline">查看全部</a>
+                </div>
+                <div class="p-6">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="py-3 px-4 text-left text-sm font-medium text-gray-500">课程名称</th>
+                                <th class="py-3 px-4 text-left text-sm font-medium text-gray-500">教练</th>
+                                <th class="py-3 px-4 text-left text-sm font-medium text-gray-500">时间</th>
+                                <th class="py-3 px-4 text-left text-sm font-medium text-gray-500">容量</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${latestCourses == null}" class="border-b border-gray-100">
+                                <td colspan="4" class="py-4 px-4 text-center text-gray-500">暂无课程数据</td>
+                            </tr>
+                            <tr th:each="course : ${latestCourses}" class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                <td class="py-4 px-4 font-medium text-neutral-dark">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                            <i class="fa fa-dumbbell"></i>
+                                        </div>
+                                        <span th:text="${course.courseName}">瑜伽课</span>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 text-gray-600" th:text="${course.coachName}">张教练</td>
+                                <td class="py-4 px-4 text-gray-600" th:text="${#temporals.format(course.courseTime, 'yyyy-MM-dd HH:mm')}">2023-01-01 10:00</td>
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center">
+                                        <span class="text-gray-600 mr-2" th:text="${course.capacity}">20</span>
+                                        <div class="w-16 bg-gray-200 rounded-full h-2">
+                                            <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速导航 -->
+        <div>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                <div class="px-6 py-4 border-b border-gray-100">
+                    <h2 class="text-xl font-bold text-neutral-dark">快速导航</h2>
+                </div>
+                <div class="p-2">
+                    <div class="space-y-1">
+                        <a th:href="@{/members/add}" class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                <i class="fa fa-user-plus"></i>
+                            </div>
+                            <span class="font-medium text-neutral-dark">添加会员</span>
+                        </a>
+                        <a th:href="@{/coaches/add}" class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                <i class="fa fa-user-plus"></i>
+                            </div>
+                            <span class="font-medium text-neutral-dark">添加教练</span>
+                        </a>
+                        <a th:href="@{/courses/add}" class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                <i class="fa fa-calendar-plus-o"></i>
+                            </div>
+                            <span class="font-medium text-neutral-dark">添加课程</span>
+                        </a>
+                        <a th:href="@{/reservations/add}" class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                <i class="fa fa-calendar-plus-o"></i>
+                            </div>
+                            <span class="font-medium text-neutral-dark">创建预约</span>
+                        </a>
+                        <a th:href="@{/reports/coach-workload}" class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                <i class="fa fa-line-chart"></i>
+                            </div>
+                            <span class="font-medium text-neutral-dark">查看课程出勤率</span>
+                        </a>
+                        <a th:href="@{/reports/course-attendance}" class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                <i class="fa fa-bar-chart"></i>
+                            </div>
+                            <span class="font-medium text-neutral-dark">查看教练工作量</span>
+                        </a>
+                        <a th:href="@{/reports/member-reservations}" class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-3">
+                                <i class="fa fa-line-chart"></i>
+                            </div>
+                            <span class="font-medium text-neutral-dark">会员预约情况</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 页脚 -->
+<footer class="bg-white border-t border-gray-200 py-6">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <p class="text-sm text-gray-500">© 2025 健身房管理系统 | 版权所有</p>
+            </div>
+
+        </div>
+    </div>
+</footer>
+</body>
+</html>

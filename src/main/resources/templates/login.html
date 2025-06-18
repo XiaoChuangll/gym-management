@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 健身房管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 主要Font Awesome CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/font-awesome.min.css" rel="stylesheet" id="font-awesome-cdn">
+
+    <!-- 备选CDN和本地资源检测 -->
+    <script>
+        // 检测Font Awesome是否加载成功
+        function checkFontAwesome() {
+            const testElement = document.createElement('i');
+            testElement.className = 'fa fa-check';
+            document.body.appendChild(testElement);
+
+            // 检查元素是否有宽度（图标是否正确渲染）
+            setTimeout(() => {
+                if (testElement.offsetWidth === 0) {
+                    console.error('Font Awesome 加载失败，尝试备选CDN...');
+
+                    // 移除失败的CDN
+                    const cdnLink = document.getElementById('font-awesome-cdn');
+                    if (cdnLink) cdnLink.remove();
+
+                    // 尝试备选CDN
+                    const link = document.createElement('link');
+                    link.href = 'https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css';
+                    link.rel = 'stylesheet';
+                    document.head.appendChild(link);
+
+                    // 如果备选CDN也失败，则使用本地资源
+                    setTimeout(() => {
+                        const testElement2 = document.createElement('i');
+                        testElement2.className = 'fa fa-check';
+                        document.body.appendChild(testElement2);
+
+                        if (testElement2.offsetWidth === 0) {
+                            console.error('备选CDN也失败，使用本地资源回退...');
+                            // 这里可以添加本地资源的引用或显示错误信息
+                        }
+
+                        document.body.removeChild(testElement2);
+                    }, 1000);
+                }
+
+                document.body.removeChild(testElement);
+            }, 1000);
+        }
+
+        // 页面加载后检查
+        document.addEventListener('DOMContentLoaded', checkFontAwesome);
+    </script>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <!-- Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36D399',
+                        accent: '#FFAB00',
+                        neutral: '#F8FAFC',
+                        'neutral-dark': '#334155'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .btn-primary {
+                @apply bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300;
+            }
+            .btn-secondary {
+                @apply bg-white border border-gray-300 hover:bg-gray-50 text-neutral-dark font-medium py-2 px-4 rounded-lg transition-all duration-300;
+            }
+            .form-input-focus {
+                @apply focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200;
+            }
+        }
+    </style>
+
+    <style>
+        body {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 font-inter">
+<div class="w-full max-w-md">
+    <div class="bg-white rounded-2xl shadow-xl p-8 card-hover">
+        <div class="text-center mb-6">
+            <div class="flex items-center justify-center mb-4">
+                <i class="fa fa-dumbbell text-primary text-4xl mr-2"></i>
+                <h1 class="text-2xl font-bold text-neutral-dark">健身房管理系统</h1>
+            </div>
+            <h2 class="text-xl font-semibold text-neutral-dark">请登录</h2>
+        </div>
+
+        <!-- 错误提示 -->
+        <div th:if="${error}" class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center">
+            <i class="fa fa-exclamation-circle mr-3 text-red-500"></i>
+            <span th:text="${error}">用户名或密码错误</span>
+        </div>
+
+        <form th:action="@{/login}" method="post" class="space-y-4">
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa fa-user text-gray-400"></i>
+                    </div>
+                    <input type="text" id="username" name="username" required
+                           class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus"
+                           placeholder="请输入用户名">
+                </div>
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa fa-lock text-gray-400"></i>
+                    </div>
+                    <input type="password" id="password" name="password" required
+                           class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus"
+                           placeholder="请输入密码">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input id="remember-me" type="checkbox" name="remember-me"
+                           class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                    <label for="remember-me" class="ml-2 block text-sm text-gray-700">记住我</label>
+                </div>
+                <div>
+                    <a href="#" class="text-sm text-primary hover:text-primary/80 transition-colors duration-200">
+                        忘记密码?
+                    </a>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary w-full py-3 flex items-center justify-center">
+                <i class="fa fa-sign-in mr-2"></i> 登录
+            </button>
+
+            <p class="text-center text-sm text-gray-500">
+                <small>默认账号: admin / admin123</small>
+            </p>
+        </form>
+
+        <div class="mt-6 text-center">
+            <a th:href="@{/}" class="text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                <i class="fa fa-arrow-left mr-1"></i> 返回首页
+            </a>
+        </div>
+    </div>
+
+    <div class="mt-6 text-center text-sm text-gray-500">
+        &copy; 2025 健身房管理系统 | 版权所有
+    </div>
+</div>
+
+<script>
+    // 表单提交处理
+    document.querySelector('form').addEventListener('submit', function(e) {
+        // 这里可以添加客户端验证逻辑
+        console.log('登录表单提交');
+        // e.preventDefault(); // 取消此行以允许表单正常提交
+    });
+</script>
+</body>
+</html>

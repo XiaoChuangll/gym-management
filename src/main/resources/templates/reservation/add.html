@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head>
+    <meta charset="UTF-8">
+    <title>添加预约</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <!-- Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36D399',
+                        accent: '#FFAB00',
+                        neutral: '#F8FAFC',
+                        'neutral-dark': '#334155'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .btn-primary {
+                @apply bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300;
+            }
+            .btn-secondary {
+                @apply bg-white border border-gray-300 hover:bg-gray-50 text-neutral-dark font-medium py-2 px-4 rounded-lg transition-all duration-300;
+            }
+            .stat-card {
+                @apply bg-white rounded-xl shadow-md p-6 transition-all duration-300 hover:shadow-lg;
+            }
+            .nav-link {
+                @apply px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200;
+            }
+            .nav-link-active {
+                @apply bg-primary/10 text-primary;
+            }
+            .sidebar-link {
+                @apply flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-primary rounded-lg transition-colors duration-200;
+            }
+            .sidebar-link-active {
+                @apply bg-primary/10 text-primary font-medium;
+            }
+            .form-input {
+                @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200;
+            }
+            .form-select {
+                @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 appearance-none bg-white;
+            }
+            .form-label {
+                @apply block text-sm font-medium text-gray-700 mb-1;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-inter min-h-screen flex flex-col">
+<!-- 顶部导航栏 -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-dumbbell text-primary text-2xl"></i>
+                <h1 class="text-xl font-bold text-neutral-dark">健身房管理系统</h1>
+            </div>
+
+            <!-- 桌面导航 -->
+            <nav class="hidden md:flex items-center space-x-1">
+                <a th:href="@{/}" class="nav-link">
+                    <i class="fa fa-home mr-1"></i> 首页
+                </a>
+                <a th:href="@{/members}" class="nav-link">
+                    <i class="fa fa-users mr-1"></i> 会员管理
+                </a>
+                <a th:href="@{/coaches}" class="nav-link">
+                    <i class="fa fa-user-circle mr-1"></i> 教练管理
+                </a>
+                <a th:href="@{/courses}" class="nav-link">
+                    <i class="fa fa-calendar mr-1"></i> 课程管理
+                </a>
+                <a th:href="@{/reservations}" class="nav-link nav-link-active">
+                    <i class="fa fa-book mr-1"></i> 预约管理
+                </a>
+                <div class="relative group">
+                    <a href="#" class="nav-link flex items-center">
+                        <i class="fa fa-bar-chart mr-1"></i> 统计报表
+                        <i class="fa fa-chevron-down ml-1 text-xs"></i>
+                    </a>
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <a th:href="@{/reports/course-attendance}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">课程出勤</a>
+                        <a th:href="@{/reports/coach-workload}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">教练工作</a>
+                        <a th:href="@{/reports/member-reservations}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">会员预约情况</a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- 用户菜单 -->
+            <div class="flex items-center space-x-3">
+                <button class="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 relative">
+                    <i class="fa fa-bell-o text-gray-600"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+                <div class="relative group">
+                    <button class="flex items-center space-x-2">
+                        <img src="https://picsum.photos/id/1005/200/200" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                        <span class="hidden md:inline text-sm font-medium">管理员</span>
+                        <i class="fa fa-chevron-down text-xs text-gray-500"></i>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fa fa-user-circle mr-2"></i> 个人资料
+                        </a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fa fa-cog mr-2"></i> 设置
+                        </a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                            <i class="fa fa-sign-out mr-2"></i> 退出登录
+                        </a>
+                    </div>
+                </div>
+                <!-- 移动端菜单按钮 -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200" id="mobile-menu-button">
+                    <i class="fa fa-bars text-gray-600"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 移动端导航菜单 -->
+        <div class="md:hidden h-0 overflow-hidden transition-all duration-300" id="mobile-menu">
+            <nav class="py-2 space-y-1">
+                <a th:href="@{/}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
+                    <i class="fa fa-home mr-1"></i> 首页
+                </a>
+                <a th:href="@{/members}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
+                    <i class="fa fa-users mr-1"></i> 会员管理
+                </a>
+                <a th:href="@{/coaches}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
+                    <i class="fa fa-user-circle mr-1"></i> 教练管理
+                </a>
+                <a th:href="@{/courses}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
+                    <i class="fa fa-calendar mr-1"></i> 课程管理
+                </a>
+                <a th:href="@{/reservations}" class="block px-4 py-2 rounded-md text-sm font-medium bg-primary/10 text-primary">
+                    <i class="fa fa-book mr-1"></i> 预约管理
+                </a>
+                <div class="px-4 py-2">
+                    <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">统计报表</div>
+                    <a th:href="@{/reports/course-attendance}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-line-chart mr-1"></i> 课程出勤
+                    </a>
+                    <a th:href="@{/reports/coach-workload}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-bar-chart mr-1"></i> 教练工作
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- 主内容区 -->
+<main class="flex-grow container mx-auto px-4 py-6">
+    <!-- 页面标题和面包屑 -->
+    <div class="mb-6">
+        <h1 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-neutral-dark mb-2">添加预约</h1>
+        <nav class="flex" aria-label="面包屑">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a th:href="@{/}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-primary">
+                        <i class="fa fa-home mr-1"></i>
+                        首页
+                    </a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <i class="fa fa-chevron-right text-gray-400 text-xs mx-1"></i>
+                        <a th:href="@{/reservations}" class="text-sm font-medium text-gray-500 hover:text-primary">预约管理</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <i class="fa fa-chevron-right text-gray-400 text-xs mx-1"></i>
+                        <span class="text-sm font-medium text-primary">添加预约</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- 添加预约表单 -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+            <h2 class="text-xl font-bold text-neutral-dark">预约信息</h2>
+            <a th:href="@{/reservations}" class="btn-secondary flex items-center">
+                <i class="fa fa-arrow-left mr-1"></i> 返回列表
+            </a>
+        </div>
+        <div class="p-6">
+            <form th:action="@{/reservations}" th:object="${reservation}" method="post" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="memberId" class="form-label">会员</label>
+                        <div class="relative">
+                            <select class="form-select" id="memberId" th:field="*{memberId}" required>
+                                <option value="">请选择会员</option>
+                                <option th:each="member : ${members}" th:value="${member.memberId}" th:text="${member.name}"></option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                <i class="fa fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="courseId" class="form-label">课程</label>
+                        <div class="relative">
+                            <select class="form-select" id="courseId" th:field="*{courseId}" required>
+                                <option value="">请选择课程</option>
+                                <option th:each="course : ${courses}"
+                                        th:value="${course.courseId}"
+                                        th:text="${course.courseName + ' (' + #temporals.format(course.courseTime, 'yyyy-MM-dd HH:mm') + ') - ' + course.coachName}"></option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                <i class="fa fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="reservationTime" class="form-label">预约时间</label>
+                        <input type="datetime-local" class="form-input" id="reservationTime" th:field="*{reservationTime}" required>
+                    </div>
+                    <div>
+                        <label for="status" class="form-label">状态</label>
+                        <div class="relative">
+                            <select class="form-select" id="status" th:field="*{status}" required>
+                                <option value="">请选择状态</option>
+                                <option value="待确认">待确认</option>
+                                <option value="已确认">已确认</option>
+                                <option value="已完成">已完成</option>
+                                <option value="已取消">已取消</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                                <i class="fa fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="reset" class="btn-secondary">
+                        <i class="fa fa-refresh mr-1"></i> 重置
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fa fa-save mr-1"></i> 保存
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<!-- 页脚 -->
+<footer class="bg-white border-t border-gray-200 py-6">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <p class="text-sm text-gray-500">© 2025 健身房管理系统 | 版权所有</p>
+            </div>
+            <div class="flex space-x-4">
+                <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                    <i class="fa fa-weixin text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                    <i class="fa fa-weibo text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                    <i class="fa fa-instagram text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-primary transition-colors duration-200">
+                    <i class="fa fa-twitter text-xl"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- JavaScript -->
+<script>
+    // 移动端菜单切换
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu.classList.contains('h-0')) {
+            mobileMenu.classList.remove('h-0');
+            mobileMenu.classList.add('h-auto');
+        } else {
+            mobileMenu.classList.add('h-0');
+            mobileMenu.classList.remove('h-auto');
+        }
+    });
+
+    // 表单验证
+    document.querySelector('form').addEventListener('submit', function(event) {
+        let isValid = true;
+        const inputs = this.querySelectorAll('input[required], select[required]');
+
+        inputs.forEach(input => {
+            if (!input.value) {
+                isValid = false;
+                input.classList.add('border-red-500');
+
+                // 添加错误提示
+                if (!input.nextElementSibling || !input.nextElementSibling.classList.contains('text-red-500')) {
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'text-red-500 text-sm mt-1';
+                    errorMsg.textContent = '此字段为必填项';
+                    input.parentNode.insertBefore(errorMsg, input.nextSibling);
+                }
+            } else {
+                input.classList.remove('border-red-500');
+
+                // 移除错误提示
+                if (input.nextElementSibling && input.nextElementSibling.classList.contains('text-red-500')) {
+                    input.nextElementSibling.remove();
+                }
+            }
+        });
+
+        if (!isValid) {
+            event.preventDefault();
+            // 显示错误消息
+            const errorAlert = document.createElement('div');
+            errorAlert.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+            errorAlert.textContent = '请填写所有必填字段';
+            document.body.appendChild(errorAlert);
+
+            // 3秒后移除错误消息
+            setTimeout(() => {
+                errorAlert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                setTimeout(() => errorAlert.remove(), 500);
+            }, 3000);
+        }
+    });
+</script>
+</body>
+</html>
