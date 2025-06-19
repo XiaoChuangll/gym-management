@@ -9,12 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e796ea-c446-4a8a-86af-3c69c2f6e4db" name="更改" comment="提交">
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/management-0.0.1-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/management-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/management-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-    </list>
+    <list default="true" id="48e796ea-c446-4a8a-86af-3c69c2f6e4db" name="更改" comment="提交" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -124,7 +119,7 @@
       <option name="presentableId" value="Default" />
       <updated>1750233792563</updated>
       <workItem from="1750233793684" duration="21227000" />
-      <workItem from="1750307452142" duration="1251000" />
+      <workItem from="1750307452142" duration="1565000" />
     </task>
     <task id="LOCAL-00001" summary="提交">
       <option name="closed" value="true" />
