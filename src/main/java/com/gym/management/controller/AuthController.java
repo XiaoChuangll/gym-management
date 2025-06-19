@@ -2,6 +2,7 @@ package com.gym.management.controller;
 
 import com.gym.management.model.User;
 import com.gym.management.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,16 +23,21 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(HttpServletRequest request) {
+        // 每次访问登录页面时强制退出当前会话
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         return "login";
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username, 
+    public String login(@RequestParam String username,
                         @RequestParam String password,
                         HttpSession session,
                         RedirectAttributes redirectAttributes) {
-        
+
         if (userService.validateUser(username, password)) {
             // 登录成功，将用户信息存入session
             session.setAttribute("loggedInUser", username);
@@ -49,4 +55,4 @@ public class AuthController {
         session.invalidate();
         return "redirect:/login";
     }
-} 
+}

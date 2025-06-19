@@ -179,12 +179,42 @@
 </div>
 
 <script>
-    // 表单提交处理
-    document.querySelector('form').addEventListener('submit', function(e) {
-        // 这里可以添加客户端验证逻辑
-        console.log('登录表单提交');
-        // e.preventDefault(); // 取消此行以允许表单正常提交
+    // 检测页面是否被刷新或回退
+    window.addEventListener('load', function() {
+        if (performance.navigation.type === 1 ||  // 刷新
+            performance.navigation.type === 2) {  // 回退
+            fetch('/logout', {method: 'POST'})
+                .then(() => window.location.href = '/login');
+        }
+    });
+
+    // 检测设备类型并自动切换到移动视图
+    function checkDeviceAndRedirect() {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const currentUrl = window.location.href;
+
+        // 如果是移动设备且没有移动参数
+        if (isMobile && !currentUrl.includes('mobile=true')) {
+            // 存储桌面视图偏好（如果用户手动切换过）
+            const prefersDesktop = localStorage.getItem('prefersDesktop');
+
+            if (!prefersDesktop) {
+                // 添加移动参数并重新加载
+                window.location.href = currentUrl + (currentUrl.includes('?') ? '&mobile=true' : '?mobile=true')
+            }
+        }
+    }
+
+    // 页面加载时执行检测
+    document.addEventListener('DOMContentLoaded', checkDeviceAndRedirect);
+
+    // 监听移动菜单按钮点击
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('h-0');
+        mobileMenu.classList.toggle('h-auto');
     });
 </script>
+
 </body>
 </html>
