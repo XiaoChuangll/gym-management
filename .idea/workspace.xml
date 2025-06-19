@@ -9,7 +9,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e796ea-c446-4a8a-86af-3c69c2f6e4db" name="更改" comment="提交" />
+    <list default="true" id="48e796ea-c446-4a8a-86af-3c69c2f6e4db" name="更改" comment="修改样式">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/coach-workload.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/coach-workload.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/course-attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/course-attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/member-reservations-selection.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/member-reservations-selection.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -49,10 +57,13 @@
     &quot;accountId&quot;: &quot;4d78314a-86bd-461a-8af4-381529fd7504&quot;
   }
 }</component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -86,6 +97,23 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="QodanaHighlightedReportService">
+    <option name="localRunNotPublishedPersistedInfo">
+      <LocalReportPersistedInfo>
+        <option name="path" value="C:\Users\ChuEng\AppData\Local\Temp\qodana_output\qodana.sarif.json" />
+        <option name="reportGuid" value="b3a7c8c1-55fe-448f-8656-0453d397691c" />
+        <option name="reportName" value="gym/qodana/2025-06-19" />
+      </LocalReportPersistedInfo>
+    </option>
+  </component>
+  <component name="QodanaIsSelectedPersistenceService">
+    <option name="selectedOrLoading" value="true" />
+  </component>
+  <component name="QodanaReportsService">
+    <option name="descriptions">
+      <ReportDescription localRun="true" path="C:\Users\ChuEng\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="b3a7c8c1-55fe-448f-8656-0453d397691c" reportId="gym/qodana/2025-06-19" />
+    </option>
+  </component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gym" />
@@ -153,7 +181,31 @@
       <option name="project" value="LOCAL" />
       <updated>1750308066043</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="提交">
+      <option name="closed" value="true" />
+      <created>1750309575530</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1750309575530</updated>
+    </task>
+    <task id="LOCAL-00006" summary="修改样式">
+      <option name="closed" value="true" />
+      <created>1750311148159</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1750311148159</updated>
+    </task>
+    <task id="LOCAL-00007" summary="修改样式">
+      <option name="closed" value="true" />
+      <created>1750312555902</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1750312555902</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -161,6 +213,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="提交" />
-    <option name="LAST_COMMIT_MESSAGE" value="提交" />
+    <MESSAGE value="修改样式" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改样式" />
   </component>
 </project>

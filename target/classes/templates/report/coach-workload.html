@@ -299,218 +299,218 @@
 </footer>
 
 <!-- JavaScript -->
-<script>
+<script th:inline="javascript">
     // 移动端菜单切换
-   document.getElementById('mobile-menu-button').addEventListener('click', function() {
-       const mobileMenu = document.getElementById('mobile-menu');
-       if (mobileMenu.classList.contains('h-0')) {
-           mobileMenu.classList.remove('h-0');
-           mobileMenu.classList.add('h-auto');
-       } else {
-           mobileMenu.classList.add('h-0');
-           mobileMenu.classList.remove('h-auto');
-       }
-   });
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu.classList.contains('h-0')) {
+            mobileMenu.classList.remove('h-0');
+            mobileMenu.classList.add('h-auto');
+        } else {
+            mobileMenu.classList.add('h-0');
+            mobileMenu.classList.remove('h-auto');
+        }
+    });
 
-   // 页面加载完成后初始化图表
-   document.addEventListener('DOMContentLoaded', function() {
-       // 获取教练数据
-       const coachData = /*[[${coachWorkload}]]*/ [];
+    // 页面加载完成后初始化图表
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取教练数据
+        const coachData = /*[[${coachWorkload}]]*/ [];
 
-       // 准备图表数据
-       const coachNames = coachData.map(coach => coach.coachName);
-       const totalCourses = coachData.map(coach => coach.totalCourses);
-       const totalReservations = coachData.map(coach => coach.totalReservations);
-       const avgReservations = coachData.map(coach => coach.totalCourses > 0 ? coach.totalReservations / coach.totalCourses : 0);
+        // 准备图表数据
+        const coachNames = coachData.map(coach => coach.coachName);
+        const totalCourses = coachData.map(coach => coach.totalCourses);
+        const totalReservations = coachData.map(coach => coach.totalReservations);
+        const avgReservations = coachData.map(coach => coach.totalCourses > 0 ? coach.totalReservations / coach.totalCourses : 0);
 
-       // 定义图表颜色
-       const chartColors = [
-           'rgba(255, 99, 132, 0.7)',
-           'rgba(54, 162, 235, 0.7)',
-           'rgba(255, 206, 86, 0.7)',
-           'rgba(75, 192, 192, 0.7)',
-           'rgba(153, 102, 255, 0.7)',
-           'rgba(255, 159, 64, 0.7)'
-       ];
+        // 定义图表颜色
+        const chartColors = [
+            'rgba(255, 99, 132, 0.7)',
+            'rgba(54, 162, 235, 0.7)',
+            'rgba(255, 206, 86, 0.7)',
+            'rgba(75, 192, 192, 0.7)',
+            'rgba(153, 102, 255, 0.7)',
+            'rgba(255, 159, 64, 0.7)'
+        ];
 
-       // 创建课程数量图表
-       const coursesCtx = document.getElementById('coursesChart').getContext('2d');
-       new Chart(coursesCtx, {
-           type: 'pie',
-           data: {
-               labels: coachNames,
-               datasets: [{
-                   data: totalCourses,
-                   backgroundColor: chartColors,
-                   borderWidth: 1
-               }]
-           },
-           options: {
-               responsive: true,
-               maintainAspectRatio: false,
-               plugins: {
-                   title: {
-                       display: true,
-                       text: '教练课程数量分布',
-                       font: {
-                           size: 16,
-                           family: 'Inter'
-                       }
-                   },
-                   legend: {
-                       position: 'right',
-                       labels: {
-                           font: {
-                               family: 'Inter'
-                           }
-                       }
-                   }
-               }
-           }
-       });
+        // 创建课程数量图表
+        const coursesCtx = document.getElementById('coursesChart').getContext('2d');
+        new Chart(coursesCtx, {
+            type: 'pie',
+            data: {
+                labels: coachNames,
+                datasets: [{
+                    data: totalCourses,
+                    backgroundColor: chartColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '教练课程数量分布',
+                        font: {
+                            size: 16,
+                            family: 'Inter'
+                        }
+                    },
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                family: 'Inter'
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
-       // 创建预约数量图表
-       const reservationsCtx = document.getElementById('reservationsChart').getContext('2d');
-       new Chart(reservationsCtx, {
-           type: 'pie',
-           data: {
-               labels: coachNames,
-               datasets: [{
-                   data: totalReservations,
-                   backgroundColor: chartColors,
-                   borderWidth: 1
-               }]
-           },
-           options: {
-               responsive: true,
-               maintainAspectRatio: false,
-               plugins: {
-                   title: {
-                       display: true,
-                       text: '教练预约数量分布',
-                       font: {
-                           size: 16,
-                           family: 'Inter'
-                       }
-                   },
-                   legend: {
-                       position: 'right',
-                       labels: {
-                           font: {
-                               family: 'Inter'
-                           }
-                       }
-                   }
-               }
-           }
-       });
+        // 创建预约数量图表
+        const reservationsCtx = document.getElementById('reservationsChart').getContext('2d');
+        new Chart(reservationsCtx, {
+            type: 'pie',
+            data: {
+                labels: coachNames,
+                datasets: [{
+                    data: totalReservations,
+                    backgroundColor: chartColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '教练预约数量分布',
+                        font: {
+                            size: 16,
+                            family: 'Inter'
+                        }
+                    },
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                family: 'Inter'
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
-       // 创建工作量综合对比图表
-       const workloadCtx = document.getElementById('workloadChart').getContext('2d');
-       new Chart(workloadCtx, {
-           type: 'bar',
-           data: {
-               labels: coachNames,
-               datasets: [
-                   {
-                       label: '课程数量',
-                       data: totalCourses,
-                       backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                       borderColor: 'rgba(54, 162, 235, 1)',
-                       borderWidth: 1
-                   },
-                   {
-                       label: '预约总数',
-                       data: totalReservations,
-                       backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                       borderColor: 'rgba(255, 99, 132, 1)',
-                       borderWidth: 1
-                   },
-                   {
-                       label: '平均每课预约数',
-                       data: avgReservations,
-                       type: 'line',
-                       backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                       borderColor: 'rgba(75, 192, 192, 1)',
-                       borderWidth: 2,
-                       yAxisID: 'y1'
-                   }
-               ]
-           },
-           options: {
-               responsive: true,
-               maintainAspectRatio: false,
-               scales: {
-                   y: {
-                       beginAtZero: true,
-                       position: 'left',
-                       title: {
-                           display: true,
-                           text: '数量',
-                           font: {
-                               family: 'Inter'
-                           }
-                       },
-                       grid: {
-                           color: 'rgba(0, 0, 0, 0.05)'
-                       },
-                       ticks: {
-                           font: {
-                               family: 'Inter'
-                           }
-                       }
-                   },
-                   y1: {
-                       beginAtZero: true,
-                       position: 'right',
-                       title: {
-                           display: true,
-                           text: '平均每课预约数',
-                           font: {
-                               family: 'Inter'
-                           }
-                       },
-                       grid: {
-                           drawOnChartArea: false
-                       },
-                       ticks: {
-                           font: {
-                               family: 'Inter'
-                           }
-                       }
-                   },
-                   x: {
-                       grid: {
-                           display: false
-                       },
-                       ticks: {
-                           font: {
-                               family: 'Inter'
-                           }
-                       }
-                   }
-               },
-               plugins: {
-                   title: {
-                       display: true,
-                       text: '教练工作量综合对比',
-                       font: {
-                           size: 16,
-                           family: 'Inter'
-                       }
-                   },
-                   legend: {
-                       position: 'top',
-                       labels: {
-                           font: {
-                               family: 'Inter'
-                           }
-                       }
-                   }
-               }
-           }
-       });
-   });
+        // 创建工作量综合对比图表
+        const workloadCtx = document.getElementById('workloadChart').getContext('2d');
+        new Chart(workloadCtx, {
+            type: 'bar',
+            data: {
+                labels: coachNames,
+                datasets: [
+                    {
+                        label: '课程数量',
+                        data: totalCourses,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '预约总数',
+                        data: totalReservations,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '平均每课预约数',
+                        data: avgReservations,
+                        type: 'line',
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '数量',
+                            font: {
+                                family: 'Inter'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            font: {
+                                family: 'Inter'
+                            }
+                        }
+                    },
+                    y1: {
+                        beginAtZero: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '平均每课预约数',
+                            font: {
+                                family: 'Inter'
+                            }
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        },
+                        ticks: {
+                            font: {
+                                family: 'Inter'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                family: 'Inter'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '教练工作量综合对比',
+                        font: {
+                            size: 16,
+                            family: 'Inter'
+                        }
+                    },
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                family: 'Inter'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
 </script>
 </body>
 </html>
