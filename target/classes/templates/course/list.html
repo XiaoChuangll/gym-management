@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>课程管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -120,7 +121,7 @@
                             <i class="fa fa-cog mr-2"></i> 设置
                         </a>
                         <div class="border-t border-gray-100 my-1"></div>
-                        <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                        <a th:href="@{/login}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                             <i class="fa fa-sign-out mr-2"></i> 退出登录
                         </a>
                     </div>
@@ -304,16 +305,16 @@
 <!-- JavaScript -->
 <script>
     // 移动端菜单切换
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu.classList.contains('h-0')) {
-            mobileMenu.classList.remove('h-0');
-            mobileMenu.classList.add('h-auto');
-        } else {
-            mobileMenu.classList.add('h-0');
-            mobileMenu.classList.remove('h-auto');
-        }
-    });
+   document.getElementById('mobile-menu-button').addEventListener('click', function() {
+       const mobileMenu = document.getElementById('mobile-menu');
+       if (mobileMenu.classList.contains('h-0')) {
+           mobileMenu.classList.remove('h-0');
+           mobileMenu.classList.add('h-auto');
+       } else {
+           mobileMenu.classList.add('h-0');
+           mobileMenu.classList.remove('h-auto');
+       }
+   });
 </script>
 </body>
 </html>
