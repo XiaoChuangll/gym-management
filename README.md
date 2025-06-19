@@ -30,7 +30,7 @@
 ### 1. 克隆代码库
 
 ```bash
-git clone https://github.com/yourusername/gym-management.git
+git clone https://github.com/XiaoChuangll/gym-management.git
 cd gym-management
 ```
 
@@ -59,7 +59,7 @@ mvn spring-boot:run
 
 ### 4. 访问系统
 
-打开浏览器，访问 [http://localhost:8080/gym](http://localhost:8080/gym)
+打开浏览器，访问 [http://localhost:8080/](http://localhost:8080/)
 
 ## 数据库结构
 
