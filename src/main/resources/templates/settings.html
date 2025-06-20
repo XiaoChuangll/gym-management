@@ -6,9 +6,18 @@
     <title>系统设置面板</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
+        body {
+            font-size: 16px;  /* 默认值，会被 JS 覆盖 */
+        }
+
+        /* 确保布局元素使用固定单位（px）而非相对单位（rem/em） */
+        .container, .card, .button, input, select {
+            padding: 8px 12px;  /* 使用 px 而非 rem */
+            margin: 8px 0;      /* 使用 px 而非 rem */
+            width: auto;        /* 避免使用 rem 影响宽度 */
+        }
         :root {
             --primary-color: #3b82f6;
             --primary-rgb: 59, 130, 246;
@@ -20,6 +29,7 @@
             background-color: #f9fafb;
             color: #111827;
             transition: background-color 0.3s, color 0.3s;
+            font-size: 16px; /* 默认字体大小 */
         }
 
         .bg-white {
@@ -211,6 +221,38 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* 默认样式（浅色模式） */
+        select {
+            background-color: #ffffff;
+            color: #111827;
+            border-color: #e5e7eb;
+        }
+
+        /* 深色模式下的样式 */
+        .dark-mode select {
+            background-color: #1f2937 !important;
+            color: #f3f4f6 !important;
+            border-color: #374151 !important;
+        }
+
+        /* 下拉选项的样式 */
+        .dark-mode select option {
+            background-color: #1f2937;
+            color: #f3f4f6;
+        }
+
+        /* 聚焦状态（保持主色调） */
+        select:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2) !important;
+        }
+        [data-i18n] {
+            transition: opacity 0.3s ease;
+        }
+
+        .language-changing {
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -220,7 +262,6 @@
             <h1 class="text-3xl font-bold text-gray-800">系统设置</h1>
             <p class="text-gray-500 mt-1">管理您的账户和系统偏好设置</p>
         </div>
-
     </div>
 
     <div class="flex flex-col md:flex-row gap-6">
@@ -264,7 +305,6 @@
                     <div class="ml-3">
                         <h3 class="font-medium">用户设置</h3>
                         <span class="hidden md:inline text-sm font-medium">管理员</span>
-
                     </div>
                 </div>
                 <div class="mt-4">
@@ -279,8 +319,6 @@
                     </a>
                 </div>
             </div>
-
-
         </div>
 
         <!-- 右侧内容 -->
@@ -337,6 +375,7 @@
                                     <span>中</span>
                                     <span>大</span>
                                 </div>
+                                <div class="text-center text-sm mt-1" id="fontSizeValue">16px</div>
                             </div>
 
                             <div>
@@ -374,14 +413,19 @@
                             </div>
 
                             <div class="pt-4 flex">
+                                <!-- 保存设置按钮 -->
                                 <button type="button"
-                                        class="px-4 py-2 text-white rounded-lg primary-action-button"
+                                        class="flex items-center justify-center px-6 py-3 text-white rounded-xl primary-action-button transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
                                         id="saveSettings">
+                                    <i class="fas fa-save mr-2"></i>
                                     保存设置
                                 </button>
+
+                                <!-- 恢复默认按钮 -->
                                 <button type="button"
-                                        class="ml-3 px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+                                        class="flex items-center justify-center px-6 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-600 ml-3 hover:shadow-md"
                                         id="resetSettings">
+                                    <i class="fas fa-undo mr-2"></i>
                                     恢复默认
                                 </button>
                             </div>
@@ -460,7 +504,7 @@
 
                             <div class="pt-4">
                                 <button type="submit"
-                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors primary-action-button">
+                                        class="px-4 py-2 text-white rounded-lg primary-action-button">
                                     保存设置
                                 </button>
                             </div>
@@ -473,7 +517,7 @@
             <div id="system" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover transition-colors duration-300">
                     <div class="p-6 border-b border-gray-200 transition-colors duration-300">
-                        <h2 class="text-xl font-semibold text-gray-800 flex items-center transition-colors duration-300">
+                        <h2 class="text-xl font-semibold text-gray-800 flex items-center" data-i18n="systemSettings">
                             <i class="fa fa-cog theme-icon mr-2"></i>
                             系统设置
                         </h2>
@@ -481,8 +525,8 @@
                     <div class="p-6 transition-colors duration-300">
                         <form id="systemForm" class="space-y-4">
                             <div>
-                                <label for="language" class="block text-sm font-medium text-gray-700 mb-1 transition-colors duration-300">语言</label>
-                                <select class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-colors duration-300"
+                                <label for="language" class="block text-sm font-medium text-gray-700 mb-1" data-i18n="language">语言</label>
+                                <select class="w-full rounded-lg border border-gray-300 shadow-sm transition-colors duration-300"
                                         id="language">
                                     <option value="zh-CN" selected>中文</option>
                                     <option value="en-US">英语</option>
@@ -492,7 +536,7 @@
                             </div>
 
                             <div>
-                                <label for="timezone" class="block text-sm font-medium text-gray-700 mb-1 transition-colors duration-300">时区</label>
+                                <label for="timezone" class="block text-sm font-medium text-gray-700 mb-1" data-i18n="timezone">时区</label>
                                 <select class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-colors duration-300"
                                         id="timezone">
                                     <option value="Asia/Shanghai" selected>中国标准时间 (GMT+8)</option>
@@ -504,7 +548,7 @@
                             </div>
 
                             <div>
-                                <label for="dateFormat" class="block text-sm font-medium text-gray-700 mb-1 transition-colors duration-300">日期格式</label>
+                                <label for="dateFormat" class="block text-sm font-medium text-gray-700 mb-1" data-i18n="dateFormat">日期格式</label>
                                 <select class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-colors duration-300"
                                         id="dateFormat">
                                     <option value="yyyy-MM-dd" selected>2023-01-01</option>
@@ -515,7 +559,7 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1 transition-colors duration-300">系统更新</label>
+                                <label for="autoUpdate" class="ml-2 block text-sm text-gray-700" data-i18n="autoUpdate">自动下载并安装更新</label>
                                 <div class="flex items-center">
                                     <input type="checkbox"
                                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
@@ -527,8 +571,7 @@
                             </div>
 
                             <div class="pt-4">
-                                <button type="submit"
-                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors primary-action-button">
+                                <button type="submit" class="px-4 py-2 text-white rounded-lg primary-action-button" data-i18n="saveSettings">
                                     保存设置
                                 </button>
                             </div>
@@ -536,8 +579,6 @@
                     </div>
                 </div>
             </div>
-
-
 
             <!-- 隐私设置 -->
             <div id="privacy" class="tab-content hidden">
@@ -600,20 +641,22 @@
 
                             <div class="pt-4">
                                 <button type="submit"
-                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors primary-action-button">
+                                        class="px-4 py-2 text-white rounded-lg primary-action-button">
                                     保存设置
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
 <footer class="py-6 text-center text-gray-500 text-sm">
-    <p>© 2023 系统设置面板 | 当前版本 v1.5.0</p>
+    <p>© 2025 系统设置面板 | 当前版本 v1.5.0</p>
 </footer>
 
 <script>
@@ -632,10 +675,17 @@
 
         // 颜色选项
         const colorOptions = document.querySelectorAll('.color-option');
-        let currentPrimaryColor = 'blue';
+        let selectedColor = localStorage.getItem('appPrimaryColor') || 'blue'; // 存储选择的颜色
+        let pendingColor = selectedColor; // 待应用的颜色
 
         // 标签页切换
         const tabButtons = document.querySelectorAll('.tab-button');
+
+        // 字体大小滑块
+        const fontSizeRange = document.getElementById('fontSizeRange');
+        const fontSizeValue = document.getElementById('fontSizeValue');
+        let selectedFontSize = localStorage.getItem('appFontSize') || '16'; // 存储选择的字体大小
+        let pendingFontSize = selectedFontSize; // 待应用的字体大小
 
         // 颜色映射
         const colorMap = {
@@ -650,6 +700,18 @@
 
         // 应用保存的设置
         applySavedSettings();
+
+        // 初始化字体大小滑块
+        fontSizeRange.value = selectedFontSize;
+        fontSizeValue.textContent = `${selectedFontSize}px`;
+
+        // 字体大小滑块事件
+        fontSizeRange.addEventListener('input', function() {
+            selectedFontSize = this.value;
+            fontSizeValue.textContent = `${this.value}px`;
+            applyFontSize(selectedFontSize); // 实时应用字体大小
+            localStorage.setItem('appFontSize', selectedFontSize); // 实时保存到本地存储
+        });
 
         // 标签页切换功能
         tabButtons.forEach(button => {
@@ -687,7 +749,7 @@
 
                 // 立即应用主题
                 applyTheme(value);
-                localStorage.setItem('appTheme', value);
+                localStorage.setItem('appTheme', value); // 存储到 localStorage
 
                 // 关闭菜单
                 closeThemeMenu();
@@ -705,26 +767,26 @@
             }
         });
 
-        // 颜色选择事件
+        // 颜色选择事件 - 只记录选择，不立即应用
         colorOptions.forEach(option => {
             option.addEventListener('click', function() {
                 colorOptions.forEach(opt => opt.classList.remove('ring-2'));
                 this.classList.add('ring-2');
-                currentPrimaryColor = this.getAttribute('data-color');
-
-                // 立即应用主色调
-                applyPrimaryColor(currentPrimaryColor);
+                pendingColor = this.getAttribute('data-color');
             });
         });
 
         // 保存设置按钮
         saveButton.addEventListener('click', function() {
-            // 保存主色调
-            localStorage.setItem('appPrimaryColor', currentPrimaryColor);
+            // 应用主题
+            const themeValue = themeSelect.value;
+            applyTheme(themeValue);
+            localStorage.setItem('appTheme', themeValue);
 
-            // 保存字体大小
-            const fontSize = document.getElementById('fontSizeRange').value;
-            localStorage.setItem('appFontSize', fontSize);
+            // 保存并应用主色调
+            selectedColor = pendingColor;
+            localStorage.setItem('appPrimaryColor', selectedColor);
+            applyPrimaryColor(selectedColor);
 
             // 显示保存成功提示
             showSaveNotification();
@@ -734,21 +796,25 @@
         resetButton.addEventListener('click', function() {
             // 重置主题
             localStorage.removeItem('appTheme');
-            applyTheme('light');
             themeSelect.value = 'light';
             selectedTheme.textContent = '浅色主题';
+            applyTheme('light');
 
             // 重置主色调
             localStorage.removeItem('appPrimaryColor');
             colorOptions.forEach(opt => opt.classList.remove('ring-2'));
             const blueOption = document.querySelector('.color-option.blue');
             blueOption.classList.add('ring-2');
-            currentPrimaryColor = 'blue';
+            selectedColor = 'blue';
+            pendingColor = 'blue';
             applyPrimaryColor('blue');
 
             // 重置字体大小
-            document.getElementById('fontSizeRange').value = 16;
-            localStorage.removeItem('appFontSize');
+            fontSizeRange.value = 16;
+            fontSizeValue.textContent = '16px';
+            selectedFontSize = '16';
+            applyFontSize('16');
+            localStorage.setItem('appFontSize', '16');
 
             // 显示重置提示
             showSaveNotification('设置已重置为默认值');
@@ -813,13 +879,22 @@
             // 应用主色调
             const savedColor = localStorage.getItem('appPrimaryColor');
             if (savedColor) {
-                currentPrimaryColor = savedColor;
+                selectedColor = savedColor;
+                pendingColor = savedColor;
                 colorOptions.forEach(option => {
                     if (option.getAttribute('data-color') === savedColor) {
                         option.classList.add('ring-2');
                     }
                 });
                 applyPrimaryColor(savedColor);
+            }
+
+            // 应用字体大小
+            const savedFontSize = localStorage.getItem('appFontSize');
+            if (savedFontSize) {
+                selectedFontSize = savedFontSize;
+                pendingFontSize = savedFontSize;
+                applyFontSize(savedFontSize);
             }
         }
 
@@ -856,12 +931,20 @@
             root.classList.add(`theme-${color}`);
         }
 
+        // 应用字体大小
+        function applyFontSize(size) {
+            document.body.style.fontSize = `${size}px`;  // 仅修改 body 字体大小，不影响布局
+        }
+
         // 显示保存通知
         function showSaveNotification(message = '设置已保存') {
             // 创建通知元素
             const notification = document.createElement('div');
             notification.textContent = message;
-            notification.className = 'fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 opacity-0 transform translate-y-4 transition-all duration-300';
+            notification.className = 'fixed bottom-4 right-4 text-white px-4 py-2 rounded-lg shadow-lg z-50 opacity-0 transform translate-y-4 transition-all duration-300';
+
+            // 使用当前主色调
+            notification.style.backgroundColor = 'var(--primary-color)';
 
             // 添加到页面
             document.body.appendChild(notification);
@@ -872,12 +955,12 @@
                 notification.classList.remove('translate-y-4');
             }, 100);
 
-            // 3秒后隐藏
+            // 1秒后隐藏
             setTimeout(() => {
                 notification.classList.add('opacity-0');
                 notification.classList.add('translate-y-4');
                 setTimeout(() => notification.remove(), 300);
-            }, 3000);
+            }, 1000);
         }
 
         // 监听系统主题变化
@@ -890,6 +973,76 @@
             });
         }
     });
+
+    // 多语言文本库
+    const translations = {
+        "zh-CN": {
+            "systemSettings": "系统设置",
+            "language": "语言",
+            "timezone": "时区",
+            "dateFormat": "日期格式",
+            "autoUpdate": "自动下载并安装更新",
+            "saveSettings": "保存设置",
+            // 添加更多需要翻译的文本...
+        },
+        "en-US": {
+            "systemSettings": "System Settings",
+            "language": "Language",
+            "timezone": "Timezone",
+            "dateFormat": "Date Format",
+            "autoUpdate": "Automatically download and install updates",
+            "saveSettings": "Save Settings",
+            // 添加更多需要翻译的文本...
+        },
+        "ja-JP": {
+            "systemSettings": "システム設定",
+            "language": "言語",
+            "timezone": "タイムゾーン",
+            "dateFormat": "日付形式",
+            "autoUpdate": "自動的に更新をダウンロードしてインストールする",
+            "saveSettings": "設定を保存",
+            // 添加更多需要翻译的文本...
+        },
+        "ko-KR": {
+            "systemSettings": "시스템 설정",
+            "language": "언어",
+            "timezone": "시간대",
+            "dateFormat": "날짜 형식",
+            "autoUpdate": "자동으로 업데이트 다운로드 및 설치",
+            "saveSettings": "설정 저장",
+            // 添加更多需要翻译的文本...
+        }
+    };
+
+    // 获取语言选择器
+    const languageSelect = document.getElementById('language');
+
+    // 监听语言变化
+    languageSelect.addEventListener('change', function() {
+        const lang = this.value;
+        changeLanguage(lang);
+        localStorage.setItem('preferredLanguage', lang); // 保存到本地存储
+    });
+
+    // 初始化语言
+    const savedLang = localStorage.getItem('preferredLanguage') || 'zh-CN';
+    languageSelect.value = savedLang;
+    changeLanguage(savedLang);
+
+    function changeLanguage(lang) {
+        // 获取当前语言的翻译文本
+        const langData = translations[lang];
+
+        // 更新所有需要翻译的元素
+        document.querySelector('[data-i18n="systemSettings"]').textContent = langData.systemSettings;
+        document.querySelector('[data-i18n="language"]').textContent = langData.language;
+        document.querySelector('[data-i18n="timezone"]').textContent = langData.timezone;
+        document.querySelector('[data-i18n="dateFormat"]').textContent = langData.dateFormat;
+        document.querySelector('[data-i18n="autoUpdate"]').textContent = langData.autoUpdate;
+        document.querySelector('[data-i18n="saveSettings"]').textContent = langData.saveSettings;
+
+        // 更新更多需要翻译的元素...
+    }
 </script>
 </body>
 </html>

@@ -3,13 +3,15 @@ package com.gym.management.controller;
 import com.gym.management.model.User;
 import com.gym.management.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -23,12 +25,18 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String loginPage(HttpServletRequest request) {
+    public String loginPage(HttpServletRequest request, HttpServletResponse response) {
         // 每次访问登录页面时强制退出当前会话
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
+
+        // 设置响应头，禁用缓存
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        response.setHeader("Expires", "0"); // Proxies
+
         return "login";
     }
 
@@ -54,5 +62,13 @@ public class AuthController {
         // 清除session
         session.invalidate();
         return "redirect:/login";
+    }
+
+    @GetMapping("/api/check-auth")
+    @ResponseBody
+    public ResponseEntity<?> checkAuth(HttpSession session) {
+        return session.getAttribute("loggedInUser") != null ?
+                ResponseEntity.ok().build() :
+                ResponseEntity.status(401).build();
     }
 }
