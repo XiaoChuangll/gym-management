@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="theme-light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置面板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-rgb: 59, 130, 246;
+        }
+
+        /* 基础样式 */
+        html, body {
+            height: 100%;
+            background-color: #f9fafb;
+            color: #111827;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .bg-white {
+            background-color: #ffffff;
+        }
+
+        .text-gray-800 {
+            color: #1f2937;
+        }
+
+        .border-gray-200 {
+            border-color: #e5e7eb;
+        }
+
+        /* 深色模式样式 */
+        .dark-mode {
+            background-color: #111827 !important;
+            color: #f3f4f6 !important;
+        }
+
+        .dark-mode body {
+            background-color: #111827 !important;
+            color: #f3f4f6 !important;
+        }
+
+        .dark-mode .bg-white {
+            background-color: #1f2937 !important;
+        }
+
+        .dark-mode .text-gray-800,
+        .dark-mode .text-gray-700 {
+            color: #f3f4f6 !important;
+        }
+
+        .dark-mode .border-gray-200 {
+            border-color: #374151 !important;
+        }
+
+        .dark-mode #themeOptions {
+            background-color: #1f2937 !important;
+            border-color: #374151 !important;
+            color: #f3f4f6 !important;
+        }
+
+        .dark-mode .theme-option {
+            color: #f3f4f6 !important;
+        }
+
+        .dark-mode .theme-option:hover {
+            background-color: #111827 !important;
+        }
+
+        .dark-mode #customThemeSelect {
+            background-color: #1f2937 !important;
+            color: #f3f4f6 !important;
+            border-color: #374151 !important;
+        }
+
+        .dark-mode #selectedTheme {
+            color: #f3f4f6 !important;
+        }
+
+        .dark-mode #appearanceForm label,
+        .dark-mode #notificationForm label,
+        .dark-mode #systemForm label,
+        .dark-mode #privacyForm label {
+            color: #f3f4f6 !important;
+        }
+
+        .dark-mode .text-gray-500 {
+            color: #9ca3af !important;
+        }
+
+        .dark-mode .text-gray-700 {
+            color: #e5e7eb !important;
+        }
+
+        /* 组件样式 */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-1px);
+        }
+
+        .select-open {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+        }
+
+        .options-visible {
+            display: block;
+            transform: scaleY(1);
+            opacity: 1;
+        }
+
+        .theme-icon {
+            color: var(--primary-color);
+        }
+
+        .primary-action-button {
+            background-color: var(--primary-color);
+            color: white;
+            transition: background-color 0.2s;
+        }
+
+        .primary-action-button:hover {
+            background-color: rgba(var(--primary-rgb), 0.9);
+        }
+
+        .tab-button:hover {
+            background-color: rgba(var(--primary-rgb), 0.1);
+        }
+
+        .dark-mode .tab-button:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .tab-button.active {
+            background-color: rgba(var(--primary-rgb), 0.1);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .dark-mode .tab-button.active {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+        }
+
+        .color-option.blue { background-color: #3b82f6; }
+        .color-option.green { background-color: #22c55e; }
+        .color-option.red { background-color: #ef4444; }
+        .color-option.yellow { background-color: #f59e0b; }
+        .color-option.cyan { background-color: #06b6d4; }
+        .color-option.purple { background-color: #8b5cf6; }
+        .color-option.pink { background-color: #ec4899; }
+
+        .color-option:hover.blue { background-color: #2563eb; }
+        .color-option:hover.green { background-color: #16a34a; }
+        .color-option:hover.red { background-color: #dc2626; }
+        .color-option:hover.yellow { background-color: #d97706; }
+        .color-option:hover.cyan { background-color: #0891b2; }
+        .color-option:hover.purple { background-color: #7c3aed; }
+        .color-option:hover.pink { background-color: #db2777; }
+
+        .color-option.ring-2 {
+            box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--primary-color);
+        }
+
+        /* 过渡效果 */
+        .transition-all {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        /* 主色调应用 */
+        .theme-blue { --primary-color: #3b82f6; --primary-rgb: 59, 130, 246; }
+        .theme-green { --primary-color: #22c55e; --primary-rgb: 34, 197, 94; }
+        .theme-red { --primary-color: #ef4444; --primary-rgb: 239, 68, 68; }
+        .theme-yellow { --primary-color: #f59e0b; --primary-rgb: 245, 158, 11; }
+        .theme-cyan { --primary-color: #06b6d4; --primary-rgb: 6, 182, 212; }
+        .theme-purple { --primary-color: #8b5cf6; --primary-rgb: 139, 92, 246; }
+        .theme-pink { --primary-color: #ec4899; --primary-rgb: 236, 72, 153; }
+
+        /* 表单元素 */
+        input[type="checkbox"]:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        select:focus, input[type="checkbox"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
+        }
+
+        /* 标签页切换动画 */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<div class="container mx-auto px-4 py-8 max-w-6xl flex-1">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">系统设置</h1>
+            <p class="text-gray-500 mt-1">管理您的账户和系统偏好设置</p>
+        </div>
+
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-6">
+        <!-- 左侧导航 -->
+        <div class="w-full md:w-1/4">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="flex flex-col space-y-1 p-2">
+                    <a href="#appearance"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 flex items-center active"
+                       data-target="appearance">
+                        <i class="fa fa-paint-brush mr-3 theme-icon"></i>
+                        <span>外观设置</span>
+                    </a>
+                    <a href="#notification"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 flex items-center"
+                       data-target="notification">
+                        <i class="fa fa-bell mr-3 theme-icon"></i>
+                        <span>通知设置</span>
+                    </a>
+                    <a href="#system"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 flex items-center"
+                       data-target="system">
+                        <i class="fa fa-cog mr-3 theme-icon"></i>
+                        <span>系统设置</span>
+                    </a>
+                    <a href="#privacy"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 flex items-center"
+                       data-target="privacy">
+                        <i class="fa fa-lock mr-3 theme-icon"></i>
+                        <span>隐私设置</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-white rounded-xl shadow-md p-4">
+                <div class="flex items-center">
+                    <!-- 管理员头像图标 -->
+                    <div class="flex items-center justify-center bg-gray-100 rounded-xl w-16 h-16 text-3xl text-blue-600">
+                        <i class="fa fa-user-shield"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="font-medium">用户设置</h3>
+                        <span class="hidden md:inline text-sm font-medium">管理员</span>
+
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="#" class="flex items-center text-sm py-2 px-3 rounded-lg hover:bg-gray-100">
+                        <i class="fa fa-user mr-2"></i> 个人资料
+                    </a>
+                    <a href="#" class="flex items-center text-sm py-2 px-3 rounded-lg hover:bg-gray-100">
+                        <i class="fa fa-shield mr-2"></i> 安全设置
+                    </a>
+                    <a th:href="@{/login}" class="flex items-center text-sm py-2 px-3 rounded-lg hover:bg-gray-100">
+                        <i class="fa fa-sign-out mr-2"></i> 退出登录
+                    </a>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- 右侧内容 -->
+        <div class="w-full md:w-3/4">
+            <!-- 外观设置 -->
+            <div id="appearance" class="tab-content active">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                            <i class="fa fa-paint-brush theme-icon mr-2"></i>
+                            外观设置
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <form id="appearanceForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">主题选择</label>
+                                <div class="relative">
+                                    <!-- 自定义选择器外观 -->
+                                    <div id="customThemeSelect" class="w-full rounded-lg border border-gray-300 bg-white shadow-sm cursor-pointer transition-all hover:border-blue-400 focus:border-blue-500">
+                                        <div class="flex items-center justify-between p-3">
+                                            <span id="selectedTheme">浅色主题</span>
+                                            <i class="fa fa-chevron-down text-gray-400"></i>
+                                        </div>
+                                        <!-- 自定义下拉选项 -->
+                                        <div id="themeOptions" class="absolute z-10 left-0 right-0 mt-1 bg-white rounded-lg shadow-lg border border-gray-200 hidden transform origin-top scale-y-95 opacity-0 transition-all">
+                                            <div class="theme-option p-3 hover:bg-blue-50 cursor-pointer" data-value="light">
+                                                <i class="fa fa-sun-o text-yellow-500 mr-2"></i> 浅色主题
+                                            </div>
+                                            <div class="theme-option p-3 hover:bg-blue-50 cursor-pointer" data-value="dark">
+                                                <i class="fa fa-moon-o text-gray-300 mr-2"></i> 深色主题
+                                            </div>
+                                            <div class="theme-option p-3 hover:bg-blue-50 cursor-pointer" data-value="auto">
+                                                <i class="fa fa-magic text-blue-500 mr-2"></i> 跟随系统
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 隐藏原生选择器 -->
+                                    <select id="themeSelect" class="hidden">
+                                        <option value="light">浅色主题</option>
+                                        <option value="dark">深色主题</option>
+                                        <option value="auto">跟随系统</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="fontSizeRange" class="block text-sm font-medium text-gray-700 mb-1">字体大小</label>
+                                <input type="range"
+                                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                                       min="12" max="20" value="16" id="fontSizeRange">
+                                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                    <span>小</span>
+                                    <span>中</span>
+                                    <span>大</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">主色调</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button"
+                                            class="color-option blue w-10 h-10 rounded-full ring-2"
+                                            data-color="blue" title="蓝色">
+                                    </button>
+                                    <button type="button"
+                                            class="color-option green w-10 h-10 rounded-full"
+                                            data-color="green" title="绿色">
+                                    </button>
+                                    <button type="button"
+                                            class="color-option red w-10 h-10 rounded-full"
+                                            data-color="red" title="红色">
+                                    </button>
+                                    <button type="button"
+                                            class="color-option yellow w-10 h-10 rounded-full"
+                                            data-color="yellow" title="黄色">
+                                    </button>
+                                    <button type="button"
+                                            class="color-option cyan w-10 h-10 rounded-full"
+                                            data-color="cyan" title="青色">
+                                    </button>
+                                    <button type="button"
+                                            class="color-option purple w-10 h-10 rounded-full"
+                                            data-color="purple" title="紫色">
+                                    </button>
+                                    <button type="button"
+                                            class="color-option pink w-10 h-10 rounded-full"
+                                            data-color="pink" title="粉色">
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 flex">
+                                <button type="button"
+                                        class="px-4 py-2 text-white rounded-lg primary-action-button"
+                                        id="saveSettings">
+                                    保存设置
+                                </button>
+                                <button type="button"
+                                        class="ml-3 px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
+                                        id="resetSettings">
+                                    恢复默认
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 通知设置 -->
+            <div id="notification" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover transition-colors duration-300">
+                    <div class="p-6 border-b border-gray-200 transition-colors duration-300">
+                        <h2 class="text-xl font-semibold text-gray-800 flex items-center transition-colors duration-300">
+                            <i class="fa fa-bell theme-icon mr-2"></i>
+                            通知设置
+                        </h2>
+                    </div>
+                    <div class="p-6 transition-colors duration-300">
+                        <form id="notificationForm" class="space-y-4">
+                            <div class="flex items-center">
+                                <input type="checkbox"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
+                                       id="emailNotifications" checked>
+                                <label for="emailNotifications" class="ml-2 block text-sm text-gray-700 transition-colors duration-300">
+                                    接收电子邮件通知
+                                </label>
+                            </div>
+
+                            <div class="flex items-center">
+                                <input type="checkbox"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
+                                       id="smsNotifications">
+                                <label for="smsNotifications" class="ml-2 block text-sm text-gray-700 transition-colors duration-300">
+                                    接收短信通知
+                                </label>
+                            </div>
+
+                            <div class="flex items-center">
+                                <input type="checkbox"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
+                                       id="systemNotifications" checked>
+                                <label for="systemNotifications" class="ml-2 block text-sm text-gray-700 transition-colors duration-300">
+                                    接收系统通知
+                                </label>
+                            </div>
+
+                            <div class="pt-4">
+                                <h3 class="text-md font-medium mb-3">通知类型</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox"
+                                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
+                                               id="productUpdates" checked>
+                                        <label for="productUpdates" class="ml-2 block text-sm text-gray-700 transition-colors duration-300">
+                                            产品更新通知
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox"
+                                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
+                                               id="securityAlerts" checked>
+                                        <label for="securityAlerts" class="ml-2 block text-sm text-gray-700 transition-colors duration-300">
+                                            安全警报
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox"
+                                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
+                                               id="promotions">
+                                        <label for="promotions" class="ml-2 block text-sm text-gray-700 transition-colors duration-300">
+                                            促销和优惠
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4">
+                                <button type="submit"
+                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors primary-action-button">
+                                    保存设置
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 系统设置 -->
+            <div id="system" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover transition-colors duration-300">
+                    <div class="p-6 border-b border-gray-200 transition-colors duration-300">
+                        <h2 class="text-xl font-semibold text-gray-800 flex items-center transition-colors duration-300">
+                            <i class="fa fa-cog theme-icon mr-2"></i>
+                            系统设置
+                        </h2>
+                    </div>
+                    <div class="p-6 transition-colors duration-300">
+                        <form id="systemForm" class="space-y-4">
+                            <div>
+                                <label for="language" class="block text-sm font-medium text-gray-700 mb-1 transition-colors duration-300">语言</label>
+                                <select class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-colors duration-300"
+                                        id="language">
+                                    <option value="zh-CN" selected>中文</option>
+                                    <option value="en-US">英语</option>
+                                    <option value="ja-JP">日语</option>
+                                    <option value="ko-KR">韩语</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="timezone" class="block text-sm font-medium text-gray-700 mb-1 transition-colors duration-300">时区</label>
+                                <select class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-colors duration-300"
+                                        id="timezone">
+                                    <option value="Asia/Shanghai" selected>中国标准时间 (GMT+8)</option>
+                                    <option value="America/New_York">美国东部时间 (GMT-5)</option>
+                                    <option value="Europe/London">伦敦时间 (GMT+0)</option>
+                                    <option value="Asia/Tokyo">东京时间 (GMT+9)</option>
+                                    <option value="Europe/Paris">巴黎时间 (GMT+1)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="dateFormat" class="block text-sm font-medium text-gray-700 mb-1 transition-colors duration-300">日期格式</label>
+                                <select class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500 shadow-sm transition-colors duration-300"
+                                        id="dateFormat">
+                                    <option value="yyyy-MM-dd" selected>2023-01-01</option>
+                                    <option value="dd/MM/yyyy">01/01/2023</option>
+                                    <option value="MM/dd/yyyy">01/01/2023</option>
+                                    <option value="yyyy年MM月dd日">2023年01月01日</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1 transition-colors duration-300">系统更新</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox"
+                                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
+                                           id="autoUpdate" checked>
+                                    <label for="autoUpdate" class="ml-2 block text-sm text-gray-700 transition-colors duration-300">
+                                        自动下载并安装更新
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="pt-4">
+                                <button type="submit"
+                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors primary-action-button">
+                                    保存设置
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- 隐私设置 -->
+            <div id="privacy" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover transition-colors duration-300">
+                    <div class="p-6 border-b border-gray-200 transition-colors duration-300">
+                        <h2 class="text-xl font-semibold text-gray-800 flex items-center transition-colors duration-300">
+                            <i class="fa fa-lock theme-icon mr-2"></i>
+                            隐私设置
+                        </h2>
+                    </div>
+                    <div class="p-6 transition-colors duration-300">
+                        <form id="privacyForm" class="space-y-4">
+                            <div class="flex items-start">
+                                <input type="checkbox"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1 transition-colors duration-300"
+                                       id="dataSharingConsent">
+                                <div class="ml-2">
+                                    <label for="dataSharingConsent" class="block text-sm text-gray-700 transition-colors duration-300">
+                                        同意数据分享
+                                    </label>
+                                    <p class="text-xs text-gray-500 mt-1 transition-colors duration-300">允许系统收集匿名使用数据以改进服务</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <input type="checkbox"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1 transition-colors duration-300"
+                                       id="cookiesConsent" checked>
+                                <div class="ml-2">
+                                    <label for="cookiesConsent" class="block text-sm text-gray-700 transition-colors duration-300">
+                                        接受Cookie
+                                    </label>
+                                    <p class="text-xs text-gray-500 mt-1 transition-colors duration-300">网站使用Cookie来改善用户体验</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <input type="checkbox"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1 transition-colors duration-300"
+                                       id="locationConsent">
+                                <div class="ml-2">
+                                    <label for="locationConsent" class="block text-sm text-gray-700 transition-colors duration-300">
+                                        位置服务
+                                    </label>
+                                    <p class="text-xs text-gray-500 mt-1 transition-colors duration-300">允许系统访问您的位置以提供本地化服务</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start">
+                                <input type="checkbox"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1 transition-colors duration-300"
+                                       id="analyticsConsent" checked>
+                                <div class="ml-2">
+                                    <label for="analyticsConsent" class="block text-sm text-gray-700 transition-colors duration-300">
+                                        分析跟踪
+                                    </label>
+                                    <p class="text-xs text-gray-500 mt-1 transition-colors duration-300">允许我们收集使用数据以改进产品</p>
+                                </div>
+                            </div>
+
+                            <div class="pt-4">
+                                <button type="submit"
+                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors primary-action-button">
+                                    保存设置
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="py-6 text-center text-gray-500 text-sm">
+    <p>© 2023 系统设置面板 | 当前版本 v1.5.0</p>
+</footer>
+
+<script>
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        // 主题选择器元素
+        const customSelect = document.getElementById('customThemeSelect');
+        const themeOptions = document.getElementById('themeOptions');
+        const selectedTheme = document.getElementById('selectedTheme');
+        const themeSelect = document.getElementById('themeSelect');
+        const chevron = customSelect.querySelector('.fa-chevron-down');
+
+        // 应用设置按钮
+        const saveButton = document.getElementById('saveSettings');
+        const resetButton = document.getElementById('resetSettings');
+
+        // 颜色选项
+        const colorOptions = document.querySelectorAll('.color-option');
+        let currentPrimaryColor = 'blue';
+
+        // 标签页切换
+        const tabButtons = document.querySelectorAll('.tab-button');
+
+        // 颜色映射
+        const colorMap = {
+            blue: { hex: '#3b82f6', rgb: '59, 130, 246' },
+            green: { hex: '#22c55e', rgb: '34, 197, 94' },
+            red: { hex: '#ef4444', rgb: '239, 68, 68' },
+            yellow: { hex: '#f59e0b', rgb: '245, 158, 11' },
+            cyan: { hex: '#06b6d4', rgb: '6, 182, 212' },
+            purple: { hex: '#8b5cf6', rgb: '139, 92, 246' },
+            pink: { hex: '#ec4899', rgb: '236, 72, 153' }
+        };
+
+        // 应用保存的设置
+        applySavedSettings();
+
+        // 标签页切换功能
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // 移除所有active类
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // 添加active类到当前标签
+                this.classList.add('active');
+                const target = this.getAttribute('data-target');
+                document.getElementById(target).classList.add('active');
+            });
+        });
+
+        // 主题选择器点击事件
+        customSelect.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleThemeMenu();
+        });
+
+        // 主题选项点击事件
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                const text = this.textContent.trim();
+
+                // 更新显示
+                selectedTheme.textContent = text;
+                themeSelect.value = value;
+
+                // 立即应用主题
+                applyTheme(value);
+                localStorage.setItem('appTheme', value);
+
+                // 关闭菜单
+                closeThemeMenu();
+
+                // 添加选择动画
+                this.classList.add('bg-blue-100');
+                setTimeout(() => this.classList.remove('bg-blue-100'), 200);
+            });
+        });
+
+        // 点击页面其他地方关闭主题菜单
+        document.addEventListener('click', function(e) {
+            if (!customSelect.contains(e.target) && themeOptions.style.display === 'block') {
+                closeThemeMenu();
+            }
+        });
+
+        // 颜色选择事件
+        colorOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                colorOptions.forEach(opt => opt.classList.remove('ring-2'));
+                this.classList.add('ring-2');
+                currentPrimaryColor = this.getAttribute('data-color');
+
+                // 立即应用主色调
+                applyPrimaryColor(currentPrimaryColor);
+            });
+        });
+
+        // 保存设置按钮
+        saveButton.addEventListener('click', function() {
+            // 保存主色调
+            localStorage.setItem('appPrimaryColor', currentPrimaryColor);
+
+            // 保存字体大小
+            const fontSize = document.getElementById('fontSizeRange').value;
+            localStorage.setItem('appFontSize', fontSize);
+
+            // 显示保存成功提示
+            showSaveNotification();
+        });
+
+        // 重置设置按钮
+        resetButton.addEventListener('click', function() {
+            // 重置主题
+            localStorage.removeItem('appTheme');
+            applyTheme('light');
+            themeSelect.value = 'light';
+            selectedTheme.textContent = '浅色主题';
+
+            // 重置主色调
+            localStorage.removeItem('appPrimaryColor');
+            colorOptions.forEach(opt => opt.classList.remove('ring-2'));
+            const blueOption = document.querySelector('.color-option.blue');
+            blueOption.classList.add('ring-2');
+            currentPrimaryColor = 'blue';
+            applyPrimaryColor('blue');
+
+            // 重置字体大小
+            document.getElementById('fontSizeRange').value = 16;
+            localStorage.removeItem('appFontSize');
+
+            // 显示重置提示
+            showSaveNotification('设置已重置为默认值');
+        });
+
+        // 表单提交处理
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                showSaveNotification('设置已保存');
+            });
+        });
+
+        // 切换主题菜单函数
+        function toggleThemeMenu() {
+            if (themeOptions.classList.contains('hidden')) {
+                openThemeMenu();
+            } else {
+                closeThemeMenu();
+            }
+        }
+
+        // 打开主题菜单
+        function openThemeMenu() {
+            themeOptions.classList.remove('hidden');
+            themeOptions.classList.remove('opacity-0');
+            themeOptions.classList.remove('scale-y-95');
+            customSelect.classList.add('select-open');
+            chevron.classList.add('rotate-180');
+
+            // 添加过渡效果
+            setTimeout(() => {
+                themeOptions.style.transform = 'scaleY(1)';
+                themeOptions.style.opacity = '1';
+            }, 10);
+        }
+
+        // 关闭主题菜单
+        function closeThemeMenu() {
+            themeOptions.style.transform = 'scaleY(0.95)';
+            themeOptions.style.opacity = '0';
+
+            setTimeout(() => {
+                themeOptions.classList.add('hidden');
+                customSelect.classList.remove('select-open');
+                chevron.classList.remove('rotate-180');
+            }, 300);
+        }
+
+        // 应用保存的设置
+        function applySavedSettings() {
+            // 应用主题
+            const savedTheme = localStorage.getItem('appTheme');
+            if (savedTheme) {
+                themeSelect.value = savedTheme;
+                selectedTheme.textContent =
+                    savedTheme === 'light' ? '浅色主题' :
+                        savedTheme === 'dark' ? '深色主题' : '跟随系统';
+                applyTheme(savedTheme);
+            }
+
+            // 应用主色调
+            const savedColor = localStorage.getItem('appPrimaryColor');
+            if (savedColor) {
+                currentPrimaryColor = savedColor;
+                colorOptions.forEach(option => {
+                    if (option.getAttribute('data-color') === savedColor) {
+                        option.classList.add('ring-2');
+                    }
+                });
+                applyPrimaryColor(savedColor);
+            }
+        }
+
+        // 应用主题
+        function applyTheme(theme) {
+            const body = document.body;
+            const html = document.documentElement;
+
+            // 移除所有主题类
+            body.classList.remove('dark-mode');
+            html.classList.remove('dark-mode');
+
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+                html.classList.add('dark-mode');
+            } else if (theme === 'auto') {
+                // 跟随系统设置
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.classList.add('dark-mode');
+                    html.classList.add('dark-mode');
+                }
+            }
+        }
+
+        // 应用主色调
+        function applyPrimaryColor(color) {
+            const root = document.documentElement;
+
+            // 移除所有主题类
+            root.classList.remove('theme-blue', 'theme-green', 'theme-red',
+                'theme-yellow', 'theme-cyan', 'theme-purple', 'theme-pink');
+
+            // 添加当前主题类
+            root.classList.add(`theme-${color}`);
+        }
+
+        // 显示保存通知
+        function showSaveNotification(message = '设置已保存') {
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.className = 'fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 opacity-0 transform translate-y-4 transition-all duration-300';
+
+            // 添加到页面
+            document.body.appendChild(notification);
+
+            // 显示通知
+            setTimeout(() => {
+                notification.classList.remove('opacity-0');
+                notification.classList.remove('translate-y-4');
+            }, 100);
+
+            // 3秒后隐藏
+            setTimeout(() => {
+                notification.classList.add('opacity-0');
+                notification.classList.add('translate-y-4');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // 监听系统主题变化
+        if (window.matchMedia) {
+            const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            darkModeMediaQuery.addEventListener('change', (e) => {
+                if (themeSelect.value === 'auto') {
+                    applyTheme('auto');
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>
