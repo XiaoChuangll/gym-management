@@ -9,11 +9,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e796ea-c446-4a8a-86af-3c69c2f6e4db" name="更改" comment="更新">
+    <list default="true" id="48e796ea-c446-4a8a-86af-3c69c2f6e4db" name="更改" comment="添加注释">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/gym/management/GymManagementApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gym/management/GymManagementApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/coach/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/coach/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/coach/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/coach/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/coach/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/coach/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/course/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/course/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/course/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/course/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/course/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/course/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/layout/default.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/layout/default.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/member/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/member/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/member/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/member/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/member/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/member/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/coach-workload.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/coach-workload.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/course-attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/course-attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations-selection.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations-selection.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/reservation/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/reservation/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/reservation/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/reservation/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/reservation/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/reservation/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/GymManagementApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/GymManagementApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/coach/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/coach/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/coach/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/coach/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/management-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/management-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/management-0.0.2-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/management-0.0.3-SNAPSHOT.jar" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +76,7 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/XiaoChuangll/gym-management.git&quot;,
+    &quot;url&quot;: &quot;git@github.com:XiaoChuangll/gym-management.git&quot;,
     &quot;accountId&quot;: &quot;4d78314a-86bd-461a-8af4-381529fd7504&quot;
   }
 }</component>
@@ -59,7 +85,7 @@
   &quot;isMigrated&quot;: true
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -90,27 +116,10 @@
     &quot;project.structure.last.edited&quot;: &quot;工件&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.35517243&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;http.proxy&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="QodanaHighlightedReportService">
-    <option name="localRunNotPublishedPersistedInfo">
-      <LocalReportPersistedInfo>
-        <option name="path" value="C:\Users\ChuEng\AppData\Local\Temp\qodana_output\qodana.sarif.json" />
-        <option name="reportGuid" value="b3a7c8c1-55fe-448f-8656-0453d397691c" />
-        <option name="reportName" value="gym/qodana/2025-06-19" />
-      </LocalReportPersistedInfo>
-    </option>
-  </component>
-  <component name="QodanaIsSelectedPersistenceService">
-    <option name="selectedOrLoading" value="true" />
-  </component>
-  <component name="QodanaReportsService">
-    <option name="descriptions">
-      <ReportDescription localRun="true" path="C:\Users\ChuEng\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="b3a7c8c1-55fe-448f-8656-0453d397691c" reportId="gym/qodana/2025-06-19" />
-    </option>
-  </component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gym" />
@@ -145,6 +154,8 @@
       <updated>1750233792563</updated>
       <workItem from="1750233793684" duration="21227000" />
       <workItem from="1750307452142" duration="1565000" />
+      <workItem from="1750391748284" duration="5598000" />
+      <workItem from="1750406854703" duration="1573000" />
     </task>
     <task id="LOCAL-00001" summary="提交">
       <option name="closed" value="true" />
@@ -218,17 +229,103 @@
       <option name="project" value="LOCAL" />
       <updated>1750313387008</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="更新">
+      <option name="closed" value="true" />
+      <created>1750327419895</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1750327419895</updated>
+    </task>
+    <task id="LOCAL-00011" summary="添加返回逻辑">
+      <option name="closed" value="true" />
+      <created>1750393033431</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1750393033431</updated>
+    </task>
+    <task id="LOCAL-00012" summary="添加返回逻辑">
+      <option name="closed" value="true" />
+      <created>1750393507006</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1750393507006</updated>
+    </task>
+    <task id="LOCAL-00013" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750394175089</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1750394175089</updated>
+    </task>
+    <task id="LOCAL-00014" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750394287290</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1750394287290</updated>
+    </task>
+    <task id="LOCAL-00015" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750396554205</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1750396554205</updated>
+    </task>
+    <task id="LOCAL-00016" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750396883556</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1750396883556</updated>
+    </task>
+    <task id="LOCAL-00017" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750406969484</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1750406969484</updated>
+    </task>
+    <task id="LOCAL-00018" summary="添加注释">
+      <option name="closed" value="true" />
+      <created>1750407170522</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1750407170522</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="提交" />
     <MESSAGE value="修改样式" />
     <MESSAGE value="更新页面" />
     <MESSAGE value="更新" />
-    <option name="LAST_COMMIT_MESSAGE" value="更新" />
+    <MESSAGE value="添加返回逻辑" />
+    <MESSAGE value="优化" />
+    <MESSAGE value="添加注释" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加注释" />
   </component>
 </project>

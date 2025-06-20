@@ -159,6 +159,9 @@
                     <a th:href="@{/reports/coach-workload}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
                         <i class="fa fa-bar-chart mr-1"></i> 教练工作
                     </a>
+                    <a th:href="@{/reports/member-reservations-selection}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
+                        <i class="fa fa-calendar-check-o mr-1"></i> 会员预约
+                    </a>
                 </div>
             </nav>
         </div>
@@ -185,6 +188,7 @@
                     </div>
                 </li>
                 <li>
+
                     <div class="flex items-center">
                         <i class="fa fa-chevron-right text-gray-400 text-xs mx-1"></i>
                         <span class="text-sm font-medium text-primary">添加教练</span>
@@ -196,8 +200,11 @@
 
     <!-- 添加教练表单 -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
-        <div class="px-6 py-4 border-b border-gray-100">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
             <h2 class="text-xl font-bold text-neutral-dark">教练信息</h2>
+            <a th:href="@{/coaches}" class="btn-secondary flex items-center">
+                <i class="fa fa-arrow-left mr-1"></i> 返回列表
+            </a>
         </div>
         <div class="p-6">
             <form th:action="@{/coaches}" th:object="${coach}" method="post">
