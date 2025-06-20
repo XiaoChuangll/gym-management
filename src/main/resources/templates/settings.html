@@ -122,7 +122,7 @@
             box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
         }
 
-         .options-visible {
+        .options-visible {
             display: block;
             transform: scaleY(1);
             opacity: 1;
@@ -305,7 +305,7 @@
             </div>
 
             <div class="mt-6 bg-white rounded-xl shadow-md overflow-hidden">
-                <!-- 用户信息头部 -->
+                <!-- 用户信息头部保持不变 -->
                 <div class="flex items-center p-4 border-b border-gray-200">
                     <div class="flex items-center justify-center bg-gray-100 rounded-xl w-16 h-16 text-3xl theme-icon">
                         <i class="fa-solid fa-user-shield"></i>
@@ -316,31 +316,31 @@
                     </div>
                 </div>
 
-                <!-- 菜单项 -->
+                <!-- 修改菜单项样式 -->
                 <div class="flex flex-col p-2">
                     <a href="#"
-                       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 flex items-center"
                        data-target="profile">
-                        <div class="w-6 text-center mr-3 theme-icon">
-                            <i class="fa-solid fa-user"></i>
+                        <div class="w-6 text-center mr-3">
+                            <i class="fa-solid fa-user theme-icon"></i>
                         </div>
                         <span>个人资料</span>
                     </a>
 
                     <a href="#"
-                       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 flex items-center"
                        data-target="security">
-                        <div class="w-6 text-center mr-3 theme-icon">
-                            <i class="fa-solid fa-shield-alt"></i>
+                        <div class="w-6 text-center mr-3">
+                            <i class="fa-solid fa-shield-alt theme-icon"></i>
                         </div>
                         <span>安全设置</span>
                     </a>
 
                     <a th:href="@{/login}"
-                       class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 flex items-center"
                        data-target="logout">
-                        <div class="w-6 text-center mr-3 theme-icon">
-                            <i class="fa-solid fa-right-from-bracket"></i>
+                        <div class="w-6 text-center mr-3">
+                            <i class="fa-solid fa-right-from-bracket theme-icon"></i>
                         </div>
                         <span>退出登录</span>
                     </a>
