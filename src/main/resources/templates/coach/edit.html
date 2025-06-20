@@ -195,8 +195,11 @@
 
     <!-- 编辑教练表单 -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
-        <div class="px-6 py-4 border-b border-gray-100">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
             <h2 class="text-xl font-bold text-neutral-dark">教练信息</h2>
+            <a th:href="@{/coaches}" class="btn-secondary flex items-center">
+                <i class="fa fa-arrow-left mr-1"></i> 返回列表
+            </a>
         </div>
         <div class="p-6">
             <form th:action="@{/coaches/{id}(id=${coach.coachId})}" th:object="${coach}" method="post">
