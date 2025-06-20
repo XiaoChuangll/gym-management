@@ -18,13 +18,16 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-<!-- 简化版导航栏 -->
-<header class="bg-white shadow-sm">
+<!-- 响应式导航栏 -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <!-- Logo -->
         <a th:href="@{/}" class="flex items-center space-x-2">
             <i class="fa fa-dumbbell text-blue-600 text-2xl"></i>
             <span class="text-xl font-bold">健身房管理系统</span>
         </a>
+
+        <!-- 桌面导航（隐藏于移动端） -->
         <nav class="hidden md:flex space-x-6">
             <a th:href="@{/}" class="hover:text-blue-600">首页</a>
             <a th:href="@{https://github.com/XiaoChuangll/gym-management}" class="hover:text-blue-600" target="_blank">
@@ -32,6 +35,22 @@
             </a>
             <a href="#" class="text-blue-600 font-medium">关于项目</a>
         </nav>
+
+        <!-- 移动端汉堡按钮（仅移动端显示） -->
+        <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+            <i class="fa fa-bars text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- 移动端菜单（下拉式） -->
+    <div id="mobile-menu" class="md:hidden h-0 overflow-hidden transition-all duration-300 bg-white">
+        <div class="container mx-auto px-4 flex flex-col space-y-2 pb-3">
+            <a th:href="@{/}" class="py-2 hover:text-blue-600 border-b border-gray-100">首页</a>
+            <a th:href="@{https://github.com/XiaoChuangll/gym-management}" class="py-2 hover:text-blue-600 border-b border-gray-100" target="_blank">
+                <i class="fa fa-github mr-1"></i>GitHub
+            </a>
+            <a href="#" class="py-2 text-blue-600 font-medium border-b border-gray-100">关于项目</a>
+        </div>
     </div>
 </header>
 
@@ -177,10 +196,8 @@
             </div>
         </div>
     </section>
-
 </main>
 
-<!-- 页脚 -->
 <!-- 页脚 -->
 <footer class="bg-gray-50 border-t border-gray-200 py-8 mt-12">
     <div class="container mx-auto px-4">
@@ -220,24 +237,28 @@
                    class="text-xs text-blue-600 hover:underline">
                     报告问题或建议
                 </a>
-
             </div>
         </div>
     </div>
 </footer>
 
-</body>
 <script>
     // 移动端菜单切换
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         const mobileMenu = document.getElementById('mobile-menu');
+        const icon = this.querySelector('i');
+
+        // 切换菜单高度
         if (mobileMenu.classList.contains('h-0')) {
             mobileMenu.classList.remove('h-0');
-            mobileMenu.classList.add('h-auto');
+            mobileMenu.classList.add('h-auto', 'py-2', 'border-t');
+            icon.classList.replace('fa-bars', 'fa-times');
         } else {
             mobileMenu.classList.add('h-0');
-            mobileMenu.classList.remove('h-auto');
+            mobileMenu.classList.remove('h-auto', 'py-2', 'border-t');
+            icon.classList.replace('fa-times', 'fa-bars');
         }
     });
 </script>
+</body>
 </html>
