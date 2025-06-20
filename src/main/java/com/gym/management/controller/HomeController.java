@@ -65,7 +65,6 @@ public class HomeController {
         return "about";
     }
 
-
     /**
      * 显示设置页面
      */
