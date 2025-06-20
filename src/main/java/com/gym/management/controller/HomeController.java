@@ -64,7 +64,8 @@ public class HomeController {
     public String about() {
         return "about";
     }
-    
+
+
     /**
      * 显示设置页面
      */
