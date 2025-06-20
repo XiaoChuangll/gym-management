@@ -64,4 +64,12 @@ public class HomeController {
     public String about() {
         return "about";
     }
+    
+    /**
+     * 显示设置页面
+     */
+    @GetMapping("/settings")
+    public String settings() {
+        return "settings";
+    }
 } 
