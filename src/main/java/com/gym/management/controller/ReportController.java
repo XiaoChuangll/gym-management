@@ -34,10 +34,21 @@ public class ReportController {
     /**
      * 显示会员预约情况选择页面
      */
-    @GetMapping("/member-reservations")
+    @GetMapping("/member-reservations-selection")
     public String getMemberReservationsSelection(Model model) {
         List<MemberDTO> members = memberService.getAllMembers();
         model.addAttribute("members", members);
+        return "report/member-reservations-selection";
+    }
+
+    /**
+     * 在会员预约情况选择页面中搜索会员
+     */
+    @GetMapping("/member-reservations-selection/search")
+    public String searchMembersForReservation(@RequestParam("name") String name, Model model) {
+        List<MemberDTO> members = memberService.findMembersByName(name);
+        model.addAttribute("members", members);
+        model.addAttribute("searchName", name);
         return "report/member-reservations-selection";
     }
 
