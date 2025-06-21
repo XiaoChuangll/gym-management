@@ -64,6 +64,17 @@ public class ReportController {
     }
 
     /**
+     * 显示会员预约情况页面
+     */
+    @GetMapping("/member-reservationss/{memberId}")
+    public String getMemberReservationss(@PathVariable("memberId") String memberId, Model model) {
+        List<MemberReservationDTO> memberReservations = reportService.getMemberReservations(memberId);
+        model.addAttribute("memberReservations", memberReservations);
+        model.addAttribute("memberId", memberId);
+        return "report/member-reservationss";
+    }
+
+    /**
      * 显示课程出勤率页面
      */
     @GetMapping("/course-attendance")

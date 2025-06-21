@@ -109,7 +109,9 @@
                 </button>
                 <div class="relative group">
                     <button class="flex items-center space-x-2">
-                        <img src="https://picsum.photos/id/1005/200/200" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                            <i class="fa fa-user text-sm"></i>
+                        </div>
                         <span class="hidden md:inline text-sm font-medium">管理员</span>
                         <i class="fa fa-chevron-down text-xs text-gray-500"></i>
                     </button>
@@ -234,7 +236,7 @@
                         <td class="py-4 px-4 text-gray-600" th:text="${member.memberType}">普通会员</td>
                         <td class="py-4 px-4 text-right">
                             <div class="flex justify-end space-x-2">
-                                <a th:href="@{/reports/member-reservations/{id}(id=${member.memberId})}" class="p-2 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title="查看预约">
+                                <a th:href="@{/reports/member-reservationss/{id}(id=${member.memberId})}" class="p-2 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title="查看预约">
                                     <i class="fa fa-calendar-check-o"></i>
                                 </a>
                                 <a th:href="@{/members/edit/{id}(id=${member.memberId})}" class="p-2 rounded-md bg-yellow-50 text-yellow-600 hover:bg-yellow-100 transition-colors" title="编辑">

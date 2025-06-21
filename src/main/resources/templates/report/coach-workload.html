@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- 更新Font Awesome CDN链接到最新版本 -->
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
@@ -114,7 +114,9 @@
                 </button>
                 <div class="relative group">
                     <button class="flex items-center space-x-2">
-                        <img src="https://picsum.photos/id/1005/200/200" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                            <i class="fa fa-user text-sm"></i>
+                        </div>
                         <span class="hidden md:inline text-sm font-medium">管理员</span>
                         <i class="fa fa-chevron-down text-xs text-gray-500"></i>
                     </button>
@@ -158,10 +160,10 @@
                 </a>
                 <div class="px-4 py-2">
                     <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">统计报表</div>
-                    <a th:href="@{/reports/course-attendance}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
+                    <a th:href="@{/reports/course-attendance}" class="block px-4 py-2 mt-1 rounded-md text-sm font-medium bg-primary/10 text-primary">
                         <i class="fa fa-line-chart mr-1"></i> 课程出勤
                     </a>
-                    <a th:href="@{/reports/coach-workload}" class="block px-4 py-2 mt-1 rounded-md text-sm font-medium bg-primary/10 text-primary">
+                    <a th:href="@{/reports/coach-workload}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
                         <i class="fa fa-bar-chart mr-1"></i> 教练工作
                     </a>
                     <a th:href="@{/reports/member-reservations-selection}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
@@ -206,8 +208,8 @@
     <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
             <h2 class="text-xl font-bold text-neutral-dark">教练工作量列表</h2>
-            <a th:href="@{/coaches}" class="btn-secondary flex items-center">
-                <i class="fa fa-arrow-left mr-1"></i> 返回教练列表
+            <a th:href="@{/}" class="btn-secondary flex items-center">
+                <i class="fa fa-arrow-left mr-1"></i> 返回首页
             </a>
         </div>
         <div class="p-6">
