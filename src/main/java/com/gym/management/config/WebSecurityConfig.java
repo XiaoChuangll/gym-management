@@ -16,6 +16,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**") // 拦截所有请求
-                .excludePathPatterns("/about","/login", "/logout", "/css/**", "/js/**", "/img/**"); // 不拦截登录相关和静态资源
+                .excludePathPatterns("/about", "/login", "/perform-logout", "/css/**", "/js/**", "/img/**"); // 不拦截登录相关和静态资源
     }
 } 

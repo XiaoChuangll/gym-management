@@ -83,4 +83,15 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+    @Override
+    public void clearRememberMeToken(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            // 清空记住我令牌
+            user.setRememberMeToken(null);
+            userRepository.save(user);
+        }
+    }
 } 

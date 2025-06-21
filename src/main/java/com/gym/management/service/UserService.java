@@ -19,4 +19,7 @@ public interface UserService {
     
     // 验证记住我令牌是否有效
     boolean validateRememberMeToken(String username, String token);
+    
+    // 清除用户的记住我令牌
+    void clearRememberMeToken(String username);
 } 

@@ -62,8 +62,11 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/settings}"><i class="bi bi-gear"></i> 设置</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/login}">登录</a>
+                    <li class="nav-item" th:if="${session.loggedInUser != null}">
+                        <a class="nav-link" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> 退出</a>
+                    </li>
+                    <li class="nav-item" th:unless="${session.loggedInUser != null}">
+                        <a class="nav-link" th:href="@{/login}"><i class="bi bi-box-arrow-in-right"></i> 登录</a>
                     </li>
                 </ul>
             </div>

@@ -30,6 +30,12 @@ public class AuthController {
 
     @GetMapping("/login")
     public String loginPage(HttpServletRequest request, HttpServletResponse response) {
+        // 检查是否已登录
+        HttpSession session = request.getSession(false);
+        if (session != null && session.getAttribute("loggedInUser") != null) {
+            return "redirect:/"; // 已登录则重定向到首页
+        }
+        
         // 检查是否存在记住我的Cookie
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -46,8 +52,8 @@ public class AuthController {
                             // 验证记住我令牌
                             if (userService.validateRememberMeToken(username, token)) {
                                 // 令牌有效，直接登录
-                                HttpSession session = request.getSession();
-                                session.setAttribute("loggedInUser", username);
+                                HttpSession newSession = request.getSession();
+                                newSession.setAttribute("loggedInUser", username);
                                 return "redirect:/";
                             }
                         }
@@ -57,17 +63,6 @@ public class AuthController {
                 }
             }
         }
-
-        // 每次访问登录页面时强制退出当前会话
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-
-        // 设置响应头，禁用缓存
-        //response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
-        //response.setHeader("Pragma", "no-cache"); // HTTP 1.0
-        //response.setHeader("Expires", "0"); // Proxies
 
         return "login";
     }
@@ -87,6 +82,19 @@ public class AuthController {
             
             // 处理"记住我"功能
             if (rememberMe != null && rememberMe.equals("on")) {
+                // 先清除旧的记住我cookie
+                Cookie[] cookies = request.getCookies();
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if ("remember-me".equals(cookie.getName())) {
+                            cookie.setValue("");
+                            cookie.setPath("/");
+                            cookie.setMaxAge(0);
+                            response.addCookie(cookie);
+                        }
+                    }
+                }
+                
                 // 生成记住我令牌
                 String token = userService.generateRememberMeToken(username);
                 
@@ -99,6 +107,22 @@ public class AuthController {
                 rememberMeCookie.setMaxAge(60 * 60 * 24 * 30); // 30天有效期
                 rememberMeCookie.setPath("/");
                 response.addCookie(rememberMeCookie);
+            } else {
+                // 如果不需要记住我，清除可能存在的记住我token
+                userService.clearRememberMeToken(username);
+                
+                // 清除可能存在的记住我cookie
+                Cookie[] cookies = request.getCookies();
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if ("remember-me".equals(cookie.getName())) {
+                            cookie.setValue("");
+                            cookie.setPath("/");
+                            cookie.setMaxAge(0);
+                            response.addCookie(cookie);
+                        }
+                    }
+                }
             }
             
             return "redirect:/";
@@ -109,17 +133,41 @@ public class AuthController {
         }
     }
 
+    // 显示退出确认页面
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    public String logoutPage() {
+        return "logout";
+    }
+    
+    // 执行退出操作
+    @PostMapping("/perform-logout")
+    public String performLogout(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        // 获取用户名
+        String username = (String) session.getAttribute("loggedInUser");
+        
         // 清除session
         session.invalidate();
         
-        // 删除remember-me cookie
-        Cookie cookie = new Cookie("remember-me", "");
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        // 清除所有cookies，确保完全退出
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                // 特别处理记住我cookie
+                if ("remember-me".equals(cookie.getName())) {
+                    cookie.setValue("");
+                    cookie.setPath("/");
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                }
+            }
+        }
         
+        // 如果有用户名，清除数据库中的记住我令牌
+        if (username != null) {
+            userService.clearRememberMeToken(username);
+        }
+        
+        // 重定向到登录页面
         return "redirect:/login";
     }
 

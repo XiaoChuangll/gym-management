@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>退出登录 - 健身房管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#b9dffe',
+                            300: '#7cc7fd',
+                            400: '#36adfa',
+                            500: '#0c94eb',
+                            600: '#0076c9',
+                            700: '#015da3',
+                            800: '#065087',
+                            900: '#0b436f',
+                        },
+                        secondary: {
+                            50: '#f0fdf9',
+                            100: '#dcfcee',
+                            200: '#baf6dc',
+                            300: '#87ecc3',
+                            400: '#48d9a4',
+                            500: '#20c085',
+                            600: '#0d9c6d',
+                            700: '#0f7c5a',
+                            800: '#11624a',
+                            900: '#12513e',
+                        },
+                        accent: {
+                            50: '#fff9eb',
+                            100: '#ffefc6',
+                            200: '#ffdd88',
+                            300: '#ffc746',
+                            400: '#ffb01f',
+                            500: '#f99107',
+                            600: '#dd6b02',
+                            700: '#b74b06',
+                            800: '#943a0c',
+                            900: '#7a310d',
+                        },
+                        neutral: '#F8FAFC',
+                        'neutral-dark': '#334155'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 30px -15px rgba(0, 0, 0, 0.1)',
+                        'hard': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .btn-primary {
+                @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg;
+            }
+            .btn-secondary {
+                @apply bg-white border border-gray-200 hover:bg-gray-50 text-neutral-dark font-medium py-3 px-6 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md;
+            }
+            .card {
+                @apply bg-white rounded-2xl shadow-soft overflow-hidden;
+            }
+            .card-header {
+                @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white p-6;
+            }
+        }
+    </style>
+
+    <style>
+        body {
+            background-color: #f8fafc;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
+            background-color: rgba(248, 250, 252, 0.9);
+        }
+
+        .logo {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 font-poppins">
+<div class="w-full max-w-md transform transition-all duration-500 hover:scale-[1.01]">
+    <div class="card">
+        <div class="card-header text-center">
+            <div class="flex items-center justify-center space-x-3 mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white animate-pulse-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <h1 class="text-2xl font-bold text-white">退出登录</h1>
+            </div>
+            <p class="text-primary-100">您即将退出健身房管理系统</p>
+        </div>
+
+        <div class="p-8">
+            <div class="text-center mb-8">
+                <div class="flex justify-center mb-4">
+                    <div class="w-20 h-20 rounded-full bg-primary-100 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="text-xl font-semibold text-neutral-dark mb-2">确认要退出系统吗？</h2>
+                <p class="text-gray-500">所有未保存的数据可能会丢失</p>
+            </div>
+
+            <div class="flex flex-col space-y-4">
+                <form th:action="@{/perform-logout}" method="post">
+                    <button type="submit" class="btn-primary w-full flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        确认退出
+                    </button>
+                </form>
+
+                <a th:href="@{/}" class="btn-secondary w-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    取消
+                </a>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-100 text-center text-sm text-gray-500">
+                <p>您可以随时重新登录系统</p>
+                <div class="mt-2 flex items-center justify-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>安全退出系统</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8 text-center text-sm text-white">
+        <div class="flex items-center justify-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+        </div>
+    </div>
+</div>
+</body>
+</html>
