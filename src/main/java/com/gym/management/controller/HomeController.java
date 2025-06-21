@@ -6,6 +6,7 @@ import com.gym.management.dto.MemberDTO;
 import com.gym.management.service.CoachService;
 import com.gym.management.service.CourseService;
 import com.gym.management.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,9 +34,29 @@ public class HomeController {
     }
 
     /**
-     * 显示首页
+     * 根路径访问直接重定向到登录页面
+     * 让登录页面处理自动登录的逻辑
      */
     @GetMapping("/")
+    public String root(HttpServletRequest request) {
+        // 获取可能存在的Cache-Control头
+        String cacheControl = request.getHeader("Cache-Control");
+        boolean noCache = cacheControl != null && (cacheControl.contains("no-cache") || cacheControl.contains("max-age=0"));
+        
+        // 从哪个页面链接过来的
+        String referer = request.getHeader("Referer");
+        boolean isDirectAccess = referer == null || !referer.contains(request.getServerName());
+        
+        // 总是重定向到登录页面，并添加forceAnimation=true参数
+        // 确保即使有记住我cookie，也会显示登录动画
+        String animationParam = (isDirectAccess || noCache) ? "forceAnimation=true" : "";
+        return "redirect:/login" + (animationParam.isEmpty() ? "" : "?" + animationParam);
+    }
+    
+    /**
+     * 显示首页（需要登录）
+     */
+    @GetMapping("/index")
     public String home(Model model) {
         // 获取会员总数
         List<MemberDTO> members = memberService.getAllMembers();

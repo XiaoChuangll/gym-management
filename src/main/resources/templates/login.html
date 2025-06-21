@@ -100,6 +100,187 @@
         body {
             background-color: #f8fafc;
         }
+
+        /* 新的登录成功动画样式 */
+        .login-success-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999; /* 更高层级确保覆盖所有内容 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            pointer-events: none; /* 默认不响应鼠标事件 */
+        }
+
+        .login-success-animation.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto; /* 显示时允许交互 */
+        }
+
+        .animation-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 80%;
+            text-align: center;
+        }
+
+        /* 悬浮效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* 颜色脉冲效果 */
+        @keyframes colorPulse {
+            0% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(10deg); }
+            100% { filter: hue-rotate(0deg); }
+        }
+
+        /* 波纹效果 */
+        @keyframes ripple {
+            0% { box-shadow: 0 0 0 0 rgba(22, 93, 255, 0.3); }
+            100% { box-shadow: 0 0 0 70px rgba(22, 93, 255, 0); }
+        }
+
+        .success-icon {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .success-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: rgba(22, 93, 255, 0.1);
+            animation: ripple 2s linear infinite;
+        }
+
+        .success-circle {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, #0c94eb, #0076c9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            transform: scale(0);
+            margin: 10px auto;
+            animation: popIn 0.5s cubic-bezier(0.26, 1.36, 0.68, 1) forwards;
+            box-shadow: 0 5px 15px rgba(12, 148, 235, 0.3);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .check-mark {
+            transform-origin: center;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: checkmark 1s ease-in-out forwards 0.5s;
+            stroke: white;
+            stroke-width: 5;
+            width: 40px;
+            height: 40px;
+        }
+
+        @keyframes checkmark {
+            0% { stroke-dashoffset: 100; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        .welcome-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: #334155;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 1s;
+        }
+
+        .user-text {
+            font-size: 16px;
+            color: #64748b;
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 1.3s;
+        }
+
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .redirect-progress {
+            width: 200px;
+            height: 5px;
+            background-color: #e2e8f0;
+            border-radius: 3px;
+            margin-top: 30px;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 1.6s;
+        }
+
+        .redirect-progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #0c94eb, #36adfa);
+            border-radius: 3px;
+            animation: progressBar 2s ease-out 1.8s forwards;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes progressBar {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* 页面加载时的平滑过渡 */
+        .page-transition {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .page-transition.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 全屏背景层样式 */
+        .full-screen-backdrop {
+            position: absolute; /* 改为absolute定位在动画容器内 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f8fafc;
+            z-index: 0; /* 确保背景层位于动画内容之下 */
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 font-inter">
@@ -119,7 +300,8 @@
             <span th:text="${error}">用户名或密码错误</span>
         </div>
 
-        <form th:action="@{/login}" method="post" class="space-y-4">
+        <form th:action="@{/login}" method="post" class="space-y-4" id="loginForm">
+            <input type="hidden" name="showAnimation" id="showAnimation" value="false">
             <div>
                 <label for="username" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
                 <div class="relative">
@@ -157,15 +339,13 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-primary w-full py-3 flex items-center justify-center">
+            <button type="submit" id="loginButton" class="btn-primary w-full py-3 flex items-center justify-center">
                 <i class="fa fa-sign-in mr-2"></i> 登录
             </button>
-
-
         </form>
 
         <div class="mt-6 text-center space-x-4">
-            <a th:href="@{/}" class="text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+            <a th:href="@{/index}" class="text-sm text-gray-600 hover:text-primary transition-colors duration-200">
                 <i class="fa fa-arrow-left mr-1"></i> 返回首页
             </a>
             <span class="text-gray-400">|</span>
@@ -180,45 +360,193 @@
     </div>
 </div>
 
-<script>
+<div class="login-success-animation" id="loginSuccessAnimation">
+    <!-- 全屏不透明背景层 -->
+    <div class="full-screen-backdrop"></div>
+    <div class="animation-container">
+        <div class="success-icon">
+            <div class="success-ring"></div>
+            <div class="success-circle">
+                <svg class="check-mark" viewBox="0 0 52 52">
+                    <polyline points="14,27 22,35 38,15" fill="none"/>
+                </svg>
+            </div>
+        </div>
+        <h2 class="welcome-text">欢迎回来!</h2>
+        <div class="user-text" id="welcomeUsername">正在登录系统...</div>
+        <div class="redirect-progress">
+            <div class="redirect-progress-bar"></div>
+        </div>
+    </div>
+</div>
 
-
-    // 检测页面是否被刷新或回退
-    window.addEventListener('load', function() {
-        if (performance.navigation.type === 1 ||  // 刷新
-            performance.navigation.type === 2) {  // 回退
-            fetch('/logout', {method: 'POST'})
-                .then(() => window.location.href = '/login');
+<script th:inline="javascript">
+    // 页面加载优化
+    document.addEventListener("DOMContentLoaded", function() {
+        // 添加页面过渡效果
+        const mainContent = document.querySelector('.max-w-md');
+        if (mainContent) {
+            mainContent.classList.add('page-transition');
+            setTimeout(() => {
+                mainContent.classList.add('loaded');
+            }, 100);
+        }
+        
+        // 获取URL参数函数
+        function getURLParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // 检查是否应该播放动画
+        const autoLogin = getURLParameter('autoLogin');
+        const username = getURLParameter('username');
+        
+        // 添加cookie调试信息
+        if (localStorage.getItem('debug_mode') === 'true') {
+            console.log("当前cookies:", document.cookie);
+        }
+        
+        // 检查是否存在记住我cookie - 仅用于调试
+        function checkRememberMeCookie() {
+            const allCookies = document.cookie.split(';');
+            for (let cookie of allCookies) {
+                cookie = cookie.trim();
+                if (cookie.indexOf('remember-me=') === 0) {
+                    if (localStorage.getItem('debug_mode') === 'true') {
+                        console.log("找到记住我cookie:", cookie);
+                    }
+                    return true;
+                }
+            }
+            if (localStorage.getItem('debug_mode') === 'true') {
+                console.log("未找到记住我cookie");
+            }
+            return false;
+        }
+        
+        // 在需要调试时调用
+        if (localStorage.getItem('debug_mode') === 'true') {
+            checkRememberMeCookie();
+        }
+        
+        // 仅当autoLogin为true时才播放动画
+        if (autoLogin === 'true' && username) {
+            playLoginAnimation(username);
         }
     });
 
-
+    // 提取动画播放逻辑为单独函数，便于重用
+    function playLoginAnimation(username) {
+        // 禁止背景滚动和交互
+        document.body.style.overflow = 'hidden'; // 防止滚动
+        
+        // 隐藏主内容
+        const mainContent = document.querySelector('.max-w-md');
+        if (mainContent) {
+            mainContent.style.visibility = 'hidden';
+        }
+        
+        const animation = document.getElementById('loginSuccessAnimation');
+        const usernameElement = document.getElementById('welcomeUsername');
+        
+        if (usernameElement) {
+            usernameElement.textContent = username + ' 正在登录中...';
+        }
+        
+        if (animation) {
+            // 使用requestAnimationFrame以优化性能
+            requestAnimationFrame(() => {
+                animation.classList.add('show');
+                
+                // 减少不必要的DOM操作和计算
+                const animationDuration = 3800; // 动画总时长
+                setTimeout(() => {
+                    // 平滑过渡到首页
+                    animation.style.transition = 'opacity 0.5s ease';
+                    animation.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        window.location.href = '/index';
+                    }, 500);
+                }, animationDuration);
+            });
+        } else {
+            // 如果动画元素不存在，直接重定向
+            window.location.href = '/index';
+        }
+    }
+    
+    // 处理登录按钮点击事件
+    document.getElementById('loginButton').addEventListener('click', function() {
+        const rememberMe = document.getElementById('remember-me');
+        const showAnimationField = document.getElementById('showAnimation');
+        
+        // 无论是否勾选记住我，都启用动画
+        showAnimationField.value = 'true';
+    });
+    
     // 检测设备类型并自动切换到移动视图
     function checkDeviceAndRedirect() {
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const currentUrl = window.location.href;
+        const currentUrl = new URL(window.location.href);
+        const autoLogin = currentUrl.searchParams.get('autoLogin');
+        
+        // 如果正在自动登录，不要进行设备检测重定向
+        if (autoLogin === 'true') {
+            return;
+        }
 
         // 如果是移动设备且没有移动参数
-        if (isMobile && !currentUrl.includes('mobile=true')) {
+        if (isMobile && !currentUrl.search.includes('mobile=true')) {
             // 存储桌面视图偏好（如果用户手动切换过）
             const prefersDesktop = localStorage.getItem('prefersDesktop');
 
             if (!prefersDesktop) {
-                // 添加移动参数并重新加载
-                window.location.href = currentUrl + (currentUrl.includes('?') ? '&mobile=true' : '?mobile=true')
+                // 保留现有的查询参数
+                currentUrl.searchParams.append('mobile', 'true');
+                window.location.href = currentUrl.toString();
             }
         }
     }
-
-    // 页面加载时执行检测
-    document.addEventListener('DOMContentLoaded', checkDeviceAndRedirect);
-
-    // 监听移动菜单按钮点击
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenu.classList.toggle('h-0');
-        mobileMenu.classList.toggle('h-auto');
-    });
+    
+    // 检测是否是移动设备
+    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobileDevice) {
+        // 使用localStorage存储登录状态，作为Cookie的备份
+        document.getElementById('loginButton').addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            const rememberMe = document.getElementById('remember-me');
+            
+            if (rememberMe && rememberMe.checked && username) {
+                localStorage.setItem('gym_remember_username', username);
+            }
+        });
+        
+        // 检查localStorage中是否有保存的用户名
+        const savedUsername = localStorage.getItem('gym_remember_username');
+        if (savedUsername && !document.cookie.includes('remember-me=')) {
+            // 如果有保存的用户名但没有cookie，则显示移动设备提示
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                const mobileNotice = document.createElement('div');
+                mobileNotice.className = 'mb-4 bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg';
+                mobileNotice.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fa fa-info-circle mr-3 text-blue-500"></i>
+                        <div>
+                            <p class="font-medium">检测到您之前已登录过</p>
+                            <p class="text-sm">用户名: ${savedUsername}</p>
+                        </div>
+                    </div>
+                `;
+                loginForm.parentNode.insertBefore(mobileNotice, loginForm);
+                
+                // 自动填充用户名
+                document.getElementById('username').value = savedUsername;
+            }
+        }
+    }
 </script>
 
 </body>
