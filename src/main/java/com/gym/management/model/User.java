@@ -2,6 +2,7 @@ package com.gym.management.model;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -22,9 +23,14 @@ public class User implements Serializable {
     
     @Column
     private String rememberMeToken;
+    
+    @Column(name = "password_changed_at")
+    private LocalDateTime passwordChangedAt;
 
     // 默认构造函数
     public User() {
+        // 设置初始密码修改时间为当前时间
+        this.passwordChangedAt = LocalDateTime.now();
     }
 
     // 带参数的构造函数
@@ -32,6 +38,7 @@ public class User implements Serializable {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.passwordChangedAt = LocalDateTime.now();
     }
 
     // Getters and Setters
@@ -57,6 +64,8 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+        // 更新密码时自动更新修改时间
+        this.passwordChangedAt = LocalDateTime.now();
     }
 
     public String getRole() {
@@ -73,6 +82,14 @@ public class User implements Serializable {
     
     public void setRememberMeToken(String rememberMeToken) {
         this.rememberMeToken = rememberMeToken;
+    }
+    
+    public LocalDateTime getPasswordChangedAt() {
+        return passwordChangedAt;
+    }
+    
+    public void setPasswordChangedAt(LocalDateTime passwordChangedAt) {
+        this.passwordChangedAt = passwordChangedAt;
     }
 
     @Override

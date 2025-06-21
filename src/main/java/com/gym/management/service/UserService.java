@@ -2,6 +2,7 @@ package com.gym.management.service;
 
 import com.gym.management.model.User;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface UserService {
@@ -25,4 +26,7 @@ public interface UserService {
     
     // 修改用户密码
     boolean changePassword(String username, String oldPassword, String newPassword);
+    
+    // 获取用户密码上次修改时间
+    LocalDateTime getPasswordLastChangedTime(String username);
 } 

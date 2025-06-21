@@ -875,7 +875,7 @@
                             <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
                                 <div>
                                     <h3 class="font-medium text-gray-800">登录密码</h3>
-                                    <p class="text-sm text-gray-500">上次修改时间：2023-05-15</p>
+                                    <p class="text-sm text-gray-500">上次修改时间：<span id="passwordLastChanged">加载中...</span></p>
                                 </div>
                                 <button id="changePasswordBtn" class="px-4 py-2 text-white rounded-lg primary-action-button">
                                     修改密码
@@ -1508,6 +1508,10 @@
         const confirmPasswordInput = document.getElementById('confirmPassword');
         const passwordMatchMsg = document.getElementById('passwordMatch');
         const passwordMessage = document.getElementById('passwordMessage');
+        const passwordLastChanged = document.getElementById('passwordLastChanged');
+        
+        // 获取密码上次修改时间
+        fetchPasswordLastChangedTime();
         
         // 打开密码修改弹窗
         if (changePasswordBtn) {
@@ -1581,6 +1585,9 @@
                         passwordMessage.classList.add('text-green-500');
                         passwordMessage.textContent = data.message;
                         
+                        // 更新密码修改时间
+                        fetchPasswordLastChangedTime();
+                        
                         // 2秒后自动关闭弹窗
                         setTimeout(closePasswordModal, 2000);
                     } else {
@@ -1598,6 +1605,34 @@
                     passwordMessage.textContent = '服务器错误，请稍后再试';
                 });
             });
+        }
+        
+        // 获取密码上次修改时间
+        function fetchPasswordLastChangedTime() {
+            if (passwordLastChanged) {
+                fetch('/api/password-last-changed')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('获取密码修改时间失败');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // 更新显示
+                            passwordLastChanged.textContent = data.lastChanged;
+                            
+                            // 添加提示信息
+                            passwordLastChanged.title = '最后修改时间: ' + data.lastChanged;
+                        } else {
+                            passwordLastChanged.textContent = '未知';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('获取密码修改时间失败:', error);
+                        passwordLastChanged.textContent = '获取失败';
+                    });
+            }
         }
     });
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -112,5 +113,21 @@ public class UserServiceImpl implements UserService {
         }
         
         return false;
+    }
+    
+    @Override
+    public LocalDateTime getPasswordLastChangedTime(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            LocalDateTime changedAt = user.getPasswordChangedAt();
+            
+            // 如果没有记录密码修改时间，返回用户创建时间或当前时间
+            return changedAt != null ? changedAt : LocalDateTime.now();
+        }
+        
+        // 如果用户不存在，返回当前时间
+        return LocalDateTime.now();
     }
 } 

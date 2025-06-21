@@ -31,6 +31,41 @@
         }
     </script>
 
+    <!-- 登录状态检查脚本 -->
+    <script>
+        // 页面加载时检查登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            // 发送请求检查登录状态
+            fetch('/api/check-auth')
+                .then(response => {
+                    if (!response.ok) {
+                        // 如果响应不成功，重定向到登录页面
+                        window.location.href = '/login';
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status !== 'logged_in' && data.status !== 'auto_login_success') {
+                        // 如果未登录，重定向到登录页面
+                        window.location.href = '/login';
+                    }
+                })
+                .catch(error => {
+                    console.error('登录状态检查失败:', error);
+                    // 出错时也重定向到登录页面
+                    window.location.href = '/login';
+                });
+        });
+        
+        // 禁用页面缓存，防止退出后通过后退按钮访问
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                // 如果页面从缓存中恢复，重新检查登录状态
+                window.location.reload();
+            }
+        });
+    </script>
+
     <style type="text/tailwindcss">
         @layer utilities {
             .content-auto {

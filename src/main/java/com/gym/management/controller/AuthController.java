@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
@@ -214,6 +215,11 @@ public class AuthController {
                 }
             }
             
+            // 设置缓存控制头，防止浏览器缓存
+            response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Expires", "0");
+            
             // 最后清除session
             session.invalidate();
         } catch (Exception e) {
@@ -221,8 +227,8 @@ public class AuthController {
             System.err.println("退出登录时发生错误: " + e.getMessage());
         }
         
-        // 重定向到登录页面
-        return "redirect:/login";
+        // 重定向到登录页面，添加时间戳参数避免缓存
+        return "redirect:/login?t=" + System.currentTimeMillis();
     }
     
     // 处理修改密码
@@ -325,5 +331,34 @@ public class AuthController {
         // 没有找到有效的登录信息
         return ResponseEntity.status(401)
             .body(Map.of("status", "not_logged_in", "message", "用户未登录"));
+    }
+    
+    /**
+     * 获取用户密码上次修改时间
+     */
+    @GetMapping("/api/password-last-changed")
+    @ResponseBody
+    public ResponseEntity<?> getPasswordLastChanged(HttpSession session) {
+        // 获取当前登录用户
+        String username = (String) session.getAttribute("loggedInUser");
+        
+        // 检查用户是否登录
+        if (username == null) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("success", false, "message", "未登录，请先登录"));
+        }
+        
+        // 获取密码上次修改时间
+        LocalDateTime lastChanged = userService.getPasswordLastChangedTime(username);
+        
+        // 格式化日期时间为字符串
+        String formattedDate = lastChanged.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        
+        return ResponseEntity.ok()
+                .body(Map.of(
+                    "success", true, 
+                    "lastChanged", formattedDate,
+                    "timestamp", lastChanged.toString()
+                ));
     }
 }
