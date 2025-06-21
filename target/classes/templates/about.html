@@ -29,7 +29,7 @@
 
         <!-- 桌面导航（隐藏于移动端） -->
         <nav class="hidden md:flex space-x-6">
-            <a th:href="@{/}" class="hover:text-blue-600">首页</a>
+            <a th:href="@{/index}" class="hover:text-blue-600">首页</a>
             <a th:href="@{https://github.com/XiaoChuangll/gym-management}" class="hover:text-blue-600" target="_blank">
                 <i class="fa fa-github mr-1"></i>GitHub
             </a>
@@ -45,7 +45,7 @@
     <!-- 移动端菜单（下拉式） -->
     <div id="mobile-menu" class="md:hidden h-0 overflow-hidden transition-all duration-300 bg-white">
         <div class="container mx-auto px-4 flex flex-col space-y-2 pb-3">
-            <a th:href="@{/}" class="py-2 hover:text-blue-600 border-b border-gray-100">首页</a>
+            <a th:href="@{/index}" class="py-2 hover:text-blue-600 border-b border-gray-100">首页</a>
             <a th:href="@{https://github.com/XiaoChuangll/gym-management}" class="py-2 hover:text-blue-600 border-b border-gray-100" target="_blank">
                 <i class="fa fa-github mr-1"></i>GitHub
             </a>

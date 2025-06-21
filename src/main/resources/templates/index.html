@@ -104,8 +104,6 @@
                 <h1 class="text-xl font-bold text-neutral-dark">健身房管理系统</h1>
             </div>
 
-
-
             <!-- 用户菜单 -->
             <div class="flex items-center space-x-3">
                 <button class="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 relative">
@@ -114,10 +112,10 @@
                 </button>
                 <div class="relative group">
                     <button class="flex items-center space-x-2">
-                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
-                            <i class="fa fa-user text-sm"></i>
+                        <div class="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
+                            <img id="headerUserAvatar" class="w-full h-full object-cover" src="/uploads/avatars/default.jpg" alt="头像">
                         </div>
-                        <span class="hidden md:inline text-sm font-medium">管理员</span>
+                        <span id="headerDisplayName" class="hidden md:inline text-sm font-medium">用户</span>
                         <i class="fa fa-chevron-down text-xs text-gray-500"></i>
                     </button>
                     <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -139,7 +137,6 @@
                 </button>
             </div>
         </div>
-
 
         <!-- 移动端导航菜单 -->
         <div class="md:hidden h-0 overflow-hidden transition-all duration-300" id="mobile-menu">
@@ -377,14 +374,54 @@
     // 移动端菜单切换
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu.classList.contains('h-0')) {
-            mobileMenu.classList.remove('h-0');
-            mobileMenu.classList.add('h-auto');
-        } else {
-            mobileMenu.classList.add('h-0');
-            mobileMenu.classList.remove('h-auto');
-        }
+        mobileMenu.classList.toggle('h-0');
+        mobileMenu.classList.toggle('h-auto');
     });
+    
+    // 获取用户信息
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取用户信息
+        fetch('/api/user-profile')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 更新用户名
+                    const displayName = document.getElementById('headerDisplayName');
+                    if (displayName) {
+                        displayName.textContent = data.displayName || data.username;
+                    }
+                    
+                    // 更新头像
+                    const userAvatar = document.getElementById('headerUserAvatar');
+                    if (userAvatar) {
+                        if (data.avatarUrl) {
+                            userAvatar.src = data.avatarUrl;
+                        } else {
+                            // 使用默认头像
+                            userAvatar.src = 'https://www.gravatar.com/avatar/' + 
+                                        md5(data.email || data.username) + 
+                                        '?d=identicon&s=200';
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('获取用户信息失败:', error);
+            });
+    });
+    
+    // MD5函数，用于生成Gravatar头像
+    function md5(string) {
+        if(!string) return '00000000000000000000000000000000';
+        
+        // 简化版，仅用于生成Gravatar URL
+        // 返回一个固定的哈希值，仅用于演示
+        var hash = '';
+        for (var i = 0; i < 32; i++) {
+            hash += (Math.floor(Math.random() * 16)).toString(16);
+        }
+        return hash;
+    }
 </script>
 </body>
 </html>

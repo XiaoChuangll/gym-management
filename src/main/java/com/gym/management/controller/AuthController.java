@@ -351,14 +351,110 @@ public class AuthController {
         // 获取密码上次修改时间
         LocalDateTime lastChanged = userService.getPasswordLastChangedTime(username);
         
-        // 格式化日期时间为字符串
-        String formattedDate = lastChanged.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return ResponseEntity.ok(Map.of("success", true, "lastChanged", lastChanged.toString()));
+    }
+    
+    // 获取用户资料
+    @GetMapping("/api/user-profile")
+    @ResponseBody
+    public ResponseEntity<?> getUserProfile(HttpSession session) {
+        // 获取当前登录用户
+        String username = (String) session.getAttribute("loggedInUser");
         
-        return ResponseEntity.ok()
-                .body(Map.of(
-                    "success", true, 
-                    "lastChanged", formattedDate,
-                    "timestamp", lastChanged.toString()
-                ));
+        // 检查用户是否登录
+        if (username == null) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("success", false, "message", "未登录，请先登录"));
+        }
+        
+        // 获取用户详细信息
+        User user = userService.getUserDetails(username);
+        if (user == null) {
+            return ResponseEntity.status(404)
+                    .body(Map.of("success", false, "message", "未找到用户信息"));
+        }
+        
+        // 返回用户资料
+        return ResponseEntity.ok(Map.of(
+            "success", true, 
+            "username", user.getUsername(),
+            "displayName", user.getDisplayName() != null ? user.getDisplayName() : user.getUsername(),
+            "email", user.getEmail() != null ? user.getEmail() : "",
+            "avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : "",
+            "role", user.getRole()
+        ));
+    }
+    
+    // 更新用户基本信息
+    @PostMapping("/api/update-profile")
+    @ResponseBody
+    public ResponseEntity<?> updateUserProfile(
+            @RequestParam String displayName,
+            @RequestParam(required = false) String email,
+            HttpSession session) {
+        
+        // 获取当前登录用户
+        String username = (String) session.getAttribute("loggedInUser");
+        
+        // 检查用户是否登录
+        if (username == null) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("success", false, "message", "未登录，请先登录"));
+        }
+        
+        // 更新用户信息
+        boolean updated = userService.updateUserProfile(username, displayName, email);
+        
+        if (updated) {
+            return ResponseEntity.ok(Map.of("success", true, "message", "用户资料更新成功"));
+        } else {
+            return ResponseEntity.status(500)
+                    .body(Map.of("success", false, "message", "用户资料更新失败"));
+        }
+    }
+    
+    // 更新用户头像
+    @PostMapping("/api/update-avatar")
+    @ResponseBody
+    public ResponseEntity<?> updateUserAvatar(
+            @RequestParam String avatarUrl,
+            HttpSession session) {
+        
+        // 获取当前登录用户
+        String username = (String) session.getAttribute("loggedInUser");
+        
+        // 检查用户是否登录
+        if (username == null) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("success", false, "message", "未登录，请先登录"));
+        }
+        
+        // 验证头像数据
+        if (avatarUrl == null || avatarUrl.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "头像数据不能为空"));
+        }
+        
+        // 验证Base64数据格式
+        if (!avatarUrl.startsWith("data:image/")) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "无效的图像数据格式"));
+        }
+        
+        // 限制图像数据大小（约1MB的Base64大小）
+        if (avatarUrl.length() > 1000000) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "头像图像太大，请使用更小的图像"));
+        }
+        
+        // 更新用户头像
+        boolean updated = userService.updateUserAvatar(username, avatarUrl);
+        
+        if (updated) {
+            return ResponseEntity.ok(Map.of("success", true, "message", "用户头像更新成功"));
+        } else {
+            return ResponseEntity.status(500)
+                    .body(Map.of("success", false, "message", "用户头像更新失败"));
+        }
     }
 }

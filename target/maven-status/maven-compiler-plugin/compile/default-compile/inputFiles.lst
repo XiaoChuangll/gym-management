@@ -32,6 +32,7 @@ E:\H5\Demo\gym\src\main\java\com\gym\management\service\CoachService.java
 E:\H5\Demo\gym\src\main\java\com\gym\management\model\Course.java
 E:\H5\Demo\gym\src\main\java\com\gym\management\service\impl\ReservationServiceImpl.java
 E:\H5\Demo\gym\src\main\java\com\gym\management\model\Reservation.java
+E:\H5\Demo\gym\src\main\java\com\gym\management\controller\FileUploadController.java
 E:\H5\Demo\gym\src\main\java\com\gym\management\controller\CoachController.java
 E:\H5\Demo\gym\src\main\java\com\gym\management\repository\CourseRepository.java
 E:\H5\Demo\gym\src\main\java\com\gym\management\controller\HomeController.java

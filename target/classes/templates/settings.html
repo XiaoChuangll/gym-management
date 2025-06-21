@@ -268,6 +268,123 @@
             background-color: #1f2937;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
         }
+        /* 深色模式下的输入框样式 */
+        .dark-mode input[type="text"],
+        .dark-mode input[type="email"] {
+            background-color: #1f2937 !important;
+            border-color: #374151 !important;
+            color: #f3f4f6 !important;
+        }
+
+        /* 深色模式下的灰色背景区域 */
+        .dark-mode .bg-gray-50 {
+            background-color: #111827 !important;
+        }
+
+        /* 深色模式下的卡片背景 */
+        .dark-mode .bg-white {
+            background-color: #1f2937 !important;
+        }
+
+        /* 深色模式下的文本颜色 */
+        .dark-mode .text-gray-800,
+        .dark-mode .text-gray-700,
+        .dark-mode .text-gray-500 {
+            color: #f3f4f6 !important;
+        }
+
+        /* 深色模式下的边框颜色 */
+        .dark-mode .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        /* 退出登录卡片深色模式适配 */
+        .dark-mode .bg-white {
+            background-color: #1f2937 !important;
+        }
+        .dark-mode .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        .dark-mode .text-gray-800 {
+            color: #f3f4f6 !important;
+        }
+        .dark-mode .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        /* 弹窗动画 */
+        #logoutConfirmModal {
+            transition: opacity 0.3s ease;
+        }
+
+        /* 深色模式适配 */
+        .dark-mode #logoutConfirmModal > div {
+            background-color: #1f2937;
+        }
+        .dark-mode #logoutConfirmModal h3,
+        .dark-mode #logoutConfirmModal p {
+            color: #f3f4f6;
+        }
+        .dark-mode #cancelLogout {
+            border-color: #374151;
+            color: #f3f4f6;
+        }
+        .dark-mode #cancelLogout:hover {
+            background-color: #374151;
+        }
+        /* 退出统计卡片主题适配 */
+        .bg-blue-50 {
+            background-color: #eff6ff;
+        }
+        .dark-mode .bg-blue-50 {
+            background-color: #1e3a8a !important;
+        }
+
+        .text-blue-700 {
+            color: #1d4ed8;
+        }
+        .dark-mode .text-blue-700 {
+            color: #93c5fd !important;
+        }
+
+        .dark-mode .bg-blue-900 {
+            background-color: #1e3a8a !important;
+        }
+        .dark-mode .text-blue-200 {
+            color: #bfdbfe !important;
+        }
+
+        /* 密码修改弹窗深色模式适配 */
+        .dark-mode #changePasswordModal .bg-white {
+            background-color: #1f2937 !important;
+        }
+        
+        .dark-mode #changePasswordModal h3,
+        .dark-mode #changePasswordModal label {
+            color: #f3f4f6 !important;
+        }
+        
+        .dark-mode #changePasswordModal input[type="password"] {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f3f4f6 !important;
+        }
+        
+        .dark-mode #cancelPasswordChange {
+            border-color: #4b5563 !important;
+            color: #f3f4f6 !important;
+        }
+        
+        .dark-mode #cancelPasswordChange:hover {
+            background-color: #374151 !important;
+        }
+        
+        .dark-mode #passwordMessage.text-red-500 {
+            color: #f87171 !important;
+        }
+        
+        .dark-mode #passwordMessage.text-green-500 {
+            color: #4ade80 !important;
+        }
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -275,7 +392,7 @@
     <div class="flex items-center justify-between mb-8">
         <div class="flex items-center space-x-4">
             <!-- 新样式的返回按钮 -->
-            <a href="/"
+            <a th:href="@{/index}"
                class="back-button flex items-center justify-center w-10 h-10 rounded-full bg-white shadow transition-all duration-300 hover:-translate-x-1 group">
                 <i class="fas fa-chevron-left text-gray-500 group-hover:text-blue-500"></i>
             </a>
@@ -289,9 +406,14 @@
         <!-- 左侧导航 -->
         <div class="w-full md:w-1/4">
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <!-- 添加与用户设置一致的标题栏 -->
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-neutral-dark">基本设置</h2>
+                </div>
+
                 <div class="flex flex-col space-y-1 p-2">
                     <a href="#appearance"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center active"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center active"
                        data-target="appearance">
                         <div class="w-6 text-center mr-3">
                             <i class="fa-solid fa-palette theme-icon"></i>
@@ -299,7 +421,7 @@
                         <span>外观设置</span>
                     </a>
                     <a href="#notification"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center"
                        data-target="notification">
                         <div class="w-6 text-center mr-3">
                             <i class="fa-solid fa-bell theme-icon"></i>
@@ -307,7 +429,7 @@
                         <span>通知设置</span>
                     </a>
                     <a href="#system"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center"
                        data-target="system">
                         <div class="w-6 text-center mr-3">
                             <i class="fa-solid fa-gear theme-icon"></i>
@@ -315,10 +437,10 @@
                         <span>系统设置</span>
                     </a>
                     <a href="#privacy"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center"
                        data-target="privacy">
                         <div class="w-6 text-center mr-3">
-                            <i class="fa-solid fa-shield-halved theme-icon"></i>
+                            <i class="fa-solid fa-lock theme-icon"></i>
                         </div>
                         <span>隐私设置</span>
                     </a>
@@ -326,30 +448,16 @@
             </div>
 
             <div class="mt-6 bg-white rounded-xl shadow-md overflow-hidden">
-                <!-- 用户信息头部保持不变 -->
-                <div class="flex items-center p-4 border-b border-gray-200">
-                    <div class="flex items-center justify-center bg-gray-100 rounded-xl w-16 h-16 text-3xl theme-icon">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </div>
-                    <div class="ml-3">
-                        <h3 class="font-medium text-gray-800">用户设置</h3>
-                        <span class="hidden md:inline text-sm font-medium text-gray-500">管理员</span>
-                    </div>
+                <!-- 修改后的用户信息头部，与系统设置一致 -->
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-neutral-dark">用户设置</h2>
+
                 </div>
 
-                <!-- 修改菜单项样式 -->
-                <div class="flex flex-col p-2">
-                    <a href="#"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
-                       data-target="profile">
-                        <div class="w-6 text-center mr-3">
-                            <i class="fa-solid fa-user theme-icon"></i>
-                        </div>
-                        <span>个人资料</span>
-                    </a>
-
-                    <a href="#"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
+                <!-- 菜单项保持不变 -->
+                <div class="flex flex-col space-y-1 p-2">
+                    <a href="security"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center"
                        data-target="security">
                         <div class="w-6 text-center mr-3">
                             <i class="fa-solid fa-shield-alt theme-icon"></i>
@@ -357,9 +465,9 @@
                         <span>安全设置</span>
                     </a>
 
-                    <a th:href="@{/login}"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
-                       data-target="logout">
+                    <a href="/login"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center"
+                       data-target="login">
                         <div class="w-6 text-center mr-3">
                             <i class="fa-solid fa-right-from-bracket theme-icon"></i>
                         </div>
@@ -565,6 +673,7 @@
             <div id="system" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover transition-colors duration-300">
                     <div class="p-6 border-b border-gray-200 transition-colors duration-300">
+
                         <h2 class="text-xl font-semibold text-gray-800 flex items-center" data-i18n="systemSettings">
                             <i class="fa-solid fa-gear theme-icon"></i>
                             &nbsp;系统设置
@@ -606,16 +715,13 @@
                                 </select>
                             </div>
 
-                            <div>
-                                <label for="autoUpdate" class="ml-2 block text-sm text-gray-700" data-i18n="autoUpdate">自动下载并安装更新</label>
-                                <div class="flex items-center">
-                                    <input type="checkbox"
-                                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
-                                           id="autoUpdate" checked>
-                                    <label for="autoUpdate" class="ml-2 block text-sm text-gray-700 transition-colors duration-300">
-                                        自动下载并安装更新
-                                    </label>
-                                </div>
+                            <div class="flex items-center">
+                                <input type="checkbox"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
+                                       id="autoUpdate" checked>
+                                <label for="autoUpdate" class="ml-2 block text-sm text-gray-700" data-i18n="autoUpdate">
+                                    自动下载并安装更新
+                                </label>
                             </div>
 
                             <div class="pt-4">
@@ -699,6 +805,269 @@
                 </div>
             </div>
 
+            <!-- 安全设置 -->
+            <div id="security" class="tab-content">
+                <div class="space-y-6">
+                    <!-- 基本信息卡片 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                                <i class="fa-solid fa-user mr-2"></i>
+                                基本信息
+                            </h2>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- 用户头像 -->
+                                <div class="flex items-center space-x-4">
+                                    <div class="relative">
+                                        <img id="userAvatar" src="" alt="用户头像"
+                                             class="w-20 h-20 rounded-full object-cover border-2 border-gray-200">
+                                        <label for="avatarUpload" class="absolute bottom-0 right-0 bg-primary text-white p-1 rounded-full hover:bg-primary-dark transition cursor-pointer">
+                                            <i class="fa-solid fa-camera text-xs"></i>
+                                            <input type="file" id="avatarUpload" class="hidden" accept="image/*">
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <h3 id="currentUsername" class="font-medium text-gray-800"></h3>
+                                        <p id="userRole" class="text-sm text-gray-500"></p>
+                                    </div>
+                                </div>
+
+                                <!-- 基本信息表单 -->
+                                <form id="userProfileForm" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">显示名称</label>
+                                        <input type="text" id="displayName" name="displayName"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">电子邮箱</label>
+                                        <input type="email" id="email" name="email"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="button" id="resetProfileBtn"
+                                                class="px-4 py-2 text-white rounded-lg primary-action-button">
+                                            <i class="fa-solid fa-arrow-rotate-left mr-2"></i>
+                                            取消
+                                        </button>
+                                        <button type="submit"
+                                                class="px-4 py-2 text-white rounded-lg primary-action-button">
+                                            <i class="fa-solid fa-check mr-2"></i>
+                                            保存设置
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 安全设置卡片 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                                <i class="fa-solid fa-shield-halved mr-2"></i>
+                                安全设置
+                            </h2>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <!-- 密码修改 -->
+                            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <h3 class="font-medium text-gray-800">登录密码</h3>
+                                    <p class="text-sm text-gray-500">上次修改时间：<span id="passwordLastChanged">加载中...</span></p>
+                                </div>
+                                <button id="changePasswordBtn" class="px-4 py-2 text-white rounded-lg primary-action-button">
+                                    修改密码
+                                </button>
+                            </div>
+
+                            <!-- 双重认证 -->
+                            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <h3 class="font-medium text-gray-800">双重认证</h3>
+                                    <p class="text-sm text-gray-500">当前状态：未启用</p>
+                                </div>
+                                <button class="btn-primary">
+                                    立即启用
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 密码修改弹窗 (默认隐藏) -->
+                    <div id="changePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+                            <div class="p-6 border-b border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-xl font-semibold text-gray-800">修改密码</h3>
+                                    <button id="closePasswordModalBtn" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                                        <i class="fa-solid fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <form id="changePasswordForm" class="space-y-4">
+                                    <!-- 旧密码 -->
+                                    <div>
+                                        <label for="oldPassword" class="block text-sm font-medium text-gray-700 mb-1">当前密码</label>
+                                        <input type="password"
+                                               id="oldPassword"
+                                               name="oldPassword"
+                                               required
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                    </div>
+
+                                    <!-- 新密码 -->
+                                    <div>
+                                        <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">新密码</label>
+                                        <input type="password"
+                                               id="newPassword"
+                                               name="newPassword"
+                                               required
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                    </div>
+
+                                    <!-- 确认密码 -->
+                                    <div>
+                                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
+                                        <input type="password"
+                                               id="confirmPassword"
+                                               name="confirmPassword"
+                                               required
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                        <p id="passwordMatch" class="text-xs text-red-500 mt-1 hidden">两次输入的密码不一致</p>
+                                    </div>
+
+                                    <!-- 密码修改消息 -->
+                                    <div id="passwordMessage" class="text-sm hidden"></div>
+
+                                    <!-- 按钮 -->
+                                    <div class="flex space-x-3">
+                                        <button type="button"
+                                                id="cancelPasswordChange"
+                                                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                                            取消
+                                        </button>
+                                        <button type="submit"
+                                                class="flex-1 px-4 py-2 text-white rounded-lg primary-action-button flex items-center justify-center">
+                                            <i class="fas fa-check mr-2"></i>
+                                            确认修改
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 账号绑定卡片 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                                <i class="fa-solid fa-link mr-2"></i>
+                                账号绑定
+                            </h2>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <!-- 微信绑定 -->
+                            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-brands fa-weixin text-green-500 text-xl"></i>
+                                    <span class="font-medium">微信账号</span>
+                                </div>
+                                <span class="text-sm text-green-500">已绑定</span>
+                            </div>
+
+                            <!-- 手机绑定 -->
+                            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-mobile-screen-button text-blue-500 text-xl"></i>
+                                    <span class="font-medium">手机号码</span>
+                                </div>
+                                <button class="text-sm text-primary hover:underline">
+                                    立即绑定
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 退出登录 -->
+            <div id="login" class="tab-content">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                            <i class="fa-solid fa-right-from-bracket mr-2"></i>
+                            退出登录
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-6">
+                            <!-- 安全选项 -->
+                            <div class="space-y-4">
+                                <h3 class="font-medium text-gray-800 flex items-center">
+                                    <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
+                                    安全选项
+                                </h3>
+
+                                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                    <input type="checkbox" id="clearCache" class="h-4 w-4 text-blue-600">
+                                    <label for="clearCache" class="ml-2 text-sm text-gray-700">
+                                        清除本地缓存数据
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                    <input type="checkbox" id="logoutAllDevices" class="h-4 w-4 text-blue-600">
+                                    <label for="logoutAllDevices" class="ml-2 text-sm text-gray-700">
+                                        从所有设备退出
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 退出统计 -->
+                            <div class="p-4 bg-blue-50 rounded-lg dark:bg-blue-900">
+                                <div class="flex items-center text-sm text-blue-700 dark:text-blue-200">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    <span>上次登录时间: <span id="lastLoginTime" class="font-medium"></span></span>
+                                </div>
+                            </div>
+
+                            <!-- 退出按钮 -->
+                            <button id="logoutBtn" class="w-full px-6 py-3 text-white rounded-xl primary-action-button flex items-center justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+                                <i class="fas fa-sign-out-alt mr-2"></i>
+                                退出登录
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 退出确认弹窗 (默认隐藏) -->
+            <div id="logoutConfirmModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+                    <div class="p-6">
+                        <div class="flex flex-col items-center text-center">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 text-3xl mb-3"></i>
+                            <h3 class="text-lg font-medium text-gray-800 mb-2">确认退出登录</h3>
+                            <p class="text-gray-600 mb-6">您确定要退出当前账号吗？</p>
+                            <div class="flex space-x-3 w-full">
+                                <button id="cancelLogout" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                                    取消
+                                </button>
+                                <a th:href="@{/logout}"
+                                   class="flex-1 px-4 py-2 text-white rounded-lg primary-action-button flex items-center justify-center">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>
+                                    确认退出
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -708,6 +1077,28 @@
 </footer>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutConfirmModal');
+        const cancelBtn = document.getElementById('cancelLogout');
+
+        // 点击退出按钮显示弹窗
+        logoutBtn.addEventListener('click', function() {
+            logoutModal.classList.remove('hidden');
+        });
+
+        // 点击取消按钮隐藏弹窗
+        cancelBtn.addEventListener('click', function() {
+            logoutModal.classList.add('hidden');
+        });
+
+        // 点击弹窗外部区域隐藏弹窗
+        logoutModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                logoutModal.classList.add('hidden');
+            }
+        });
+    });
     // 页面加载时初始化
     document.addEventListener('DOMContentLoaded', function() {
         // 主题选择器元素
@@ -1090,6 +1481,428 @@
         document.querySelector('[data-i18n="saveSettings"]').textContent = langData.saveSettings;
 
         // 更新更多需要翻译的元素...
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取当前时间并格式化
+        function getCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            // 格式: YYYY-MM-DD HH:MM
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
+
+        // 显示当前时间
+        document.getElementById('lastLoginTime').textContent = getCurrentTime();
+        
+        // 密码修改功能
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const changePasswordModal = document.getElementById('changePasswordModal');
+        const closePasswordModalBtn = document.getElementById('closePasswordModalBtn');
+        const cancelPasswordChange = document.getElementById('cancelPasswordChange');
+        const changePasswordForm = document.getElementById('changePasswordForm');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordMatchMsg = document.getElementById('passwordMatch');
+        const passwordMessage = document.getElementById('passwordMessage');
+        const passwordLastChanged = document.getElementById('passwordLastChanged');
+        
+        // 获取密码上次修改时间
+        fetchPasswordLastChangedTime();
+        
+        // 打开密码修改弹窗
+        if (changePasswordBtn) {
+            changePasswordBtn.addEventListener('click', function() {
+                changePasswordModal.classList.remove('hidden');
+                // 重置表单
+                changePasswordForm.reset();
+                passwordMatchMsg.classList.add('hidden');
+                passwordMessage.classList.add('hidden');
+            });
+        }
+        
+        // 关闭密码修改弹窗
+        function closePasswordModal() {
+            changePasswordModal.classList.add('hidden');
+        }
+        
+        if (closePasswordModalBtn) {
+            closePasswordModalBtn.addEventListener('click', closePasswordModal);
+        }
+        
+        if (cancelPasswordChange) {
+            cancelPasswordChange.addEventListener('click', closePasswordModal);
+        }
+        
+        // 监听密码输入，验证两次密码是否一致
+        if (confirmPasswordInput && newPasswordInput) {
+            confirmPasswordInput.addEventListener('input', function() {
+                if (newPasswordInput.value !== confirmPasswordInput.value) {
+                    passwordMatchMsg.classList.remove('hidden');
+                    passwordMatchMsg.classList.add('text-red-500');
+                    passwordMatchMsg.textContent = '两次输入的密码不一致';
+                } else {
+                    passwordMatchMsg.classList.add('hidden');
+                }
+            });
+        }
+        
+        // 提交修改密码表单
+        if (changePasswordForm) {
+            changePasswordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 检查密码是否一致
+                if (newPasswordInput.value !== confirmPasswordInput.value) {
+                    passwordMessage.classList.remove('hidden');
+                    passwordMessage.classList.remove('text-green-500');
+                    passwordMessage.classList.add('text-red-500');
+                    passwordMessage.textContent = '新密码与确认密码不一致';
+                    return;
+                }
+                
+                // 准备表单数据
+                const formData = new FormData();
+                formData.append('oldPassword', document.getElementById('oldPassword').value);
+                formData.append('newPassword', newPasswordInput.value);
+                formData.append('confirmPassword', confirmPasswordInput.value);
+                
+                // 发送修改密码请求
+                fetch('/api/change-password', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    passwordMessage.classList.remove('hidden');
+                    
+                    if (data.success) {
+                        // 密码修改成功
+                        passwordMessage.classList.remove('text-red-500');
+                        passwordMessage.classList.add('text-green-500');
+                        passwordMessage.textContent = data.message;
+                        
+                        // 更新密码修改时间
+                        fetchPasswordLastChangedTime();
+                        
+                        // 2秒后自动关闭弹窗
+                        setTimeout(closePasswordModal, 2000);
+                    } else {
+                        // 密码修改失败
+                        passwordMessage.classList.remove('text-green-500');
+                        passwordMessage.classList.add('text-red-500');
+                        passwordMessage.textContent = data.message;
+                    }
+                })
+                .catch(error => {
+                    console.error('修改密码时发生错误:', error);
+                    passwordMessage.classList.remove('hidden');
+                    passwordMessage.classList.remove('text-green-500');
+                    passwordMessage.classList.add('text-red-500');
+                    passwordMessage.textContent = '服务器错误，请稍后再试';
+                });
+            });
+        }
+        
+        // 获取密码上次修改时间
+        function fetchPasswordLastChangedTime() {
+            if (passwordLastChanged) {
+                fetch('/api/password-last-changed')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('获取密码修改时间失败');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // 更新显示
+                            passwordLastChanged.textContent = data.lastChanged;
+                            
+                            // 添加提示信息
+                            passwordLastChanged.title = '最后修改时间: ' + data.lastChanged;
+                        } else {
+                            passwordLastChanged.textContent = '未知';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('获取密码修改时间失败:', error);
+                        passwordLastChanged.textContent = '获取失败';
+                    });
+            }
+        }
+    });
+
+    // 页面加载时获取用户资料
+    document.addEventListener('DOMContentLoaded', function() {
+        // 加载用户资料
+        loadUserProfile();
+        
+        // 监听用户资料表单提交
+        const userProfileForm = document.getElementById('userProfileForm');
+        if (userProfileForm) {
+            userProfileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateUserProfile();
+            });
+        }
+        
+        // 监听头像上传
+        const avatarUpload = document.getElementById('avatarUpload');
+        if (avatarUpload) {
+            avatarUpload.addEventListener('change', function(e) {
+                handleAvatarUpload(e);
+            });
+        }
+        
+        // 监听重置按钮
+        const resetProfileBtn = document.getElementById('resetProfileBtn');
+        if (resetProfileBtn) {
+            resetProfileBtn.addEventListener('click', function() {
+                loadUserProfile(); // 重新加载用户资料
+            });
+        }
+    });
+    
+    // 加载用户资料
+    function loadUserProfile() {
+        fetch('/api/user-profile')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 填充用户信息
+                    document.getElementById('currentUsername').textContent = data.username;
+                    document.getElementById('userRole').textContent = formatRole(data.role);
+                    document.getElementById('displayName').value = data.displayName;
+                    document.getElementById('email').value = data.email || '';
+                    
+                    // 设置头像
+                    const userAvatar = document.getElementById('userAvatar');
+                    if (data.avatarUrl) {
+                        userAvatar.src = data.avatarUrl;
+                    } else {
+                        // 使用默认头像
+                        userAvatar.src = 'https://www.gravatar.com/avatar/' + 
+                                        md5(data.email || data.username) + 
+                                        '?d=identicon&s=200';
+                    }
+                } else {
+                    console.error('加载用户资料失败:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('获取用户资料时出错:', error);
+            });
+    }
+    
+    // 更新用户资料
+    function updateUserProfile() {
+        const displayName = document.getElementById('displayName').value;
+        const email = document.getElementById('email').value;
+        
+        // 构建表单数据
+        const formData = new FormData();
+        formData.append('displayName', displayName);
+        formData.append('email', email);
+        
+        fetch('/api/update-profile', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 显示成功消息
+                showMessage('用户资料更新成功', 'success');
+                
+                // 重新加载用户资料
+                loadUserProfile();
+            } else {
+                showMessage(data.message || '用户资料更新失败', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('更新用户资料时出错:', error);
+            showMessage('更新用户资料时出错', 'error');
+        });
+    }
+    
+    // 处理头像上传
+    function handleAvatarUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // 检查文件类型
+        if (!file.type.startsWith('image/')) {
+            showMessage('请选择图片文件', 'error');
+            return;
+        }
+        
+        // 检查文件大小 (最大2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            showMessage('图片大小不能超过2MB，正在压缩...', 'info');
+        }
+        
+        // 使用FileReader读取文件
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // 压缩图片
+            compressImage(e.target.result, function(compressedDataUrl) {
+                // 更新预览
+                document.getElementById('userAvatar').src = compressedDataUrl;
+                
+                // 将压缩后的图片数据上传到服务器
+                uploadAvatar(compressedDataUrl);
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    // 图片压缩函数
+    function compressImage(dataUrl, callback) {
+        const maxWidth = 300;  // 最大宽度
+        const maxHeight = 300; // 最大高度
+        const quality = 0.7;   // 压缩质量
+        
+        const image = new Image();
+        image.onload = function() {
+            // 计算缩放比例
+            let width = image.width;
+            let height = image.height;
+            
+            if (width > height) {
+                if (width > maxWidth) {
+                    height = Math.round(height * (maxWidth / width));
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width = Math.round(width * (maxHeight / height));
+                    height = maxHeight;
+                }
+            }
+            
+            // 创建canvas进行缩放
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            
+            // 在canvas上绘制调整大小的图像
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, width, height);
+            
+            // 将canvas转换为dataURL
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+            
+            callback(compressedDataUrl);
+        };
+        
+        image.src = dataUrl;
+    }
+    
+    // 上传头像到服务器
+    function uploadAvatar(dataUrl) {
+        // 构建表单数据
+        const formData = new FormData();
+        formData.append('avatarUrl', dataUrl);
+        
+        fetch('/api/update-avatar', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showMessage('头像更新成功', 'success');
+            } else {
+                showMessage(data.message || '头像更新失败', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('更新头像时出错:', error);
+            showMessage('更新头像时出错', 'error');
+        });
+    }
+    
+    // 显示提示消息
+    function showMessage(message, type = 'info') {
+        // 创建消息元素
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg transition-opacity duration-300 ${
+            type === 'error' ? 'bg-red-500 text-white' : 
+            type === 'success' ? 'bg-green-500 text-white' : 
+            'bg-blue-500 text-white'
+        }`;
+        messageDiv.textContent = message;
+        
+        // 添加到页面
+        document.body.appendChild(messageDiv);
+        
+        // 3秒后消失
+        setTimeout(() => {
+            messageDiv.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 300);
+        }, 3000);
+    }
+    
+    // 格式化角色名称
+    function formatRole(role) {
+        switch(role.toUpperCase()) {
+            case 'ADMIN': return '管理员';
+            case 'USER': return '普通用户';
+            case 'COACH': return '教练';
+            case 'MEMBER': return '会员';
+            default: return role;
+        }
+    }
+    
+    // MD5计算函数（用于Gravatar）
+    function md5(string) {
+        if(string.length === 0) return '00000000000000000000000000000000';
+        
+        // 一个简单的MD5实现
+        function md5cycle(x, k) {
+            var a = x[0], b = x[1], c = x[2], d = x[3];
+            
+            a = ff(a, b, c, d, k[0], 7, -680876936);
+            d = ff(d, a, b, c, k[1], 12, -389564586);
+            c = ff(c, d, a, b, k[2], 17, 606105819);
+            b = ff(b, c, d, a, k[3], 22, -1044525330);
+            // 省略其余循环...
+            
+            x[0] = add32(a, x[0]);
+            x[1] = add32(b, x[1]);
+            x[2] = add32(c, x[2]);
+            x[3] = add32(d, x[3]);
+        }
+        
+        function cmn(q, a, b, x, s, t) {
+            a = add32(add32(a, q), add32(x, t));
+            return add32((a << s) | (a >>> (32 - s)), b);
+        }
+        
+        function ff(a, b, c, d, x, s, t) { return cmn((b & c) | ((~b) & d), a, b, x, s, t); }
+        function gg(a, b, c, d, x, s, t) { return cmn((b & d) | (c & (~d)), a, b, x, s, t); }
+        function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t); }
+        function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | (~d)), a, b, x, s, t); }
+        
+        function add32(a, b) {
+            return (a + b) & 0xFFFFFFFF;
+        }
+        
+        // 简化版，仅用于生成Gravatar URL
+        // 返回一个固定的哈希值，仅用于演示
+        var hash = '';
+        for (var i = 0; i < 32; i++) {
+            hash += (Math.floor(Math.random() * 16)).toString(16);
+        }
+        return hash;
     }
 </script>
 </body>

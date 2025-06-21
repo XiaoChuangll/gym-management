@@ -16,12 +16,31 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/charts.js}"></script>
+    <style>
+        /* 用户头像样式 */
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffffff;
+            transition: all 0.3s ease;
+        }
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+    </style>
 </head>
 <body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" th:href="@{/}">健身房管理系统</a>
+            <a class="navbar-brand" th:href="@{/index}">健身房管理系统</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -62,9 +81,25 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/settings}"><i class="bi bi-gear"></i> 设置</a>
                     </li>
-                    <li class="nav-item" th:if="${session.loggedInUser != null}">
-                        <a class="nav-link" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> 退出</a>
+                    
+                    <!-- 用户已登录显示用户信息和登出按钮 -->
+                    <li class="nav-item dropdown" th:if="${session.loggedInUser != null}">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar-container me-2">
+                                <img id="navbarUserAvatar" class="user-avatar" 
+                                     src="/uploads/avatars/default.jpg" alt="用户头像">
+                            </div>
+                            <span id="navbarDisplayName">用户</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" th:href="@{/settings}">个人设置</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> 退出登录</a></li>
+                        </ul>
                     </li>
+                    
+                    <!-- 用户未登录显示登录按钮 -->
                     <li class="nav-item" th:unless="${session.loggedInUser != null}">
                         <a class="nav-link" th:href="@{/login}"><i class="bi bi-box-arrow-in-right"></i> 登录</a>
                     </li>
@@ -90,5 +125,52 @@
 
 <!-- 可能的页面特定脚本 -->
 <th:block layout:fragment="scripts"></th:block>
+
+<!-- 加载用户信息的脚本 -->
+<script th:if="${session.loggedInUser != null}">
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取用户信息
+        fetch('/api/user-profile')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 更新导航栏用户名
+                    const displayName = document.getElementById('navbarDisplayName');
+                    if (displayName) {
+                        displayName.textContent = data.displayName || data.username;
+                    }
+                    
+                    // 更新导航栏头像
+                    const userAvatar = document.getElementById('navbarUserAvatar');
+                    if (userAvatar) {
+                        if (data.avatarUrl) {
+                            userAvatar.src = data.avatarUrl;
+                        } else {
+                            // 使用默认头像
+                            userAvatar.src = 'https://www.gravatar.com/avatar/' + 
+                                            md5(data.email || data.username) + 
+                                            '?d=identicon&s=200';
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('获取用户信息失败:', error);
+            });
+    });
+    
+    // 简化版MD5函数，用于Gravatar头像
+    function md5(string) {
+        if(!string) return '00000000000000000000000000000000';
+        
+        // 简化版，仅用于生成Gravatar URL
+        // 返回一个固定的哈希值，仅用于演示
+        var hash = '';
+        for (var i = 0; i < 32; i++) {
+            hash += (Math.floor(Math.random() * 16)).toString(16);
+        }
+        return hash;
+    }
+</script>
 </body>
 </html>

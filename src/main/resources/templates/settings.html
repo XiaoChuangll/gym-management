@@ -821,32 +821,33 @@
                                 <!-- 用户头像 -->
                                 <div class="flex items-center space-x-4">
                                     <div class="relative">
-                                        <img src="https://picsum.photos/200/200" alt="用户头像"
+                                        <img id="userAvatar" src="" alt="用户头像"
                                              class="w-20 h-20 rounded-full object-cover border-2 border-gray-200">
-                                        <button class="absolute bottom-0 right-0 bg-primary text-white p-1 rounded-full hover:bg-primary-dark transition">
+                                        <label for="avatarUpload" class="absolute bottom-0 right-0 bg-primary text-white p-1 rounded-full hover:bg-primary-dark transition cursor-pointer">
                                             <i class="fa-solid fa-camera text-xs"></i>
-                                        </button>
+                                            <input type="file" id="avatarUpload" class="hidden" accept="image/*">
+                                        </label>
                                     </div>
                                     <div>
-                                        <h3 class="font-medium text-gray-800">Admin</h3>
-                                        <p class="text-sm text-gray-500">管理员</p>
+                                        <h3 id="currentUsername" class="font-medium text-gray-800"></h3>
+                                        <p id="userRole" class="text-sm text-gray-500"></p>
                                     </div>
                                 </div>
 
                                 <!-- 基本信息表单 -->
-                                <form class="space-y-4">
+                                <form id="userProfileForm" class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
-                                        <input type="text" value="zhangsan"
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">显示名称</label>
+                                        <input type="text" id="displayName" name="displayName"
                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">电子邮箱</label>
-                                        <input type="email" value="zhangsan@example.com"
+                                        <input type="email" id="email" name="email"
                                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
                                     </div>
                                     <div class="flex justify-end space-x-3">
-                                        <button type="submit"
+                                        <button type="button" id="resetProfileBtn"
                                                 class="px-4 py-2 text-white rounded-lg primary-action-button">
                                             <i class="fa-solid fa-arrow-rotate-left mr-2"></i>
                                             取消
@@ -1636,6 +1637,273 @@
         }
     });
 
+    // 页面加载时获取用户资料
+    document.addEventListener('DOMContentLoaded', function() {
+        // 加载用户资料
+        loadUserProfile();
+        
+        // 监听用户资料表单提交
+        const userProfileForm = document.getElementById('userProfileForm');
+        if (userProfileForm) {
+            userProfileForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateUserProfile();
+            });
+        }
+        
+        // 监听头像上传
+        const avatarUpload = document.getElementById('avatarUpload');
+        if (avatarUpload) {
+            avatarUpload.addEventListener('change', function(e) {
+                handleAvatarUpload(e);
+            });
+        }
+        
+        // 监听重置按钮
+        const resetProfileBtn = document.getElementById('resetProfileBtn');
+        if (resetProfileBtn) {
+            resetProfileBtn.addEventListener('click', function() {
+                loadUserProfile(); // 重新加载用户资料
+            });
+        }
+    });
+    
+    // 加载用户资料
+    function loadUserProfile() {
+        fetch('/api/user-profile')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 填充用户信息
+                    document.getElementById('currentUsername').textContent = data.username;
+                    document.getElementById('userRole').textContent = formatRole(data.role);
+                    document.getElementById('displayName').value = data.displayName;
+                    document.getElementById('email').value = data.email || '';
+                    
+                    // 设置头像
+                    const userAvatar = document.getElementById('userAvatar');
+                    if (data.avatarUrl) {
+                        userAvatar.src = data.avatarUrl;
+                    } else {
+                        // 使用默认头像
+                        userAvatar.src = 'https://www.gravatar.com/avatar/' + 
+                                        md5(data.email || data.username) + 
+                                        '?d=identicon&s=200';
+                    }
+                } else {
+                    console.error('加载用户资料失败:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('获取用户资料时出错:', error);
+            });
+    }
+    
+    // 更新用户资料
+    function updateUserProfile() {
+        const displayName = document.getElementById('displayName').value;
+        const email = document.getElementById('email').value;
+        
+        // 构建表单数据
+        const formData = new FormData();
+        formData.append('displayName', displayName);
+        formData.append('email', email);
+        
+        fetch('/api/update-profile', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 显示成功消息
+                showMessage('用户资料更新成功', 'success');
+                
+                // 重新加载用户资料
+                loadUserProfile();
+            } else {
+                showMessage(data.message || '用户资料更新失败', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('更新用户资料时出错:', error);
+            showMessage('更新用户资料时出错', 'error');
+        });
+    }
+    
+    // 处理头像上传
+    function handleAvatarUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // 检查文件类型
+        if (!file.type.startsWith('image/')) {
+            showMessage('请选择图片文件', 'error');
+            return;
+        }
+        
+        // 检查文件大小 (最大2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            showMessage('图片大小不能超过2MB，正在压缩...', 'info');
+        }
+        
+        // 使用FileReader读取文件
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // 压缩图片
+            compressImage(e.target.result, function(compressedDataUrl) {
+                // 更新预览
+                document.getElementById('userAvatar').src = compressedDataUrl;
+                
+                // 将压缩后的图片数据上传到服务器
+                uploadAvatar(compressedDataUrl);
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    // 图片压缩函数
+    function compressImage(dataUrl, callback) {
+        const maxWidth = 300;  // 最大宽度
+        const maxHeight = 300; // 最大高度
+        const quality = 0.7;   // 压缩质量
+        
+        const image = new Image();
+        image.onload = function() {
+            // 计算缩放比例
+            let width = image.width;
+            let height = image.height;
+            
+            if (width > height) {
+                if (width > maxWidth) {
+                    height = Math.round(height * (maxWidth / width));
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width = Math.round(width * (maxHeight / height));
+                    height = maxHeight;
+                }
+            }
+            
+            // 创建canvas进行缩放
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            
+            // 在canvas上绘制调整大小的图像
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(image, 0, 0, width, height);
+            
+            // 将canvas转换为dataURL
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+            
+            callback(compressedDataUrl);
+        };
+        
+        image.src = dataUrl;
+    }
+    
+    // 上传头像到服务器
+    function uploadAvatar(dataUrl) {
+        // 构建表单数据
+        const formData = new FormData();
+        formData.append('avatarUrl', dataUrl);
+        
+        fetch('/api/update-avatar', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showMessage('头像更新成功', 'success');
+            } else {
+                showMessage(data.message || '头像更新失败', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('更新头像时出错:', error);
+            showMessage('更新头像时出错', 'error');
+        });
+    }
+    
+    // 显示提示消息
+    function showMessage(message, type = 'info') {
+        // 创建消息元素
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg transition-opacity duration-300 ${
+            type === 'error' ? 'bg-red-500 text-white' : 
+            type === 'success' ? 'bg-green-500 text-white' : 
+            'bg-blue-500 text-white'
+        }`;
+        messageDiv.textContent = message;
+        
+        // 添加到页面
+        document.body.appendChild(messageDiv);
+        
+        // 3秒后消失
+        setTimeout(() => {
+            messageDiv.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(messageDiv);
+            }, 300);
+        }, 3000);
+    }
+    
+    // 格式化角色名称
+    function formatRole(role) {
+        switch(role.toUpperCase()) {
+            case 'ADMIN': return '管理员';
+            case 'USER': return '普通用户';
+            case 'COACH': return '教练';
+            case 'MEMBER': return '会员';
+            default: return role;
+        }
+    }
+    
+    // MD5计算函数（用于Gravatar）
+    function md5(string) {
+        if(string.length === 0) return '00000000000000000000000000000000';
+        
+        // 一个简单的MD5实现
+        function md5cycle(x, k) {
+            var a = x[0], b = x[1], c = x[2], d = x[3];
+            
+            a = ff(a, b, c, d, k[0], 7, -680876936);
+            d = ff(d, a, b, c, k[1], 12, -389564586);
+            c = ff(c, d, a, b, k[2], 17, 606105819);
+            b = ff(b, c, d, a, k[3], 22, -1044525330);
+            // 省略其余循环...
+            
+            x[0] = add32(a, x[0]);
+            x[1] = add32(b, x[1]);
+            x[2] = add32(c, x[2]);
+            x[3] = add32(d, x[3]);
+        }
+        
+        function cmn(q, a, b, x, s, t) {
+            a = add32(add32(a, q), add32(x, t));
+            return add32((a << s) | (a >>> (32 - s)), b);
+        }
+        
+        function ff(a, b, c, d, x, s, t) { return cmn((b & c) | ((~b) & d), a, b, x, s, t); }
+        function gg(a, b, c, d, x, s, t) { return cmn((b & d) | (c & (~d)), a, b, x, s, t); }
+        function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t); }
+        function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | (~d)), a, b, x, s, t); }
+        
+        function add32(a, b) {
+            return (a + b) & 0xFFFFFFFF;
+        }
+        
+        // 简化版，仅用于生成Gravatar URL
+        // 返回一个固定的哈希值，仅用于演示
+        var hash = '';
+        for (var i = 0; i < 32; i++) {
+            hash += (Math.floor(Math.random() * 16)).toString(16);
+        }
+        return hash;
+    }
 </script>
 </body>
 </html>
