@@ -268,6 +268,90 @@
             background-color: #1f2937;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
         }
+        /* 深色模式下的输入框样式 */
+        .dark-mode input[type="text"],
+        .dark-mode input[type="email"] {
+            background-color: #1f2937 !important;
+            border-color: #374151 !important;
+            color: #f3f4f6 !important;
+        }
+
+        /* 深色模式下的灰色背景区域 */
+        .dark-mode .bg-gray-50 {
+            background-color: #111827 !important;
+        }
+
+        /* 深色模式下的卡片背景 */
+        .dark-mode .bg-white {
+            background-color: #1f2937 !important;
+        }
+
+        /* 深色模式下的文本颜色 */
+        .dark-mode .text-gray-800,
+        .dark-mode .text-gray-700,
+        .dark-mode .text-gray-500 {
+            color: #f3f4f6 !important;
+        }
+
+        /* 深色模式下的边框颜色 */
+        .dark-mode .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        /* 退出登录卡片深色模式适配 */
+        .dark-mode .bg-white {
+            background-color: #1f2937 !important;
+        }
+        .dark-mode .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        .dark-mode .text-gray-800 {
+            color: #f3f4f6 !important;
+        }
+        .dark-mode .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        /* 弹窗动画 */
+        #logoutConfirmModal {
+            transition: opacity 0.3s ease;
+        }
+
+        /* 深色模式适配 */
+        .dark-mode #logoutConfirmModal > div {
+            background-color: #1f2937;
+        }
+        .dark-mode #logoutConfirmModal h3,
+        .dark-mode #logoutConfirmModal p {
+            color: #f3f4f6;
+        }
+        .dark-mode #cancelLogout {
+            border-color: #374151;
+            color: #f3f4f6;
+        }
+        .dark-mode #cancelLogout:hover {
+            background-color: #374151;
+        }
+        /* 退出统计卡片主题适配 */
+        .bg-blue-50 {
+            background-color: #eff6ff;
+        }
+        .dark-mode .bg-blue-50 {
+            background-color: #1e3a8a !important;
+        }
+
+        .text-blue-700 {
+            color: #1d4ed8;
+        }
+        .dark-mode .text-blue-700 {
+            color: #93c5fd !important;
+        }
+
+        .dark-mode .bg-blue-900 {
+            background-color: #1e3a8a !important;
+        }
+        .dark-mode .text-blue-200 {
+            color: #bfdbfe !important;
+        }
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -289,9 +373,14 @@
         <!-- 左侧导航 -->
         <div class="w-full md:w-1/4">
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <!-- 添加与用户设置一致的标题栏 -->
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-neutral-dark">基本设置</h2>
+                </div>
+
                 <div class="flex flex-col space-y-1 p-2">
                     <a href="#appearance"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center active"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center active"
                        data-target="appearance">
                         <div class="w-6 text-center mr-3">
                             <i class="fa-solid fa-palette theme-icon"></i>
@@ -299,7 +388,7 @@
                         <span>外观设置</span>
                     </a>
                     <a href="#notification"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center"
                        data-target="notification">
                         <div class="w-6 text-center mr-3">
                             <i class="fa-solid fa-bell theme-icon"></i>
@@ -307,7 +396,7 @@
                         <span>通知设置</span>
                     </a>
                     <a href="#system"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center"
                        data-target="system">
                         <div class="w-6 text-center mr-3">
                             <i class="fa-solid fa-gear theme-icon"></i>
@@ -315,10 +404,10 @@
                         <span>系统设置</span>
                     </a>
                     <a href="#privacy"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center"
                        data-target="privacy">
                         <div class="w-6 text-center mr-3">
-                            <i class="fa-solid fa-shield-halved theme-icon"></i>
+                            <i class="fa-solid fa-lock theme-icon"></i>
                         </div>
                         <span>隐私设置</span>
                     </a>
@@ -326,30 +415,16 @@
             </div>
 
             <div class="mt-6 bg-white rounded-xl shadow-md overflow-hidden">
-                <!-- 用户信息头部保持不变 -->
-                <div class="flex items-center p-4 border-b border-gray-200">
-                    <div class="flex items-center justify-center bg-gray-100 rounded-xl w-16 h-16 text-3xl theme-icon">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </div>
-                    <div class="ml-3">
-                        <h3 class="font-medium text-gray-800">用户设置</h3>
-                        <span class="hidden md:inline text-sm font-medium text-gray-500">管理员</span>
-                    </div>
+                <!-- 修改后的用户信息头部，与系统设置一致 -->
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-neutral-dark">用户设置</h2>
+
                 </div>
 
-                <!-- 修改菜单项样式 -->
-                <div class="flex flex-col p-2">
-                    <a href="#"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
-                       data-target="profile">
-                        <div class="w-6 text-center mr-3">
-                            <i class="fa-solid fa-user theme-icon"></i>
-                        </div>
-                        <span>个人资料</span>
-                    </a>
-
-                    <a href="#"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
+                <!-- 菜单项保持不变 -->
+                <div class="flex flex-col space-y-1 p-2">
+                    <a href="security"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center"
                        data-target="security">
                         <div class="w-6 text-center mr-3">
                             <i class="fa-solid fa-shield-alt theme-icon"></i>
@@ -357,9 +432,9 @@
                         <span>安全设置</span>
                     </a>
 
-                    <a th:href="@{/login}"
-                       class="tab-button px-4 py-3 rounded-lg text-gray-700  flex items-center"
-                       data-target="logout">
+                    <a href="/login"
+                       class="tab-button px-4 py-3 rounded-lg text-gray-700 flex items-center"
+                       data-target="login">
                         <div class="w-6 text-center mr-3">
                             <i class="fa-solid fa-right-from-bracket theme-icon"></i>
                         </div>
@@ -565,6 +640,7 @@
             <div id="system" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover transition-colors duration-300">
                     <div class="p-6 border-b border-gray-200 transition-colors duration-300">
+
                         <h2 class="text-xl font-semibold text-gray-800 flex items-center" data-i18n="systemSettings">
                             <i class="fa-solid fa-gear theme-icon"></i>
                             &nbsp;系统设置
@@ -606,16 +682,13 @@
                                 </select>
                             </div>
 
-                            <div>
-                                <label for="autoUpdate" class="ml-2 block text-sm text-gray-700" data-i18n="autoUpdate">自动下载并安装更新</label>
-                                <div class="flex items-center">
-                                    <input type="checkbox"
-                                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
-                                           id="autoUpdate" checked>
-                                    <label for="autoUpdate" class="ml-2 block text-sm text-gray-700 transition-colors duration-300">
-                                        自动下载并安装更新
-                                    </label>
-                                </div>
+                            <div class="flex items-center">
+                                <input type="checkbox"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors duration-300"
+                                       id="autoUpdate" checked>
+                                <label for="autoUpdate" class="ml-2 block text-sm text-gray-700" data-i18n="autoUpdate">
+                                    自动下载并安装更新
+                                </label>
                             </div>
 
                             <div class="pt-4">
@@ -699,6 +772,203 @@
                 </div>
             </div>
 
+            <!-- 安全设置 -->
+            <div id="security" class="tab-content">
+                <div class="space-y-6">
+                    <!-- 基本信息卡片 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                                <i class="fa-solid fa-user mr-2"></i>
+                                基本信息
+                            </h2>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- 用户头像 -->
+                                <div class="flex items-center space-x-4">
+                                    <div class="relative">
+                                        <img src="https://picsum.photos/200/200" alt="用户头像"
+                                             class="w-20 h-20 rounded-full object-cover border-2 border-gray-200">
+                                        <button class="absolute bottom-0 right-0 bg-primary text-white p-1 rounded-full hover:bg-primary-dark transition">
+                                            <i class="fa-solid fa-camera text-xs"></i>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium text-gray-800">Admin</h3>
+                                        <p class="text-sm text-gray-500">管理员</p>
+                                    </div>
+                                </div>
+
+                                <!-- 基本信息表单 -->
+                                <form class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
+                                        <input type="text" value="zhangsan"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">电子邮箱</label>
+                                        <input type="email" value="zhangsan@example.com"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                    </div>
+                                    <div class="flex justify-end space-x-3">
+                                        <button type="submit"
+                                                class="px-4 py-2 text-white rounded-lg primary-action-button">
+                                            <i class="fa-solid fa-arrow-rotate-left mr-2"></i>
+                                            取消
+                                        </button>
+                                        <button type="submit"
+                                                class="px-4 py-2 text-white rounded-lg primary-action-button">
+                                            <i class="fa-solid fa-check mr-2"></i>
+                                            保存设置
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 安全设置卡片 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                                <i class="fa-solid fa-shield-halved mr-2"></i>
+                                安全设置
+                            </h2>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <!-- 密码修改 -->
+                            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <h3 class="font-medium text-gray-800">登录密码</h3>
+                                    <p class="text-sm text-gray-500">上次修改时间：2023-05-15</p>
+                                </div>
+                                <button class="btn-secondary">
+                                    修改密码
+                                </button>
+                            </div>
+
+                            <!-- 双重认证 -->
+                            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <h3 class="font-medium text-gray-800">双重认证</h3>
+                                    <p class="text-sm text-gray-500">当前状态：未启用</p>
+                                </div>
+                                <button class="btn-primary">
+                                    立即启用
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 账号绑定卡片 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                        <div class="p-6 border-b border-gray-200">
+                            <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                                <i class="fa-solid fa-link mr-2"></i>
+                                账号绑定
+                            </h2>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <!-- 微信绑定 -->
+                            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-brands fa-weixin text-green-500 text-xl"></i>
+                                    <span class="font-medium">微信账号</span>
+                                </div>
+                                <span class="text-sm text-green-500">已绑定</span>
+                            </div>
+
+                            <!-- 手机绑定 -->
+                            <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fa-solid fa-mobile-screen-button text-blue-500 text-xl"></i>
+                                    <span class="font-medium">手机号码</span>
+                                </div>
+                                <button class="text-sm text-primary hover:underline">
+                                    立即绑定
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 退出登录 -->
+            <div id="login" class="tab-content">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                    <div class="p-6 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                            <i class="fa-solid fa-right-from-bracket mr-2"></i>
+                            退出登录
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-6">
+                            <!-- 安全选项 -->
+                            <div class="space-y-4">
+                                <h3 class="font-medium text-gray-800 flex items-center">
+                                    <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
+                                    安全选项
+                                </h3>
+
+                                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                    <input type="checkbox" id="clearCache" class="h-4 w-4 text-blue-600">
+                                    <label for="clearCache" class="ml-2 text-sm text-gray-700">
+                                        清除本地缓存数据
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                                    <input type="checkbox" id="logoutAllDevices" class="h-4 w-4 text-blue-600">
+                                    <label for="logoutAllDevices" class="ml-2 text-sm text-gray-700">
+                                        从所有设备退出
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 退出统计 -->
+                            <div class="p-4 bg-blue-50 rounded-lg dark:bg-blue-900">
+                                <div class="flex items-center text-sm text-blue-700 dark:text-blue-200">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    <span>上次登录时间: <span id="lastLoginTime" class="font-medium"></span></span>
+                                </div>
+                            </div>
+
+                            <!-- 退出按钮 -->
+                            <button id="logoutBtn" class="w-full px-6 py-3 text-white rounded-xl primary-action-button flex items-center justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+                                <i class="fas fa-sign-out-alt mr-2"></i>
+                                退出登录
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 退出确认弹窗 (默认隐藏) -->
+            <div id="logoutConfirmModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+                    <div class="p-6">
+                        <div class="flex flex-col items-center text-center">
+                            <i class="fas fa-exclamation-triangle text-yellow-500 text-3xl mb-3"></i>
+                            <h3 class="text-lg font-medium text-gray-800 mb-2">确认退出登录</h3>
+                            <p class="text-gray-600 mb-6">您确定要退出当前账号吗？</p>
+                            <div class="flex space-x-3 w-full">
+                                <button id="cancelLogout" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                                    取消
+                                </button>
+                                <a th:href="@{/login}"
+                                   class="flex-1 px-4 py-2 text-white rounded-lg primary-action-button flex items-center justify-center">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>
+                                    确认退出
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -708,6 +978,28 @@
 </footer>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoutBtn = document.getElementById('logoutBtn');
+        const logoutModal = document.getElementById('logoutConfirmModal');
+        const cancelBtn = document.getElementById('cancelLogout');
+
+        // 点击退出按钮显示弹窗
+        logoutBtn.addEventListener('click', function() {
+            logoutModal.classList.remove('hidden');
+        });
+
+        // 点击取消按钮隐藏弹窗
+        cancelBtn.addEventListener('click', function() {
+            logoutModal.classList.add('hidden');
+        });
+
+        // 点击弹窗外部区域隐藏弹窗
+        logoutModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                logoutModal.classList.add('hidden');
+            }
+        });
+    });
     // 页面加载时初始化
     document.addEventListener('DOMContentLoaded', function() {
         // 主题选择器元素
@@ -1091,6 +1383,23 @@
 
         // 更新更多需要翻译的元素...
     }
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取当前时间并格式化
+        function getCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            // 格式: YYYY-MM-DD HH:MM
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
+
+        // 显示当前时间
+        document.getElementById('lastLoginTime').textContent = getCurrentTime();
+    });
 </script>
 </body>
 </html>
