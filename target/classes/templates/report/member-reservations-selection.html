@@ -96,7 +96,7 @@
                     <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                         <a th:href="@{/reports/course-attendance}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">课程出勤</a>
                         <a th:href="@{/reports/coach-workload}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">教练工作</a>
-                        <a th:href="@{/reports/member-reservations}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">会员预约情况</a>
+                        <a th:href="@{/reports/member-reservations-selection}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">会员预约情况</a>
                     </div>
                 </div>
             </nav>
@@ -109,7 +109,9 @@
                 </button>
                 <div class="relative group">
                     <button class="flex items-center space-x-2">
-                        <img src="https://picsum.photos/id/1005/200/200" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                            <i class="fa fa-user text-sm"></i>
+                        </div>
                         <span class="hidden md:inline text-sm font-medium">管理员</span>
                         <i class="fa fa-chevron-down text-xs text-gray-500"></i>
                     </button>
@@ -117,7 +119,7 @@
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fa fa-user-circle mr-2"></i> 个人资料
                         </a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <a th:href="@{/settings}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fa fa-cog mr-2"></i> 设置
                         </a>
                         <div class="border-t border-gray-100 my-1"></div>
@@ -201,13 +203,28 @@
         </div>
         <div class="p-6">
             <div class="mb-4">
-                <form th:action="@{/members/search}" method="get" class="flex flex-col sm:flex-row gap-3">
+                <form th:action="@{/reports/member-reservations-selection/search}" method="get" class="flex flex-col sm:flex-row gap-3">
                     <input type="text" name="name" placeholder="输入会员姓名搜索"
-                           class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                           class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                           th:value="${searchName}">
                     <button type="submit" class="btn-primary">
                         <i class="fa fa-search mr-1"></i> 搜索
                     </button>
                 </form>
+            </div>
+
+            <!-- 搜索结果提示 -->
+            <div class="mb-4" th:if="${searchName != null}">
+                <div class="p-4 border border-gray-200 rounded-lg bg-gray-50 flex justify-between items-center">
+                    <div>
+                        <span class="font-medium text-gray-700">搜索结果：</span>
+                        <span class="text-primary font-medium" th:text="${searchName}"></span>
+                        <span class="text-gray-600 ml-2" th:text="'找到 ' + ${members.size()} + ' 条记录'"></span>
+                    </div>
+                    <a th:href="@{/reports/member-reservations-selection}" class="text-gray-600 hover:text-primary">
+                        <i class="fa fa-times mr-1"></i> 清除搜索
+                    </a>
+                </div>
             </div>
 
             <div class="overflow-x-auto">
@@ -223,8 +240,13 @@
                     </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                    <tr th:if="${members == null}">
-                        <td colspan="6" class="py-4 px-4 text-center text-gray-500">暂无会员数据</td>
+                    <tr th:if="${members == null || members.isEmpty()}">
+                        <td colspan="6" class="py-4 px-4 text-center text-gray-500">
+                            <span th:if="${searchName != null}">
+                                没有找到符合条件的会员 "<span th:text="${searchName}"></span>"
+                            </span>
+                            <span th:unless="${searchName != null}">暂无会员数据</span>
+                        </td>
                     </tr>
                     <tr th:each="member : ${members}" class="hover:bg-gray-50 transition-colors">
                         <td class="py-4 px-4 font-medium text-neutral-dark" th:text="${member.memberId}">M001</td>
@@ -275,16 +297,16 @@
 <!-- JavaScript -->
 <script>
     // 移动端菜单切换
-   document.getElementById('mobile-menu-button').addEventListener('click', function() {
-       const mobileMenu = document.getElementById('mobile-menu');
-       if (mobileMenu.classList.contains('h-0')) {
-           mobileMenu.classList.remove('h-0');
-           mobileMenu.classList.add('h-auto');
-       } else {
-           mobileMenu.classList.add('h-0');
-           mobileMenu.classList.remove('h-auto');
-       }
-   });
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu.classList.contains('h-0')) {
+            mobileMenu.classList.remove('h-0');
+            mobileMenu.classList.add('h-auto');
+        } else {
+            mobileMenu.classList.add('h-0');
+            mobileMenu.classList.remove('h-auto');
+        }
+    });
 </script>
 </body>
 </html>

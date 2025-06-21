@@ -110,7 +110,9 @@
                 </button>
                 <div class="relative group">
                     <button class="flex items-center space-x-2">
-                        <img src="https://picsum.photos/id/1005/200/200" alt="用户头像" class="w-8 h-8 rounded-full object-cover">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                            <i class="fa fa-user text-sm"></i>
+                        </div>
                         <span class="hidden md:inline text-sm font-medium">管理员</span>
                         <i class="fa fa-chevron-down text-xs text-gray-500"></i>
                     </button>
@@ -118,7 +120,7 @@
                         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fa fa-user-circle mr-2"></i> 个人资料
                         </a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <a th:href="@{/settings}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fa fa-cog mr-2"></i> 设置
                         </a>
                         <div class="border-t border-gray-100 my-1"></div>
@@ -185,7 +187,7 @@
                 <li>
                     <div class="flex items-center">
                         <i class="fa fa-chevron-right text-gray-400 text-xs mx-1"></i>
-                        <span class="text-sm font-medium text-gray-500">会员管理</span>
+                        <a th:href="@{/members}" class="text-sm font-medium text-gray-500 hover:text-primary">会员管理</a>
                     </div>
                 </li>
                 <li>
@@ -202,7 +204,7 @@
     <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
             <h2 class="text-xl font-bold text-neutral-dark">会员预约情况</h2>
-            <a th:href="@{/reports/member-reservations}" class="btn-secondary flex items-center">
+            <a th:href="@{/reports/member-reservations-selection}" class="btn-secondary flex items-center">
                 <i class="fa fa-arrow-left mr-1"></i> 返回会员列表
             </a>
         </div>

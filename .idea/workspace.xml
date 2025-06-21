@@ -9,35 +9,34 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48e796ea-c446-4a8a-86af-3c69c2f6e4db" name="更改" comment="添加注释">
+    <list default="true" id="48e796ea-c446-4a8a-86af-3c69c2f6e4db" name="更改" comment="优化">
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gym/management/GymManagementApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gym/management/GymManagementApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/coach/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/coach/add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/coach/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/coach/edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/coach/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/coach/list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/course/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/course/add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/course/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/course/edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/course/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/course/list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/layout/default.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/layout/default.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/member/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/member/add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/member/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/member/edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/member/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/member/list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/coach-workload.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/coach-workload.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/course-attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/course-attendance.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations-selection.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations-selection.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/reservation/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/reservation/add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/reservation/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/reservation/edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/reservation/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/reservation/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/GymManagementApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/GymManagementApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/controller/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/controller/HomeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/controller/HomeController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/controller/ReportController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/controller/ReportController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/templates/coach/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/coach/add.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/templates/coach/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/coach/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/coach/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/coach/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/course/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/course/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/course/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/course/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/course/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/course/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/layout/default.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/layout/default.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/member/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/member/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/member/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/member/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/member/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/member/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/coach-workload.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/coach-workload.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/course-attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/course-attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/member-reservations-selection.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/member-reservations-selection.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/member-reservations.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/member-reservations.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/reservation/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/reservation/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/reservation/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/reservation/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/reservation/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/reservation/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/settings.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/settings.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/management-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/management-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/management-0.0.3-SNAPSHOT.jar" beforeDir="false" />
     </list>
@@ -48,6 +47,13 @@
   </component>
   <component name="ComposerSettings">
     <execution />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="PREVIOUS_COMMIT_AUTHORS">
@@ -85,7 +91,7 @@
   &quot;isMigrated&quot;: true
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -96,30 +102,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Maven.management [package].executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;Spring Boot.GymManagementApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/H5/Demo/gym&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;工件&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.35517243&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;vcs.Git&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Maven.management [package].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.GymManagementApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/H5/Demo/gym",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "工件",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.35517243",
+    "settings.editor.selected.configurable": "File.Encoding",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="gym" />
@@ -155,7 +163,11 @@
       <workItem from="1750233793684" duration="21227000" />
       <workItem from="1750307452142" duration="1565000" />
       <workItem from="1750391748284" duration="5598000" />
-      <workItem from="1750406854703" duration="1573000" />
+      <workItem from="1750406854703" duration="10066000" />
+      <workItem from="1750417269666" duration="671000" />
+      <workItem from="1750417953547" duration="12163000" />
+      <workItem from="1750432132114" duration="2413000" />
+      <workItem from="1750485752417" duration="4102000" />
     </task>
     <task id="LOCAL-00001" summary="提交">
       <option name="closed" value="true" />
@@ -301,7 +313,183 @@
       <option name="project" value="LOCAL" />
       <updated>1750407170522</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="添加会员预约图标和菜单项">
+      <option name="closed" value="true" />
+      <created>1750408563540</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1750408563540</updated>
+    </task>
+    <task id="LOCAL-00020" summary="添加会员预约图标和菜单项">
+      <option name="closed" value="true" />
+      <created>1750408709137</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1750408709137</updated>
+    </task>
+    <task id="LOCAL-00021" summary="添加设置页面">
+      <option name="closed" value="true" />
+      <created>1750417593649</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1750417593649</updated>
+    </task>
+    <task id="LOCAL-00022" summary="添加设置页面">
+      <option name="closed" value="true" />
+      <created>1750417898157</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1750417898157</updated>
+    </task>
+    <task id="LOCAL-00023" summary="添加设置页面">
+      <option name="closed" value="true" />
+      <created>1750418002372</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1750418002372</updated>
+    </task>
+    <task id="LOCAL-00024" summary="添加设置页面">
+      <option name="closed" value="true" />
+      <created>1750419845808</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1750419845808</updated>
+    </task>
+    <task id="LOCAL-00025" summary="优化页面">
+      <option name="closed" value="true" />
+      <created>1750424507153</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1750424507153</updated>
+    </task>
+    <task id="LOCAL-00026" summary="优化页面">
+      <option name="closed" value="true" />
+      <created>1750425137100</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1750425137100</updated>
+    </task>
+    <task id="LOCAL-00027" summary="优化编码问题">
+      <option name="closed" value="true" />
+      <created>1750425159546</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1750425159546</updated>
+    </task>
+    <task id="LOCAL-00028" summary="优化图标">
+      <option name="closed" value="true" />
+      <created>1750425343211</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1750425343211</updated>
+    </task>
+    <task id="LOCAL-00029" summary="优化图标">
+      <option name="closed" value="true" />
+      <created>1750426040201</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1750426040201</updated>
+    </task>
+    <task id="LOCAL-00030" summary="优化图标">
+      <option name="closed" value="true" />
+      <created>1750426301715</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1750426301715</updated>
+    </task>
+    <task id="LOCAL-00031" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750427797756</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1750427797756</updated>
+    </task>
+    <task id="LOCAL-00032" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750428118571</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1750428118571</updated>
+    </task>
+    <task id="LOCAL-00033" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750428482279</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1750428482279</updated>
+    </task>
+    <task id="LOCAL-00034" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750429538652</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1750429538652</updated>
+    </task>
+    <task id="LOCAL-00035" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750429573872</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1750429573872</updated>
+    </task>
+    <task id="LOCAL-00036" summary="优化搜索逻辑">
+      <option name="closed" value="true" />
+      <created>1750432527351</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1750432527351</updated>
+    </task>
+    <task id="LOCAL-00037" summary="优化返回逻辑">
+      <option name="closed" value="true" />
+      <created>1750433889579</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1750433889579</updated>
+    </task>
+    <task id="LOCAL-00038" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750434436400</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1750434436400</updated>
+    </task>
+    <task id="LOCAL-00039" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750434919695</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1750434919695</updated>
+    </task>
+    <task id="LOCAL-00040" summary="优化">
+      <option name="closed" value="true" />
+      <created>1750490107121</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1750490107121</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -324,8 +512,19 @@
     <MESSAGE value="更新页面" />
     <MESSAGE value="更新" />
     <MESSAGE value="添加返回逻辑" />
-    <MESSAGE value="优化" />
     <MESSAGE value="添加注释" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加注释" />
+    <MESSAGE value="添加会员预约图标和菜单项" />
+    <MESSAGE value="添加设置页面" />
+    <MESSAGE value="优化页面" />
+    <MESSAGE value="优化编码问题" />
+    <MESSAGE value="优化图标" />
+    <MESSAGE value="优化搜索逻辑" />
+    <MESSAGE value="优化返回逻辑" />
+    <MESSAGE value="优化" />
+    <option name="LAST_COMMIT_MESSAGE" value="优化" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
