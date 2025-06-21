@@ -352,6 +352,39 @@
             color: #bfdbfe !important;
         }
 
+        /* 密码修改弹窗深色模式适配 */
+        .dark-mode #changePasswordModal .bg-white {
+            background-color: #1f2937 !important;
+        }
+        
+        .dark-mode #changePasswordModal h3,
+        .dark-mode #changePasswordModal label {
+            color: #f3f4f6 !important;
+        }
+        
+        .dark-mode #changePasswordModal input[type="password"] {
+            background-color: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f3f4f6 !important;
+        }
+        
+        .dark-mode #cancelPasswordChange {
+            border-color: #4b5563 !important;
+            color: #f3f4f6 !important;
+        }
+        
+        .dark-mode #cancelPasswordChange:hover {
+            background-color: #374151 !important;
+        }
+        
+        .dark-mode #passwordMessage.text-red-500 {
+            color: #f87171 !important;
+        }
+        
+        .dark-mode #passwordMessage.text-green-500 {
+            color: #4ade80 !important;
+        }
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -844,7 +877,7 @@
                                     <h3 class="font-medium text-gray-800">登录密码</h3>
                                     <p class="text-sm text-gray-500">上次修改时间：2023-05-15</p>
                                 </div>
-                                <button class="btn-secondary">
+                                <button id="changePasswordBtn" class="px-4 py-2 text-white rounded-lg primary-action-button">
                                     修改密码
                                 </button>
                             </div>
@@ -858,6 +891,71 @@
                                 <button class="btn-primary">
                                     立即启用
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 密码修改弹窗 (默认隐藏) -->
+                    <div id="changePasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+                            <div class="p-6 border-b border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-xl font-semibold text-gray-800">修改密码</h3>
+                                    <button id="closePasswordModalBtn" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                                        <i class="fa-solid fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <form id="changePasswordForm" class="space-y-4">
+                                    <!-- 旧密码 -->
+                                    <div>
+                                        <label for="oldPassword" class="block text-sm font-medium text-gray-700 mb-1">当前密码</label>
+                                        <input type="password"
+                                               id="oldPassword"
+                                               name="oldPassword"
+                                               required
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                    </div>
+
+                                    <!-- 新密码 -->
+                                    <div>
+                                        <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">新密码</label>
+                                        <input type="password"
+                                               id="newPassword"
+                                               name="newPassword"
+                                               required
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                    </div>
+
+                                    <!-- 确认密码 -->
+                                    <div>
+                                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
+                                        <input type="password"
+                                               id="confirmPassword"
+                                               name="confirmPassword"
+                                               required
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
+                                        <p id="passwordMatch" class="text-xs text-red-500 mt-1 hidden">两次输入的密码不一致</p>
+                                    </div>
+
+                                    <!-- 密码修改消息 -->
+                                    <div id="passwordMessage" class="text-sm hidden"></div>
+
+                                    <!-- 按钮 -->
+                                    <div class="flex space-x-3">
+                                        <button type="button"
+                                                id="cancelPasswordChange"
+                                                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                                            取消
+                                        </button>
+                                        <button type="submit"
+                                                class="flex-1 px-4 py-2 text-white rounded-lg primary-action-button flex items-center justify-center">
+                                            <i class="fas fa-check mr-2"></i>
+                                            确认修改
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -1399,7 +1497,110 @@
 
         // 显示当前时间
         document.getElementById('lastLoginTime').textContent = getCurrentTime();
+        
+        // 密码修改功能
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const changePasswordModal = document.getElementById('changePasswordModal');
+        const closePasswordModalBtn = document.getElementById('closePasswordModalBtn');
+        const cancelPasswordChange = document.getElementById('cancelPasswordChange');
+        const changePasswordForm = document.getElementById('changePasswordForm');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordMatchMsg = document.getElementById('passwordMatch');
+        const passwordMessage = document.getElementById('passwordMessage');
+        
+        // 打开密码修改弹窗
+        if (changePasswordBtn) {
+            changePasswordBtn.addEventListener('click', function() {
+                changePasswordModal.classList.remove('hidden');
+                // 重置表单
+                changePasswordForm.reset();
+                passwordMatchMsg.classList.add('hidden');
+                passwordMessage.classList.add('hidden');
+            });
+        }
+        
+        // 关闭密码修改弹窗
+        function closePasswordModal() {
+            changePasswordModal.classList.add('hidden');
+        }
+        
+        if (closePasswordModalBtn) {
+            closePasswordModalBtn.addEventListener('click', closePasswordModal);
+        }
+        
+        if (cancelPasswordChange) {
+            cancelPasswordChange.addEventListener('click', closePasswordModal);
+        }
+        
+        // 监听密码输入，验证两次密码是否一致
+        if (confirmPasswordInput && newPasswordInput) {
+            confirmPasswordInput.addEventListener('input', function() {
+                if (newPasswordInput.value !== confirmPasswordInput.value) {
+                    passwordMatchMsg.classList.remove('hidden');
+                    passwordMatchMsg.classList.add('text-red-500');
+                    passwordMatchMsg.textContent = '两次输入的密码不一致';
+                } else {
+                    passwordMatchMsg.classList.add('hidden');
+                }
+            });
+        }
+        
+        // 提交修改密码表单
+        if (changePasswordForm) {
+            changePasswordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // 检查密码是否一致
+                if (newPasswordInput.value !== confirmPasswordInput.value) {
+                    passwordMessage.classList.remove('hidden');
+                    passwordMessage.classList.remove('text-green-500');
+                    passwordMessage.classList.add('text-red-500');
+                    passwordMessage.textContent = '新密码与确认密码不一致';
+                    return;
+                }
+                
+                // 准备表单数据
+                const formData = new FormData();
+                formData.append('oldPassword', document.getElementById('oldPassword').value);
+                formData.append('newPassword', newPasswordInput.value);
+                formData.append('confirmPassword', confirmPasswordInput.value);
+                
+                // 发送修改密码请求
+                fetch('/api/change-password', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    passwordMessage.classList.remove('hidden');
+                    
+                    if (data.success) {
+                        // 密码修改成功
+                        passwordMessage.classList.remove('text-red-500');
+                        passwordMessage.classList.add('text-green-500');
+                        passwordMessage.textContent = data.message;
+                        
+                        // 2秒后自动关闭弹窗
+                        setTimeout(closePasswordModal, 2000);
+                    } else {
+                        // 密码修改失败
+                        passwordMessage.classList.remove('text-green-500');
+                        passwordMessage.classList.add('text-red-500');
+                        passwordMessage.textContent = data.message;
+                    }
+                })
+                .catch(error => {
+                    console.error('修改密码时发生错误:', error);
+                    passwordMessage.classList.remove('hidden');
+                    passwordMessage.classList.remove('text-green-500');
+                    passwordMessage.classList.add('text-red-500');
+                    passwordMessage.textContent = '服务器错误，请稍后再试';
+                });
+            });
+        }
     });
+
 </script>
 </body>
 </html>

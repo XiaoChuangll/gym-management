@@ -4,175 +4,416 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>退出登录 - 健身房管理系统</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f0f7ff',
-                            100: '#e0effe',
-                            200: '#b9dffe',
-                            300: '#7cc7fd',
-                            400: '#36adfa',
-                            500: '#0c94eb',
-                            600: '#0076c9',
-                            700: '#015da3',
-                            800: '#065087',
-                            900: '#0b436f',
-                        },
-                        secondary: {
-                            50: '#f0fdf9',
-                            100: '#dcfcee',
-                            200: '#baf6dc',
-                            300: '#87ecc3',
-                            400: '#48d9a4',
-                            500: '#20c085',
-                            600: '#0d9c6d',
-                            700: '#0f7c5a',
-                            800: '#11624a',
-                            900: '#12513e',
-                        },
-                        accent: {
-                            50: '#fff9eb',
-                            100: '#ffefc6',
-                            200: '#ffdd88',
-                            300: '#ffc746',
-                            400: '#ffb01f',
-                            500: '#f99107',
-                            600: '#dd6b02',
-                            700: '#b74b06',
-                            800: '#943a0c',
-                            900: '#7a310d',
-                        },
-                        neutral: '#F8FAFC',
-                        'neutral-dark': '#334155'
-                    },
-                    fontFamily: {
-                        inter: ['Inter', 'sans-serif'],
-                        poppins: ['Poppins', 'sans-serif']
-                    },
-                    boxShadow: {
-                        'soft': '0 10px 30px -15px rgba(0, 0, 0, 0.1)',
-                        'hard': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .btn-primary {
-                @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg;
-            }
-            .btn-secondary {
-                @apply bg-white border border-gray-200 hover:bg-gray-50 text-neutral-dark font-medium py-3 px-6 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md;
-            }
-            .card {
-                @apply bg-white rounded-2xl shadow-soft overflow-hidden;
-            }
-            .card-header {
-                @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white p-6;
-            }
-        }
-    </style>
-
     <style>
+        :root {
+            --primary-color: #0c94eb;
+            --primary-dark: #0076c9;
+            --secondary-color: #f8fafc;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --text-light: #f3f4f6;
+            --border-color: #e5e7eb;
+            --card-shadow: 0 10px 30px -15px rgba(0, 0, 0, 0.1);
+            --btn-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            background-color: #f8fafc;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-blend-mode: overlay;
-            background-color: rgba(248, 250, 252, 0.9);
+            background-color: var(--secondary-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            color: var(--text-dark);
         }
 
-        .logo {
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        /* 卡片样式 */
+        .card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            width: 100%;
+            max-width: 28rem;
+            transition: transform 0.3s ease;
+            margin: 0 auto;
         }
 
+        .card:hover {
+            transform: scale(1.01);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: var(--btn-shadow);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--primary-dark), #015da3);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--text-light);
+            box-shadow: var(--btn-shadow);
+        }
+
+        /* 动画效果 */
         .animate-pulse-slow {
             animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
         @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* 加载状态 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(12, 148, 235, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 内容容器 */
+        .content-container {
+            opacity: 1;
+            width: 100%;
+            max-width: 1200px;
+            padding: 1rem;
+        }
+
+        /* 图标样式 */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            stroke-width: 0;
+            stroke: currentColor;
+            fill: currentColor;
+            vertical-align: middle;
+        }
+
+        /* 布局工具类 */
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        /* 间距工具类 */
+        .gap-3 {
+            gap: 0.75rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+
+        .mt-8 {
+            margin-top: 2rem;
+        }
+
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+
+        /* 内边距 */
+        .p-8 {
+            padding: 2rem;
+        }
+
+        .py-6 {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        /* 文本样式 */
+        .text-center {
+            text-align: center;
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .text-blue-100 {
+            color: #dbeafe;
+        }
+
+        .text-blue-600 {
+            color: #2563eb;
+        }
+
+        .text-gray-500 {
+            color: var(--text-gray);
+        }
+
+        .text-gray-800 {
+            color: var(--text-dark);
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        /* 其他样式 */
+        .rounded-full {
+            border-radius: 9999px;
+        }
+
+        .border-t {
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* 图标容器 */
+        .icon-container {
+            width: 5rem;
+            height: 5rem;
+            border-radius: 50%;
+            background-color: #dbeafe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 640px) {
+            .card-header {
+                padding: 1rem;
             }
-            50% {
-                opacity: 0.8;
+
+            .p-8 {
+                padding: 1.5rem;
+            }
+
+            .text-xl {
+                font-size: 1.1rem;
+            }
+
+            .text-2xl {
+                font-size: 1.3rem;
+            }
+
+            .btn {
+                padding: 0.65rem 1.25rem;
+                font-size: 0.9rem;
+            }
+
+            .icon-container {
+                width: 4rem;
+                height: 4rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .p-8 {
+                padding: 1rem;
+            }
+
+            .card-header {
+                padding: 0.75rem;
             }
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 font-poppins">
-<div class="w-full max-w-md transform transition-all duration-500 hover:scale-[1.01]">
+<body>
+<!-- 加载指示器 -->
+<div id="loadingOverlay" class="loading-overlay" style="display: none;">
+    <div class="spinner"></div>
+</div>
+
+<!-- 主要内容 -->
+<div id="contentContainer" class="content-container">
     <div class="card">
-        <div class="card-header text-center">
-            <div class="flex items-center justify-center space-x-3 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white animate-pulse-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        <div class="card-header">
+            <div class="flex items-center justify-center gap-3 mb-2">
+                <svg class="icon text-2xl text-white animate-pulse-slow" viewBox="0 0 1024 1024" width="1em" height="1em">
+                    <path d="M868 732h-70.3c-4.8 0-9.3 2.1-12.3 5.8-7 8.5-14.5 16.7-22.4 24.5a353.84 353.84 0 0 1-112.7 75.9A352.8 352.8 0 0 1 512.4 866c-47.9 0-94.3-9.4-137.9-27.8a353.84 353.84 0 0 1-112.7-75.9 353.28 353.28 0 0 1-76-112.5C167.3 606.2 158 559.9 158 512s9.4-94.2 27.8-137.8c17.8-42.1 43.4-80 76-112.5s70.5-58.1 112.7-75.9c43.6-18.4 90-27.8 137.9-27.8 47.9 0 94.3 9.3 137.9 27.8 42.2 17.8 80.1 43.4 112.7 75.9 7.9 7.9 15.3 16.1 22.4 24.5 3 3.7 7.6 5.8 12.3 5.8H868c6.3 0 10.2-7 6.7-12.3C798 160.5 663.8 81.6 511.3 82 271.7 82.6 79.6 277.1 82 516.4 84.4 751.9 276.2 942 512.4 942c152.1 0 285.7-78.8 362.3-197.7 3.4-5.3-.4-12.3-6.7-12.3zm88.9-226.3L815 393.7c-5.3-4.2-13-.4-13 6.3v76H488c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h314v76c0 6.7 7.8 10.5 13 6.3l141.9-112a8 8 0 0 0 0-12.6z"/>
                 </svg>
                 <h1 class="text-2xl font-bold text-white">退出登录</h1>
             </div>
-            <p class="text-primary-100">您即将退出健身房管理系统</p>
+            <p class="text-blue-100">您即将退出健身房管理系统</p>
         </div>
 
         <div class="p-8">
             <div class="text-center mb-8">
-                <div class="flex justify-center mb-4">
-                    <div class="w-20 h-20 rounded-full bg-primary-100 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
+                <div class="icon-container">
+                    <svg class="icon text-2xl text-blue-600" viewBox="0 0 1024 1024" width="1.5em" height="1.5em">
+                        <path d="M832 464h-68V240c0-70.7-57.3-128-128-128H388c-70.7 0-128 57.3-128 128v224h-68c-17.7 0-32 14.3-32 32v384c0 17.7 14.3 32 32 32h640c17.7 0 32-14.3 32-32V496c0-17.7-14.3-32-32-32zM332 240c0-30.9 25.1-56 56-56h248c30.9 0 56 25.1 56 56v224H332V240zm460 600H232V536h560v304z"/>
+                    </svg>
                 </div>
-                <h2 class="text-xl font-semibold text-neutral-dark mb-2">确认要退出系统吗？</h2>
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">确认要退出系统吗？</h2>
                 <p class="text-gray-500">所有未保存的数据可能会丢失</p>
             </div>
 
-            <div class="flex flex-col space-y-4">
-                <form th:action="@{/perform-logout}" method="post">
-                    <button type="submit" class="btn-primary w-full flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            <div class="flex flex-col gap-4">
+                <form th:action="@{/perform-logout}" method="post" id="logoutForm">
+                    <button type="submit" class="btn btn-primary" id="confirmLogoutBtn">
+                        <svg class="icon mr-2" viewBox="0 0 1024 1024" width="1em" height="1em">
+                            <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z"/>
                         </svg>
                         确认退出
                     </button>
                 </form>
 
-                <a th:href="@{/index}" class="btn-secondary w-full flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <a th:href="@{/index}" class="btn btn-secondary">
+                    <svg class="icon mr-2" viewBox="0 0 1024 1024" width="1em" height="1em">
+                        <path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"/>
                     </svg>
                     取消
                 </a>
             </div>
 
-            <div class="mt-8 pt-6 border-t border-gray-100 text-center text-sm text-gray-500">
+            <div class="mt-8 pt-6 border-t text-center text-sm text-gray-500">
                 <p>您可以随时重新登录系统</p>
-                <div class="mt-2 flex items-center justify-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <div class="mt-2 flex items-center justify-center gap-2">
+                    <svg class="icon text-sm" viewBox="0 0 1024 1024" width="1em" height="1em">
+                        <path d="M866.9 169.9L527.1 54.1C523 52.7 517.5 52 512 52s-11 .7-15.1 2.1L157.1 169.9c-8.3 2.8-15.1 12.4-15.1 21.2v482.4c0 8.8 5.7 20.4 12.6 25.9L499.3 968c3.5 2.7 8 4.1 12.6 4.1s9.2-1.4 12.6-4.1l344.7-268.6c6.9-5.4 12.6-17 12.6-25.9V191.1c.2-8.8-6.6-18.3-14.9-21.2zM694.5 340.7L481.9 633.4a16.1 16.1 0 0 1-26 0l-126.4-174c-3.8-5.3 0-12.7 6.5-12.7h55.2c5.1 0 10 2.5 13 6.6l64.7 89 150.9-207.8c3-4.1 7.8-6.6 13-6.6H688c6.5.1 10.3 7.5 6.5 12.8z"/>
                     </svg>
                     <span>安全退出系统</span>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="mt-8 text-center text-sm text-white">
-        <div class="flex items-center justify-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-        </div>
-    </div>
 </div>
+
+<script>
+    // 立即显示内容
+    document.getElementById('contentContainer').style.opacity = '1';
+
+    // 处理退出表单提交
+    document.getElementById('confirmLogoutBtn')?.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // 显示加载指示器
+        const loader = document.getElementById('loadingOverlay');
+        loader.style.display = 'flex';
+        setTimeout(() => loader.style.opacity = '1', 10);
+
+        // 延迟提交表单
+        setTimeout(() => {
+            document.getElementById('logoutForm').submit();
+        }, 300);
+    });
+
+    // 预加载登录页面
+    if (navigator.connection?.effectiveType !== 'slow-2g') {
+        setTimeout(() => {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = '/login';
+            document.head.appendChild(link);
+        }, 500);
+    }
+</script>
 </body>
 </html>

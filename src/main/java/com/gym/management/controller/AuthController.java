@@ -180,7 +180,11 @@ public class AuthController {
 
     // 显示退出确认页面
     @GetMapping("/logout")
-    public String logoutPage() {
+    public String logoutPage(HttpServletRequest request, HttpSession session) {
+        // 预检查用户是否已经登出，如果已经登出则直接重定向到登录页面
+        if (session == null || session.getAttribute("loggedInUser") == null) {
+            return "redirect:/login";
+        }
         return "logout";
     }
     
@@ -190,30 +194,71 @@ public class AuthController {
         // 获取用户名
         String username = (String) session.getAttribute("loggedInUser");
         
-        // 清除session
-        session.invalidate();
-        
-        // 清除所有cookies，确保完全退出
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                // 特别处理记住我cookie
-                if ("remember-me".equals(cookie.getName())) {
-                    cookie.setValue("");
-                    cookie.setPath("/");
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
+        try {
+            // 如果有用户名，清除数据库中的记住我令牌
+            if (username != null) {
+                userService.clearRememberMeToken(username);
+            }
+            
+            // 清除记住我cookie
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("remember-me".equals(cookie.getName())) {
+                        cookie.setValue("");
+                        cookie.setPath("/");
+                        cookie.setMaxAge(0);
+                        response.addCookie(cookie);
+                        break; // 找到并处理后立即退出循环
+                    }
                 }
             }
-        }
-        
-        // 如果有用户名，清除数据库中的记住我令牌
-        if (username != null) {
-            userService.clearRememberMeToken(username);
+            
+            // 最后清除session
+            session.invalidate();
+        } catch (Exception e) {
+            // 记录错误但继续执行，确保用户能够登出
+            System.err.println("退出登录时发生错误: " + e.getMessage());
         }
         
         // 重定向到登录页面
         return "redirect:/login";
+    }
+    
+    // 处理修改密码
+    @PostMapping("/api/change-password")
+    @ResponseBody
+    public ResponseEntity<?> changePassword(
+            @RequestParam String oldPassword,
+            @RequestParam String newPassword,
+            @RequestParam String confirmPassword,
+            HttpSession session) {
+        
+        // 获取当前登录用户
+        String username = (String) session.getAttribute("loggedInUser");
+        
+        // 检查用户是否登录
+        if (username == null) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("success", false, "message", "未登录，请先登录"));
+        }
+        
+        // 检查新密码和确认密码是否一致
+        if (!newPassword.equals(confirmPassword)) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "新密码与确认密码不一致"));
+        }
+        
+        // 调用服务修改密码
+        boolean changed = userService.changePassword(username, oldPassword, newPassword);
+        
+        if (changed) {
+            return ResponseEntity.ok()
+                    .body(Map.of("success", true, "message", "密码修改成功"));
+        } else {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "原密码不正确"));
+        }
     }
 
     @GetMapping("/api/check-auth")

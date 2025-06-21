@@ -22,4 +22,7 @@ public interface UserService {
     
     // 清除用户的记住我令牌
     void clearRememberMeToken(String username);
+    
+    // 修改用户密码
+    boolean changePassword(String username, String oldPassword, String newPassword);
 } 

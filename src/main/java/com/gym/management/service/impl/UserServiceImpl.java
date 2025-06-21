@@ -94,4 +94,23 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
         }
     }
+    
+    @Override
+    public boolean changePassword(String username, String oldPassword, String newPassword) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            
+            // 验证旧密码是否正确
+            if (user.getPassword().equals(oldPassword)) {
+                // 设置新密码
+                user.setPassword(newPassword);
+                userRepository.save(user);
+                return true;
+            }
+        }
+        
+        return false;
+    }
 } 
