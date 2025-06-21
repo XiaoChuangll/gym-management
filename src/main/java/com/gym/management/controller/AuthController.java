@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +20,8 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 public class AuthController {
@@ -33,7 +36,16 @@ public class AuthController {
     @GetMapping("/login")
     public String loginPage(HttpServletRequest request, HttpServletResponse response,
                            @RequestParam(required = false) String autoLogin,
-                           @RequestParam(required = false) String forceAnimation) {
+                           @RequestParam(required = false) String forceAnimation,
+                           @RequestParam(required = false) String success,
+                           @RequestParam(required = false) String username,
+                           Model model) {
+        // 如果是注册成功跳转过来的，添加成功信息
+        if ("true".equals(success) && username != null) {
+            model.addAttribute("registerSuccess", true);
+            model.addAttribute("registerUsername", username);
+        }
+        
         // 如果已经在进行自动登录动画显示，则直接返回登录页面
         if ("true".equals(autoLogin)) {
             return "login";
@@ -55,19 +67,19 @@ public class AuthController {
                         String decodedValue = new String(Base64.getDecoder().decode(cookie.getValue()));
                         String[] parts = decodedValue.split(":");
                         if (parts.length == 2) {
-                            String username = parts[0];
+                            String cookieUsername = parts[0];
                             String token = parts[1];
                             
                             // 验证记住我令牌
-                            if (userService.validateRememberMeToken(username, token)) {
+                            if (userService.validateRememberMeToken(cookieUsername, token)) {
                                 // 令牌有效，创建新会话并存储用户信息
                                 HttpSession newSession = request.getSession(true);
-                                newSession.setAttribute("loggedInUser", username);
-                                System.out.println("自动登录成功: " + username);
+                                newSession.setAttribute("loggedInUser", cookieUsername);
+                                System.out.println("自动登录成功: " + cookieUsername);
                                 
                                 // 更新令牌，延长有效期
-                                String newToken = userService.generateRememberMeToken(username);
-                                String cookieValue = username + ":" + newToken;
+                                String newToken = userService.generateRememberMeToken(cookieUsername);
+                                String cookieValue = cookieUsername + ":" + newToken;
                                 String encodedValue = Base64.getEncoder().encodeToString(cookieValue.getBytes());
                                 
                                 Cookie rememberMeCookie = new Cookie("remember-me", encodedValue);
@@ -86,7 +98,7 @@ public class AuthController {
                                 boolean isDirectAccess = referer == null || !referer.contains(request.getServerName());
                                 
                                 if ("true".equals(forceAnimation) || isDirectAccess) {
-                                    return "redirect:/login?autoLogin=true&username=" + username;
+                                    return "redirect:/login?autoLogin=true&username=" + cookieUsername;
                                 } else {
                                     // 如果是从站内页面访问登录页，则直接跳转到首页
                                     return "redirect:/index";
@@ -117,6 +129,12 @@ public class AuthController {
         if (userService.validateUser(username, password)) {
             // 登录成功，将用户信息存入session
             session.setAttribute("loggedInUser", username);
+            
+            // 获取用户角色并存入session
+            User user = userService.getUserDetails(username);
+            if (user != null) {
+                session.setAttribute("userRole", user.getRole());
+            }
             
             // 处理"记住我"功能
             if (rememberMe != null && rememberMe.equals("on")) {
@@ -456,5 +474,103 @@ public class AuthController {
             return ResponseEntity.status(500)
                     .body(Map.of("success", false, "message", "用户头像更新失败"));
         }
+    }
+    
+    // API: 验证管理员身份
+    @PostMapping("/api/verify-admin")
+    @ResponseBody
+    public ResponseEntity<?> verifyAdmin(
+            @RequestParam String username,
+            @RequestParam String password) {
+        
+        // 验证用户名和密码是否正确
+        if (!userService.validateUser(username, password)) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("success", false, "message", "用户名或密码错误"));
+        }
+        
+        // 验证用户是否是管理员角色
+        User user = userService.getUserDetails(username);
+        if (user == null || !"ADMIN".equals(user.getRole())) {
+            return ResponseEntity.status(403)
+                    .body(Map.of("success", false, "message", "该账号没有管理员权限"));
+        }
+        
+        // 验证通过，返回成功信息
+        return ResponseEntity.ok()
+                .body(Map.of("success", true, "message", "管理员身份验证成功"));
+    }
+    
+    // 显示注册页面
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register";
+    }
+    
+    // 处理注册请求
+    @PostMapping("/register")
+    public String register(@RequestParam String username,
+                          @RequestParam String password,
+                          @RequestParam String confirmPassword,
+                          @RequestParam String adminUsername,
+                          @RequestParam String adminPassword,
+                          @RequestParam(required = false) String displayName,
+                          @RequestParam(required = false) String email,
+                          @RequestParam(required = false) String avatarUrl) {
+        
+        // 首先验证管理员身份
+        if (!userService.validateUser(adminUsername, adminPassword)) {
+            return "redirect:/register?error=" + URLEncoder.encode("管理员账号或密码错误", StandardCharsets.UTF_8);
+        }
+        
+        // 验证管理员是否有权限
+        User adminUser = userService.getUserDetails(adminUsername);
+        if (adminUser == null || !"ADMIN".equals(adminUser.getRole())) {
+            return "redirect:/register?error=" + URLEncoder.encode("该账号无管理员权限", StandardCharsets.UTF_8);
+        }
+        
+        // 验证两次密码输入是否一致
+        if (!password.equals(confirmPassword)) {
+            return "redirect:/register?error=" + URLEncoder.encode("两次输入的密码不一致", StandardCharsets.UTF_8);
+        }
+        
+        // 检查用户名是否已存在 - 这部分已经在前端处理，这里作为后备验证
+        if (userService.existsByUsername(username)) {
+            return "redirect:/register?error=" + URLEncoder.encode("用户名已存在", StandardCharsets.UTF_8);
+        }
+        
+        // 创建新用户对象，角色设置为USER
+        User newUser = new User(username, password, "USER");
+        
+        // 设置可选字段
+        if (displayName != null && !displayName.isEmpty()) {
+            newUser.setDisplayName(displayName);
+        }
+        
+        if (email != null && !email.isEmpty()) {
+            newUser.setEmail(email);
+        }
+        
+        // 设置默认头像
+        newUser.setAvatarUrl("/uploads/avatars/default.jpg");
+        
+        // 保存用户
+        User savedUser = userService.saveUser(newUser);
+        
+        // 如果提供了头像数据，保存头像
+        if (avatarUrl != null && !avatarUrl.isEmpty() && avatarUrl.startsWith("data:image/")) {
+            userService.updateUserAvatar(username, avatarUrl);
+        }
+        
+        // 注册成功，重定向到登录页面并显示成功动画
+        return "redirect:/login?success=true&username=" + URLEncoder.encode(username, StandardCharsets.UTF_8);
+    }
+
+    // API: 检查用户名是否已存在
+    @GetMapping("/api/check-username")
+    @ResponseBody
+    public ResponseEntity<?> checkUsernameExists(@RequestParam String username) {
+        boolean exists = userService.existsByUsername(username);
+        return ResponseEntity.ok(Map.of("exists", exists));
     }
 }

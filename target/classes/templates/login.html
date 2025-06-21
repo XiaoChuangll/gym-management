@@ -333,8 +333,8 @@
                     <label for="remember-me" class="ml-2 block text-sm text-gray-700">记住我</label>
                 </div>
                 <div>
-                    <a href="#" class="text-sm text-primary hover:text-primary/80 transition-colors duration-200">
-                        忘记密码?
+                    <a th:href="@{/register}" class="text-sm text-primary hover:text-primary/80 transition-colors duration-200">
+                        注册账号
                     </a>
                 </div>
             </div>
@@ -401,6 +401,7 @@
         // 检查是否应该播放动画
         const autoLogin = getURLParameter('autoLogin');
         const username = getURLParameter('username');
+        const success = getURLParameter('success');
         
         // 添加cookie调试信息
         if (localStorage.getItem('debug_mode') === 'true') {
@@ -428,6 +429,54 @@
         // 在需要调试时调用
         if (localStorage.getItem('debug_mode') === 'true') {
             checkRememberMeCookie();
+        }
+        
+        // 检查是否是注册成功后跳转
+        if ("true" === success && username) {
+            // 显示注册成功动画
+            const animation = document.getElementById('loginSuccessAnimation');
+            const usernameElement = document.getElementById('welcomeUsername');
+            
+            if (usernameElement) {
+                usernameElement.textContent = username + ' 注册成功，欢迎使用!';
+            }
+            
+            if (animation) {
+                // 禁止背景滚动和交互
+                document.body.style.overflow = 'hidden';
+                
+                // 隐藏主内容
+                if (mainContent) {
+                    mainContent.style.visibility = 'hidden';
+                }
+                
+                // 使用requestAnimationFrame以优化性能
+                requestAnimationFrame(() => {
+                    animation.classList.add('show');
+                    
+                    // 动画结束后显示登录页面
+                    setTimeout(() => {
+                        animation.style.transition = 'opacity 0.5s ease';
+                        animation.style.opacity = '0';
+                        
+                        setTimeout(() => {
+                            // 恢复页面状态
+                            animation.classList.remove('show');
+                            document.body.style.overflow = '';
+                            if (mainContent) {
+                                mainContent.style.visibility = '';
+                            }
+                            
+                            // 自动填充用户名
+                            document.getElementById('username').value = username;
+                            document.getElementById('password').focus();
+                        }, 500);
+                    }, 3800);
+                });
+            }
+            
+            // 阻止自动登录动画
+            return;
         }
         
         // 仅当autoLogin为true时才播放动画
