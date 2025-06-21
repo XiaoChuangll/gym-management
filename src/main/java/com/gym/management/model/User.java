@@ -19,6 +19,9 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private String role;
+    
+    @Column
+    private String rememberMeToken;
 
     // 默认构造函数
     public User() {
@@ -62,6 +65,14 @@ public class User implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+    
+    public String getRememberMeToken() {
+        return rememberMeToken;
+    }
+    
+    public void setRememberMeToken(String rememberMeToken) {
+        this.rememberMeToken = rememberMeToken;
     }
 
     @Override
