@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册账号 - 健身房管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/font-awesome.min.css" rel="stylesheet" id="font-awesome-cdn">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <!-- Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36D399',
+                        accent: '#FFAB00',
+                        neutral: '#F8FAFC',
+                        'neutral-dark': '#334155'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+            }
+            .btn-primary {
+                @apply bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300;
+            }
+            .btn-secondary {
+                @apply bg-white border border-gray-300 hover:bg-gray-50 text-neutral-dark font-medium py-2 px-4 rounded-lg transition-all duration-300;
+            }
+            .form-input-focus {
+                @apply focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200;
+            }
+        }
+    </style>
+
+    <style>
+        body {
+            background-color: #f8fafc;
+        }
+        
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e2e8f0;
+        }
+        
+        /* 页面加载时的平滑过渡 */
+        .page-transition {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .page-transition.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 加载动画 */
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #165DFF;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 过渡动画 */
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        /* 注册成功动画样式 */
+        .register-success-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            background-color: rgba(248, 250, 252, 0.95);
+        }
+        
+        .register-success-animation.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        
+        .animation-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 80%;
+            text-align: center;
+        }
+        
+        /* 成功图标动画 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes ripple {
+            0% { box-shadow: 0 0 0 0 rgba(54, 211, 153, 0.3); }
+            100% { box-shadow: 0 0 0 70px rgba(54, 211, 153, 0); }
+        }
+        
+        .success-icon {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .success-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: rgba(54, 211, 153, 0.1);
+            animation: ripple 2s linear infinite;
+        }
+        
+        .success-circle {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, #36D399, #2bb583);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            transform: scale(0);
+            margin: 10px auto;
+            animation: popIn 0.5s cubic-bezier(0.26, 1.36, 0.68, 1) forwards;
+            box-shadow: 0 5px 15px rgba(54, 211, 153, 0.3);
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .check-mark {
+            transform-origin: center;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: checkmark 1s ease-in-out forwards 0.5s;
+            stroke: white;
+            stroke-width: 5;
+            width: 40px;
+            height: 40px;
+        }
+        
+        @keyframes checkmark {
+            0% { stroke-dashoffset: 100; }
+            100% { stroke-dashoffset: 0; }
+        }
+        
+        .success-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: #334155;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 1s;
+        }
+        
+        .redirect-text {
+            font-size: 16px;
+            color: #64748b;
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 1.3s;
+        }
+        
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .redirect-progress {
+            width: 200px;
+            height: 5px;
+            background-color: #e2e8f0;
+            border-radius: 3px;
+            margin-top: 30px;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 1.6s;
+        }
+        
+        .redirect-progress-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #36D399, #4ae3ad);
+            border-radius: 3px;
+            animation: progressBar 2s ease-out 1.8s forwards;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes progressBar {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 font-inter">
+<div class="w-full max-w-md page-transition">
+    <!-- 错误提示 -->
+    <div th:if="${error}" id="errorMessage" class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center">
+        <i class="fa fa-exclamation-circle mr-3 text-red-500"></i>
+        <span th:text="${error}">注册错误</span>
+    </div>
+
+    <!-- 管理员验证部分 -->
+    <div id="adminVerificationForm" class="bg-white rounded-2xl shadow-xl p-8 card-hover">
+        <div class="text-center mb-6">
+            <div class="flex items-center justify-center mb-4">
+                <i class="fa fa-dumbbell text-primary text-4xl mr-2"></i>
+                <h1 class="text-2xl font-bold text-neutral-dark">健身房管理系统</h1>
+            </div>
+            <h2 class="text-xl font-semibold text-neutral-dark">管理员验证</h2>
+            <p class="text-sm text-gray-500 mt-1">请输入管理员账号和密码进行验证</p>
+        </div>
+
+        <div class="space-y-4">
+            <!-- 管理员用户名 -->
+            <div>
+                <label for="adminUsername" class="block text-sm font-medium text-gray-700 mb-1">管理员账号</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa fa-user-shield text-gray-400"></i>
+                    </div>
+                    <input type="text" id="adminUsername" name="adminUsername" required
+                           class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus"
+                           placeholder="请输入管理员账号">
+                </div>
+            </div>
+
+            <!-- 管理员密码 -->
+            <div>
+                <label for="adminPassword" class="block text-sm font-medium text-gray-700 mb-1">管理员密码</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa fa-lock text-gray-400"></i>
+                    </div>
+                    <input type="password" id="adminPassword" name="adminPassword" required
+                           class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus"
+                           placeholder="请输入管理员密码">
+                </div>
+            </div>
+
+            <!-- 验证结果提示 -->
+            <div id="adminVerificationMessage" class="hidden">
+                <!-- 内容将通过JavaScript动态添加 -->
+            </div>
+
+            <button type="button" onclick="verifyAdmin()" id="verifyButton" class="btn-primary w-full py-3 flex items-center justify-center">
+                <i class="fa fa-shield-alt mr-2"></i> 验证管理员身份
+            </button>
+        </div>
+
+        <div class="mt-6 text-center space-x-4">
+            <a th:href="@{/login}" class="text-sm text-gray-600 hover:text-primary transition-colors duration-200">
+                <i class="fa fa-sign-in mr-1"></i> 返回登录
+            </a>
+        </div>
+    </div>
+
+    <!-- 用户注册表单部分 (隐藏，仅用于提交) -->
+    <div id="registrationForm" class="hidden">
+        <form th:action="@{/register}" method="post" id="userRegisterForm" class="space-y-4">
+            <!-- 传递管理员信息的隐藏字段 -->
+            <input type="hidden" id="verifiedAdminUsername" name="adminUsername">
+            <input type="hidden" id="verifiedAdminPassword" name="adminPassword">
+            
+            <!-- 用户信息输入字段 (隐藏，将通过对话框填充) -->
+            <input type="hidden" id="username" name="username">
+            <input type="hidden" id="password" name="password">
+            <input type="hidden" id="confirmPassword" name="confirmPassword">
+            <input type="hidden" id="displayName" name="displayName">
+            <input type="hidden" id="email" name="email">
+            <input type="hidden" id="avatarUrl" name="avatarUrl" value="">
+        </form>
+    </div>
+
+    <!-- 用户信息输入对话框 (初始隐藏) -->
+    <div id="userInfoDialog" class="hidden bg-white rounded-2xl shadow-xl p-8 card-hover mt-4">
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-semibold text-neutral-dark">注册新账号</h2>
+            <p class="text-sm text-gray-500 mt-1">管理员 <span id="adminName" class="font-semibold"></span> 已验证</p>
+        </div>
+
+        <div class="space-y-4">
+            <!-- 账号 (必填) -->
+            <div>
+                <label for="dialogUsername" class="block text-sm font-medium text-gray-700 mb-1">账号 <span class="text-red-500">*</span></label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa fa-user text-gray-400"></i>
+                    </div>
+                    <input type="text" id="dialogUsername" required
+                           class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus"
+                           placeholder="请输入账号">
+                </div>
+            </div>
+
+            <!-- 密码 (必填) -->
+            <div>
+                <label for="dialogPassword" class="block text-sm font-medium text-gray-700 mb-1">密码 <span class="text-red-500">*</span></label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa fa-lock text-gray-400"></i>
+                    </div>
+                    <input type="password" id="dialogPassword" required
+                           class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus"
+                           placeholder="请输入密码">
+                </div>
+            </div>
+            
+            <!-- 确认密码 (必填) -->
+            <div>
+                <label for="dialogConfirmPassword" class="block text-sm font-medium text-gray-700 mb-1">确认密码 <span class="text-red-500">*</span></label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa fa-lock text-gray-400"></i>
+                    </div>
+                    <input type="password" id="dialogConfirmPassword" required
+                           class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus"
+                           placeholder="请再次输入密码">
+                </div>
+            </div>
+
+            <!-- 显示名称 (可选) -->
+            <div>
+                <label for="dialogDisplayName" class="block text-sm font-medium text-gray-700 mb-1">显示名称</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa fa-id-card text-gray-400"></i>
+                    </div>
+                    <input type="text" id="dialogDisplayName"
+                           class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus"
+                           placeholder="请输入显示名称">
+                </div>
+                <p class="mt-1 text-xs text-gray-500">可选，用于显示在系统界面上</p>
+            </div>
+
+            <!-- 邮箱 (可选) -->
+            <div>
+                <label for="dialogEmail" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa fa-envelope text-gray-400"></i>
+                    </div>
+                    <input type="email" id="dialogEmail"
+                           class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg form-input-focus"
+                           placeholder="请输入邮箱">
+                </div>
+                <p class="mt-1 text-xs text-gray-500">可选，用于接收系统通知</p>
+            </div>
+
+            <!-- 头像 (可选) -->
+            <div>
+                <label for="avatar" class="block text-sm font-medium text-gray-700 mb-1">头像</label>
+                <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                        <img id="avatar-preview" src="/uploads/avatars/default.jpg" alt="用户头像" class="avatar-preview">
+                    </div>
+                    <div class="flex-grow">
+                        <input type="file" id="avatar" name="avatar" accept="image/*" class="hidden"
+                               onchange="previewAvatar(this)">
+                        <input type="hidden" id="dialogAvatarData">
+                        <button type="button" onclick="document.getElementById('avatar').click()"
+                                class="btn-secondary text-sm py-1.5 px-3">
+                            <i class="fa fa-upload mr-1"></i> 上传头像
+                        </button>
+                        <p class="mt-1 text-xs text-gray-500">可选，默认使用系统头像</p>
+                        <div class="mt-2">
+                            <button type="button" onclick="useDefaultAvatar()" class="btn-secondary text-sm py-1.5 px-3">
+                                <i class="fa fa-undo mr-1"></i> 使用默认头像
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" onclick="submitRegistration()" class="btn-primary w-full py-3 flex items-center justify-center">
+                <i class="fa fa-user-plus mr-2"></i> 注册账号
+            </button>
+        </div>
+    </div>
+
+    <div class="mt-6 text-center text-sm text-gray-500">
+        &copy; 2025 健身房管理系统 | 版权所有
+    </div>
+</div>
+
+<!-- 注册成功动画 -->
+<div class="register-success-animation" id="registerSuccessAnimation">
+    <div class="animation-container">
+        <div class="success-icon">
+            <div class="success-ring"></div>
+            <div class="success-circle">
+                <svg class="check-mark" viewBox="0 0 52 52">
+                    <polyline points="14,27 22,35 38,15" fill="none"/>
+                </svg>
+            </div>
+        </div>
+        <h2 class="success-text">注册成功!</h2>
+        <div class="redirect-text" id="successUsername">正在跳转到登录页面...</div>
+        <div class="redirect-progress">
+            <div class="redirect-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    // 页面加载效果
+    document.addEventListener("DOMContentLoaded", function() {
+        const mainContent = document.querySelector('.page-transition');
+        if (mainContent) {
+            setTimeout(() => {
+                mainContent.classList.add('loaded');
+            }, 100);
+        }
+        
+        // 确保默认头像被选中
+        document.getElementById('avatar-preview').src = '/uploads/avatars/default.jpg';
+        
+        // 设置错误消息自动消失
+        const errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            setTimeout(() => {
+                errorMessage.style.transition = 'opacity 0.5s ease';
+                errorMessage.style.opacity = '0';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 500);
+            }, 3000); // 3秒后开始淡出
+        }
+        
+        // 检查URL参数中是否有错误信息
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorParam = urlParams.get('error');
+        
+        if (errorParam) {
+            // 创建错误消息元素
+            let urlErrorDiv = document.createElement('div');
+            urlErrorDiv.className = 'mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center';
+            urlErrorDiv.innerHTML = `
+                <i class="fa fa-exclamation-circle mr-3 text-red-500"></i>
+                <span>${decodeURIComponent(errorParam)}</span>
+            `;
+            
+            // 插入到页面顶部
+            const container = document.querySelector('.w-full.max-w-md');
+            if (container) {
+                container.insertBefore(urlErrorDiv, container.firstChild);
+                
+                // 3秒后自动消失
+                setTimeout(() => {
+                    urlErrorDiv.style.transition = 'opacity 0.5s ease';
+                    urlErrorDiv.style.opacity = '0';
+                    setTimeout(() => {
+                        urlErrorDiv.remove();
+                    }, 500);
+                }, 3000);
+            }
+        }
+    });
+    
+    // 管理员验证
+    function verifyAdmin() {
+        const adminUsername = document.getElementById('adminUsername').value;
+        const adminPassword = document.getElementById('adminPassword').value;
+        const verifyButton = document.getElementById('verifyButton');
+        const messageDiv = document.getElementById('adminVerificationMessage');
+        
+        // 验证字段不能为空
+        if (!adminUsername || !adminPassword) {
+            showMessage('error', '请输入管理员账号和密码');
+            return;
+        }
+        
+        // 显示加载状态
+        verifyButton.disabled = true;
+        verifyButton.innerHTML = '<span class="spinner mr-2"></span> 验证中...';
+        
+        // 发送验证请求
+        fetch('/api/verify-admin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'username': adminUsername,
+                'password': adminPassword
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // 恢复按钮状态
+            verifyButton.disabled = false;
+            verifyButton.innerHTML = '<i class="fa fa-shield-alt mr-2"></i> 验证管理员身份';
+            
+            if (data.success) {
+                // 验证成功
+                showMessage('success', '管理员验证成功！');
+                
+                // 设置隐藏字段的值
+                document.getElementById('verifiedAdminUsername').value = adminUsername;
+                document.getElementById('verifiedAdminPassword').value = adminPassword;
+                document.getElementById('adminName').textContent = adminUsername;
+                
+                // 延迟后显示用户信息输入对话框
+                setTimeout(() => {
+                    document.getElementById('adminVerificationForm').style.display = 'none';
+                    const userInfoDialog = document.getElementById('userInfoDialog');
+                    userInfoDialog.style.display = 'block';
+                    userInfoDialog.classList.add('fade-enter', 'fade-enter-active');
+                }, 1000);
+            } else {
+                // 验证失败
+                showMessage('error', data.message || '管理员验证失败，请检查账号和密码');
+            }
+        })
+        .catch(error => {
+            console.error('验证请求错误:', error);
+            verifyButton.disabled = false;
+            verifyButton.innerHTML = '<i class="fa fa-shield-alt mr-2"></i> 验证管理员身份';
+            showMessage('error', '网络错误，请重试');
+        });
+    }
+    
+    // 显示消息
+    function showMessage(type, message) {
+        const messageDiv = document.getElementById('adminVerificationMessage');
+        messageDiv.className = type === 'error' 
+            ? 'bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center'
+            : 'bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex items-center';
+        
+        messageDiv.innerHTML = `
+            <i class="fa fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'} mr-3 text-${type === 'error' ? 'red' : 'green'}-500"></i>
+            <span>${message}</span>
+        `;
+        messageDiv.style.display = 'flex';
+        
+        // 如果是错误消息，3秒后自动消失
+        if (type === 'error') {
+            setTimeout(() => {
+                messageDiv.style.transition = 'opacity 0.5s ease';
+                messageDiv.style.opacity = '0';
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                    messageDiv.style.opacity = '1'; // 重置透明度，以便下次显示
+                }, 500);
+            }, 3000);
+        }
+    }
+    
+    // 头像预览功能
+    function previewAvatar(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // 显示预览
+                document.getElementById('avatar-preview').src = e.target.result;
+                
+                // 压缩图像
+                compressImage(e.target.result, function(compressed) {
+                    document.getElementById('dialogAvatarData').value = compressed;
+                });
+            };
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    // 图像压缩函数
+    function compressImage(base64, callback) {
+        const img = new Image();
+        img.src = base64;
+        
+        img.onload = function() {
+            // 创建canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 设置尺寸为适合头像的大小
+            const maxWidth = 300;
+            const maxHeight = 300;
+            
+            let width = img.width;
+            let height = img.height;
+            
+            // 计算缩放比例
+            if (width > height) {
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width *= maxHeight / height;
+                    height = maxHeight;
+                }
+            }
+            
+            // 设置canvas尺寸
+            canvas.width = width;
+            canvas.height = height;
+            
+            // 绘制压缩后的图像
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // 导出为base64
+            const compressed = canvas.toDataURL('image/jpeg', 0.8);
+            callback(compressed);
+        };
+    }
+    
+    // 提交注册
+    function submitRegistration() {
+        // 获取对话框中的值
+        const username = document.getElementById('dialogUsername').value;
+        const password = document.getElementById('dialogPassword').value;
+        const confirmPassword = document.getElementById('dialogConfirmPassword').value;
+        const displayName = document.getElementById('dialogDisplayName').value;
+        const email = document.getElementById('dialogEmail').value;
+        const avatarData = document.getElementById('dialogAvatarData').value;
+        
+        // 验证必填字段
+        if (!username || !password || !confirmPassword) {
+            alert('请填写必填字段');
+            return;
+        }
+        
+        // 验证两次密码是否一致
+        if (password !== confirmPassword) {
+            alert('两次输入的密码不一致，请重新输入');
+            return;
+        }
+        
+        // 检查用户名是否已存在
+        fetch('/api/check-username?username=' + encodeURIComponent(username))
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    // 用户名已存在，显示错误消息
+                    const userInfoDialog = document.getElementById('userInfoDialog');
+                    
+                    // 创建错误消息元素
+                    let errorDiv = document.getElementById('usernameError');
+                    if (!errorDiv) {
+                        errorDiv = document.createElement('div');
+                        errorDiv.id = 'usernameError';
+                        errorDiv.className = 'mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center';
+                        errorDiv.innerHTML = `
+                            <i class="fa fa-exclamation-circle mr-3 text-red-500"></i>
+                            <span>用户名已存在，请选择其他用户名</span>
+                        `;
+                        
+                        // 插入到用户名输入框上方
+                        const usernameField = document.getElementById('dialogUsername').parentNode.parentNode;
+                        usernameField.parentNode.insertBefore(errorDiv, usernameField);
+                    } else {
+                        // 如果错误消息已存在，确保它可见
+                        errorDiv.style.display = 'flex';
+                        errorDiv.style.opacity = '1';
+                    }
+                    
+                    // 3秒后自动消失
+                    setTimeout(() => {
+                        errorDiv.style.transition = 'opacity 0.5s ease';
+                        errorDiv.style.opacity = '0';
+                        setTimeout(() => {
+                            errorDiv.style.display = 'none';
+                        }, 500);
+                    }, 3000);
+                    
+                    // 聚焦用户名输入框
+                    document.getElementById('dialogUsername').focus();
+                } else {
+                    // 用户名可用，填充隐藏表单并提交
+                    document.getElementById('username').value = username;
+                    document.getElementById('password').value = password;
+                    document.getElementById('confirmPassword').value = confirmPassword;
+                    document.getElementById('displayName').value = displayName;
+                    document.getElementById('email').value = email;
+                    
+                    // 如果没有上传头像，使用默认头像路径
+                    document.getElementById('avatarUrl').value = avatarData || '';
+                    
+                    // 提交表单
+                    document.getElementById('userRegisterForm').submit();
+                }
+            })
+            .catch(error => {
+                console.error('检查用户名错误:', error);
+                // 出错时仍然提交表单，让服务器端处理错误
+                document.getElementById('username').value = username;
+                document.getElementById('password').value = password;
+                document.getElementById('confirmPassword').value = confirmPassword;
+                document.getElementById('displayName').value = displayName;
+                document.getElementById('email').value = email;
+                document.getElementById('avatarUrl').value = avatarData || '';
+                
+                document.getElementById('userRegisterForm').submit();
+            });
+    }
+
+    // 使用默认头像
+    function useDefaultAvatar() {
+        // 重置头像预览
+        document.getElementById('avatar-preview').src = '/uploads/avatars/default.jpg';
+        // 清空头像数据
+        document.getElementById('dialogAvatarData').value = '';
+        // 清空文件输入
+        document.getElementById('avatar').value = '';
+    }
+</script>
+
+</body>
+</html> 
