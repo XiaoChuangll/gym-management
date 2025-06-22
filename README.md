@@ -9,6 +9,7 @@
 - **课程管理**：录入、查询、修改、删除课程信息（课程编号、课程名称、教练编号、课程时间、课程容量等）
 - **预约管理**：记录会员的课程预约信息
 - **统计报表**：查询会员的课程预约情况，统计各课程的预约人数、教练的工作量等
+- **通知系统**：发布、查看、管理系统通知和公告，支持Markdown格式，实现通知归档功能
 
 
 ## 🛠️ 技术栈
@@ -21,6 +22,7 @@
 |     前端框架     |         Bootstrap 5          |  
 |    模板引擎      |         Thymeleaf           |  
 |     图表库      |          Chart.js           |
+|    Markdown渲染  |         Marked.js          |
 
 ## 系统要求
 
@@ -51,7 +53,7 @@ spring.datasource.password=your_password
 
 ```bash
 mvn clean package
-java -jar target/management-0.0.1-SNAPSHOT.jar
+java -jar target/management-0.2.0-SNAPSHOT.jar
 ```
 
 或者使用Maven Spring Boot插件：
@@ -72,16 +74,18 @@ mvn spring-boot:run
 - **教练表（Coach）**：存储教练信息
 - **课程表（Course）**：存储课程信息
 - **预约表（Reservation）**：存储预约信息
+- **通知表（Notification）**：存储系统通知和公告信息
 
 ## API文档
 
-系统提供了完整的RESTful API，支持会员、教练、课程和预约的增删改查操作。详细API文档请参考：
+系统提供了完整的RESTful API，支持会员、教练、课程、预约和通知的增删改查操作。详细API文档请参考：
 
 - 会员API：`/gym/api/members`
 - 教练API：`/gym/api/coaches`
 - 课程API：`/gym/api/courses`
 - 预约API：`/gym/api/reservations`
 - 报表API：`/gym/api/reports`
+- 通知API：`/gym/api/notifications`
 
 ## 开发指南
 
@@ -91,11 +95,13 @@ mvn spring-boot:run
 src/main/java/com/gym/management/
 ├── controller/    # 控制器层
 ├── service/       # 服务层
+│   └── impl/      # 服务实现类
 ├── repository/    # 数据访问层
 ├── model/         # 实体类
 ├── dto/           # 数据传输对象
 ├── config/        # 配置类
-└── exception/     # 异常处理
+├── exception/     # 异常处理
+└── interceptor/   # 拦截器
 ```
 
 ### 添加新功能
@@ -105,6 +111,14 @@ src/main/java/com/gym/management/
 3. 在 `service` 包中创建服务接口和实现类
 4. 在 `controller` 包中创建控制器
 5. 在 `templates` 目录下创建相应的视图模板
+
+### 最近更新
+
+- 修复了通知管理页面访问问题
+- 实现了通知归档功能的持久化
+- 优化了首页通知公告的排序，按创建时间倒序排列
+- 移除了通知管理页面的批量选择功能
+- 增加了对Markdown格式通知内容的支持
 
 ## 贡献指南
 

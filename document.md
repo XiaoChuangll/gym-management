@@ -1,4 +1,3 @@
-
 # 健身房管理系统设计与实现文档
 
 ## 1. 需求分析
@@ -29,6 +28,12 @@
     - 查询会员的课程预约情况
     - 统计各课程的出勤率
     - 统计教练的工作量
+
+6. **通知系统**
+    - 发布、查看、管理系统通知和公告
+    - 支持通知的归档功能
+    - 支持Markdown格式的通知内容
+    - 按时间顺序显示最新通知
 
 ### 1.3 非功能需求
 
@@ -89,6 +94,10 @@
 5. **Font Awesome**
     - 图标库
     - 提供丰富的图标集合
+
+6. **Marked.js**
+    - Markdown解析器
+    - 用于将Markdown格式转换为HTML显示
 
 ### 2.3 开发工具
 
@@ -173,6 +182,15 @@ src/main/java/com/gym/management/
     - course_id：课程编号（外键）
     - reservation_time：预约时间
     - status：状态
+
+6. **通知表（notification）**
+    - notification_id：通知编号（主键）
+    - title：通知标题
+    - content：通知内容（支持Markdown格式）
+    - status：通知状态（活动/归档）
+    - created_at：创建时间
+    - updated_at：更新时间
+    - created_by：创建者
 
 ## 4. 详细设计与实现
 
@@ -303,6 +321,41 @@ public class Reservation {
 }
 ```
 
+#### 4.1.5 通知实体（Notification）
+
+```java
+@Entity
+@Table(name = "notification")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Notification {
+    @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "notification_id", length = 36)
+    private String notificationId;
+
+    @Column(name = "title", nullable = false, length = 100)
+    private String title;
+
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    @Column(name = "created_by", nullable = false, length = 50)
+    private String createdBy;
+}
+```
+
 ### 4.2 数据传输对象（DTO）设计
 
 #### 4.2.1 会员DTO（MemberDTO）
@@ -326,6 +379,25 @@ public class Reservation {
 - **课程出勤率DTO（CourseAttendanceDTO）**：统计课程出勤率
 - **教练工作量DTO（CoachWorkloadDTO）**：统计教练工作量
 - **会员预约DTO（MemberReservationDTO）**：统计会员预约情况
+
+#### 4.2.6 通知DTO（NotificationDTO）
+
+用于在控制器和视图之间传输通知数据。
+
+```java
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class NotificationDTO {
+    private String notificationId;
+    private String title;
+    private String content;
+    private String status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private String createdBy;
+}
+```
 
 ### 4.3 数据访问层（Repository）设计
 
@@ -366,6 +438,15 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
     List<Reservation> findByMember(Member member);
     List<Reservation> findByCourse(Course course);
     List<Reservation> findByStatus(String status);
+}
+```
+
+#### 4.3.5 通知Repository
+
+```java
+public interface NotificationRepository extends JpaRepository<Notification, String> {
+    List<Notification> findByStatus(String status);
+    List<Notification> findByStatusOrderByCreatedAtDesc(String status);
 }
 ```
 
@@ -437,6 +518,21 @@ public interface ReportService {
 }
 ```
 
+#### 4.4.6 通知服务
+
+```java
+public interface NotificationService {
+    List<NotificationDTO> getAllNotifications();
+    NotificationDTO getNotificationById(String id);
+    NotificationDTO createNotification(NotificationDTO notificationDTO);
+    NotificationDTO updateNotification(String id, NotificationDTO notificationDTO);
+    NotificationDTO updateNotificationStatus(String id, String status);
+    void deleteNotification(String id);
+    List<NotificationDTO> getActiveNotifications();
+    List<NotificationDTO> getArchivedNotifications();
+}
+```
+
 ### 4.5 控制器层（Controller）设计
 
 #### 4.5.1 会员控制器
@@ -459,46 +555,47 @@ public interface ReportService {
 
 处理报表相关的HTTP请求，包括页面请求和API请求。
 
+#### 4.5.6 通知控制器
+
 ```java
 @Controller
-@RequestMapping("/reports")
-public class ReportController {
-    private final ReportService reportService;
-    private final MemberService memberService;
+@RequestMapping("/notifications")
+public class NotificationController {
+    private final NotificationService notificationService;
 
     @Autowired
-    public ReportController(ReportService reportService, MemberService memberService) {
-        this.reportService = reportService;
-        this.memberService = memberService;
+    public NotificationController(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
-    @GetMapping("/member-reservations")
-    public String getMemberReservationsSelection(Model model) {
-        List<MemberDTO> members = memberService.getAllMembers();
-        model.addAttribute("members", members);
-        return "report/member-reservations-selection";
+    @GetMapping
+    public String listNotifications(Model model) {
+        List<NotificationDTO> notifications = notificationService.getAllNotifications();
+        model.addAttribute("notifications", notifications);
+        return "notification/list";
     }
 
-    @GetMapping("/member-reservations/{memberId}")
-    public String getMemberReservations(@PathVariable("memberId") String memberId, Model model) {
-        List<MemberReservationDTO> memberReservations = reportService.getMemberReservations(memberId);
-        model.addAttribute("memberReservations", memberReservations);
-        model.addAttribute("memberId", memberId);
-        return "report/member-reservations";
+    @GetMapping("/manage")
+    public String manageNotifications(Model model) {
+        List<NotificationDTO> notifications = notificationService.getAllNotifications();
+        model.addAttribute("notifications", notifications);
+        return "notification/manage";
     }
 
-    @GetMapping("/course-attendance")
-    public String getCourseAttendance(Model model) {
-        List<CourseAttendanceDTO> courseAttendance = reportService.getCourseAttendance();
-        model.addAttribute("courseAttendance", courseAttendance);
-        return "report/course-attendance";
+    @PostMapping("/create")
+    public String createNotification(@ModelAttribute NotificationDTO notificationDTO) {
+        notificationService.createNotification(notificationDTO);
+        return "redirect:/notifications/manage";
     }
 
-    @GetMapping("/coach-workload")
-    public String getCoachWorkload(Model model) {
-        List<CoachWorkloadDTO> coachWorkload = reportService.getCoachWorkload();
-        model.addAttribute("coachWorkload", coachWorkload);
-        return "report/coach-workload";
+    @PostMapping("/{id}/update-status")
+    @ResponseBody
+    public Map<String, Object> updateNotificationStatus(@PathVariable("id") String id, @RequestParam("status") String status) {
+        NotificationDTO updated = notificationService.updateNotificationStatus(id, status);
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("notification", updated);
+        return response;
     }
 }
 ```
@@ -617,7 +714,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
 ### 7.1 项目总结
 
-健身房管理系统采用Spring Boot框架开发，实现了会员管理、教练管理、课程管理、预约管理和统计报表等功能，满足了健身房日常运营的需求。
+健身房管理系统采用Spring Boot框架开发，实现了会员管理、教练管理、课程管理、预约管理、统计报表和通知系统等功能，满足了健身房日常运营的需求。系统支持通知的发布、查看和归档管理，以及Markdown格式内容的展示，为用户提供了更好的信息交流体验。
 
 ### 7.2 未来展望
 
@@ -626,3 +723,5 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 3. 增加会员积分系统，提高会员忠诚度
 4. 增加数据分析功能，为经营决策提供支持
 5. 增加多语言支持，适应国际化需求
+6. 扩展通知系统，添加个人消息功能和推送通知能力
+7. 增强Markdown编辑器，提供更丰富的编辑体验
