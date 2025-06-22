@@ -38,4 +38,7 @@ public interface UserService {
     
     // 获取用户完整信息
     User getUserDetails(String username);
+
+    // 根据用户名获取用户ID
+    Long getUserIdByUsername(String username);
 } 

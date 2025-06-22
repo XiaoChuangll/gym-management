@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class WebConfig implements WebMvcConfigurer {
 
     private static final Logger logger = LoggerFactory.getLogger(WebConfig.class);
-    
+
     private final AuthInterceptor authInterceptor;
     
     @Value("${app.upload.dir:/www/wwwroot/gym/uploads/avatars}")

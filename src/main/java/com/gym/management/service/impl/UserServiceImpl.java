@@ -4,33 +4,21 @@ import com.gym.management.model.User;
 import com.gym.management.repository.UserRepository;
 import com.gym.management.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-    
     private final UserRepository userRepository;
     private final SecureRandom random = new SecureRandom();
-    
-    @Value("${app.upload.dir:/www/wwwroot/gym/uploads/avatars}")
-    private String uploadDir;
-    
-    @Value("${app.upload.url:/uploads/avatars}")
-    private String uploadUrl;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -185,7 +173,6 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(user);
                     return true;
                 } catch (Exception e) {
-                    logger.error("头像保存失败: " + e.getMessage(), e);
                     e.printStackTrace();
                     return false;
                 }
@@ -199,13 +186,13 @@ public class UserServiceImpl implements UserService {
         
         return false;
     }
-    
+
     @Override
-    public User getUserDetails(String username) {
+    public Long getUserIdByUsername(String username) {
         Optional<User> userOptional = userRepository.findByUsername(username);
-        return userOptional.orElse(null);
+        return userOptional.map(User::getId).orElse(null);
     }
-    
+
     /**
      * 将Base64编码的图像保存为文件
      * 
@@ -214,90 +201,35 @@ public class UserServiceImpl implements UserService {
      * @return 保存的文件路径
      */
     private String saveAvatarToFile(String username, String base64Image) throws Exception {
+        // 创建头像存储目录
+        String uploadDir = "uploads/avatars";
         File directory = new File(uploadDir);
-        logger.info("准备保存头像到目录: " + uploadDir);
-        
-        try {
-            // 检查目录是否存在
-            if (!directory.exists()) {
-                logger.info("目录不存在，尝试创建目录: " + uploadDir);
-                boolean created = directory.mkdirs();
-                if (!created) {
-                    logger.error("创建目录失败: " + uploadDir);
-                    // 检查上级目录是否存在且有权限
-                    File parentDir = directory.getParentFile();
-                    if (parentDir != null) {
-                        logger.info("检查上级目录: " + parentDir.getAbsolutePath() + 
-                                   ", 存在: " + parentDir.exists() + 
-                                   ", 可写: " + parentDir.canWrite());
-                    }
-                    throw new IOException("无法创建目录: " + uploadDir);
-                }
-                logger.info("目录创建成功: " + uploadDir);
-            }
-            
-            // 检查目录权限
-            if (!directory.canWrite()) {
-                logger.error("目录没有写入权限: " + uploadDir);
-                throw new IOException("目录没有写入权限: " + uploadDir);
-            }
-            
-            // 提取图像类型和数据
-            String[] parts = base64Image.split(",");
-            String imageType = "png"; // 默认为png
-            String base64Data;
-            
-            if (parts.length > 1) {
-                String mimeType = parts[0];
-                if (mimeType.contains("image/")) {
-                    imageType = mimeType.split("/")[1].split(";")[0];
-                }
-                
-                base64Data = parts[1];
-            } else {
-                base64Data = base64Image; // 尝试直接解析
-                logger.warn("Base64数据格式可能不正确，尝试直接解析");
-            }
-            
-            try {
-                // 解码Base64数据
-                byte[] imageBytes = java.util.Base64.getDecoder().decode(base64Data);
-                
-                // 创建唯一文件名 (用户名 + 时间戳)
-                String fileName = username + "_" + System.currentTimeMillis() + "." + imageType;
-                String filePath = uploadDir + "/" + fileName;
-                
-                logger.info("准备写入文件: " + filePath + ", 数据大小: " + imageBytes.length + " 字节");
-                
-                // 创建临时文件对象检查是否可写
-                File testFile = new File(filePath);
-                if (testFile.exists()) {
-                    boolean canOverwrite = testFile.delete();
-                    if (!canOverwrite) {
-                        logger.error("无法覆盖已存在的文件: " + filePath);
-                        throw new IOException("无法覆盖已存在的文件");
-                    }
-                }
-                
-                // 使用FileOutputStream直接写入文件，提供更多错误信息
-                try (java.io.FileOutputStream fos = new java.io.FileOutputStream(filePath)) {
-                    fos.write(imageBytes);
-                    fos.flush();
-                    logger.info("头像保存成功: " + filePath);
-                }
-                
-                // 返回相对URL路径，以便从网页访问
-                return uploadUrl + "/" + fileName;
-            } catch (IllegalArgumentException e) {
-                logger.error("Base64解码失败: " + e.getMessage(), e);
-                throw new IllegalArgumentException("无效的Base64数据: " + e.getMessage());
-            } catch (java.io.IOException e) {
-                logger.error("文件写入失败: " + e.getMessage(), e);
-                throw new IOException("文件写入失败: " + e.getMessage());
-            }
-        } catch (Exception e) {
-            logger.error("头像保存过程中发生错误: " + e.getMessage(), e);
-            throw e;
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
+        
+        // 提取图像类型和数据
+        String[] parts = base64Image.split(",");
+        String imageType = parts[0].split(";")[0].split("/")[1];
+        String base64Data = parts[1];
+        
+        // 解码Base64数据
+        byte[] imageBytes = java.util.Base64.getDecoder().decode(base64Data);
+        
+        // 创建唯一文件名 (用户名 + 时间戳)
+        String fileName = username + "_" + System.currentTimeMillis() + "." + imageType;
+        String filePath = uploadDir + "/" + fileName;
+        
+        // 写入文件
+        java.nio.file.Files.write(java.nio.file.Paths.get(filePath), imageBytes);
+        
+        // 返回相对路径，以便从网页访问
+        return "/" + filePath;
+    }
+    
+    @Override
+    public User getUserDetails(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        return userOptional.orElse(null);
     }
 } 

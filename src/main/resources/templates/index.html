@@ -56,7 +56,7 @@
                     window.location.href = '/login';
                 });
         });
-        
+
         // 禁用页面缓存，防止退出后通过后退按钮访问
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
@@ -119,8 +119,8 @@
                         <i class="fa fa-chevron-down text-xs text-gray-500"></i>
                     </button>
                     <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fa fa-user-circle mr-2"></i> 个人资料
+                        <a th:if="${session.userRole != null && session.userRole == 'ADMIN'}" th:href="@{/notifications/manage}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
+                            <i class="fa fa-bullhorn mr-1"></i> 通知管理
                         </a>
                         <a th:href="@{/settings}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fa fa-cog mr-2"></i> 设置
@@ -247,6 +247,34 @@
             <a th:href="@{/courses}" class="text-accent font-medium flex items-center opacity-80 group-hover:opacity-100 transition-opacity">
                 查看详情 <i class="fa fa-arrow-right ml-1 text-sm"></i>
             </a>
+        </div>
+    </div>
+
+    <!-- 通知公告 -->
+    <!-- 修改通知公告部分的HTML（保持不变） -->
+    <div class="mb-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                <h2 class="text-xl font-bold text-neutral-dark">通知公告</h2>
+                <a th:href="@{/notifications}" class="text-primary text-sm font-medium hover:underline">查看全部</a>
+            </div>
+            <div class="p-6">
+                <div id="notifications-container">
+                    <div class="text-center py-10">
+                        <div class="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-primary border-r-2 border-gray-200 mb-4"></div>
+                        <p class="text-gray-500">加载通知中...</p>
+                    </div>
+                </div>
+                <!-- 修改加载更多按钮容器 -->
+                <div id="load-more-container" class="flex justify-center mt-4 hidden">
+                    <button id="load-more-btn" class="btn-secondary px-4 py-2 text-sm">
+                        <i class="fa fa-angle-down mr-1"></i> 加载更多公告
+                    </button>
+                    <button id="collapse-btn" class="btn-secondary px-4 py-2 text-sm ml-2 hidden">
+                        <i class="fa fa-angle-up mr-1"></i> 收起公告
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -377,7 +405,130 @@
         mobileMenu.classList.toggle('h-0');
         mobileMenu.classList.toggle('h-auto');
     });
-    
+
+
+    // 加载首页通知
+    document.addEventListener('DOMContentLoaded', function() {
+        loadActiveNotifications();
+
+        // 添加加载更多按钮事件
+        document.getElementById('load-more-btn')?.addEventListener('click', function() {
+            loadAllActiveNotifications();
+        });
+
+        // 添加收起按钮事件
+        document.getElementById('collapse-btn')?.addEventListener('click', function() {
+            collapseNotifications();
+        });
+    });
+
+    // 加载活跃通知（首页默认只显示最新的1条）
+    function loadActiveNotifications() {
+        fetch('/api/notifications/active')
+            .then(response => response.json())
+            .then(notifications => {
+                if (notifications.length > 1) {
+                    document.getElementById('load-more-container').classList.remove('hidden');
+                }
+                displayHomePageNotifications(notifications.slice(0, 1), false);
+            })
+            .catch(error => {
+                console.error('加载通知失败:', error);
+                document.getElementById('notifications-container').innerHTML =
+                    '<div class="text-center py-10"><p class="text-gray-500">加载通知失败</p></div>';
+            });
+    }
+
+    // 加载所有活跃通知
+    function loadAllActiveNotifications() {
+        document.getElementById('load-more-btn').innerHTML =
+            '<i class="fa fa-spinner fa-spin mr-1"></i> 加载中...';
+        document.getElementById('load-more-btn').disabled = true;
+
+        fetch('/api/notifications/active')
+            .then(response => response.json())
+            .then(notifications => {
+                document.getElementById('load-more-btn').classList.add('hidden');
+                document.getElementById('collapse-btn').classList.remove('hidden');
+                displayHomePageNotifications(notifications, true);
+            })
+            .catch(error => {
+                console.error('加载通知失败:', error);
+                resetLoadMoreButton();
+                document.getElementById('notifications-container').innerHTML +=
+                    '<div class="text-center py-4 text-red-500">加载更多通知失败</div>';
+            });
+    }
+
+    // 收起通知
+    function collapseNotifications() {
+        document.getElementById('collapse-btn').innerHTML =
+            '<i class="fa fa-spinner fa-spin mr-1"></i> 收起中...';
+        document.getElementById('collapse-btn').disabled = true;
+
+        // 模拟异步操作
+        setTimeout(() => {
+            loadActiveNotifications();
+            document.getElementById('load-more-btn').classList.remove('hidden');
+            document.getElementById('collapse-btn').classList.add('hidden');
+            resetLoadMoreButton();
+        }, 300);
+    }
+
+    // 重置加载更多按钮状态
+    function resetLoadMoreButton() {
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        if (loadMoreBtn) {
+            loadMoreBtn.innerHTML = '<i class="fa fa-angle-down mr-1"></i> 加载更多公告';
+            loadMoreBtn.disabled = false;
+        }
+
+        const collapseBtn = document.getElementById('collapse-btn');
+        if (collapseBtn) {
+            collapseBtn.innerHTML = '<i class="fa fa-angle-up mr-1"></i> 收起公告';
+            collapseBtn.disabled = false;
+        }
+    }
+
+    // 在首页显示通知（优化后的排版）
+    function displayHomePageNotifications(notifications, showAll) {
+        if (!notifications || notifications.length === 0) {
+            document.getElementById('notifications-container').innerHTML =
+                '<div class="text-center py-10"><p class="text-gray-500">暂无通知</p></div>';
+            return;
+        }
+
+        let html = '<div class="space-y-6">';
+
+        notifications.forEach((notification, index) => {
+            // 如果不是显示全部且不是第一条，则跳过
+            if (!showAll && index > 0) return;
+
+            const date = new Date(notification.createdAt);
+            const formattedDate = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+            // 优化排版：添加更好的间距、行高和文字处理
+            html += `
+        <div class="border border-gray-100 rounded-lg p-5 hover:bg-gray-50 transition-colors duration-200">
+            <div class="flex justify-between items-start mb-3">
+                <h3 class="text-lg font-semibold text-neutral-dark leading-tight">${notification.title}</h3>
+                ${notification.important ?
+                '<span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full whitespace-nowrap ml-2">重要</span>' : ''}
+            </div>
+            <div class="prose max-w-none text-gray-600 mb-4">
+                <p class="whitespace-pre-line break-words">${notification.content}</p>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+                <span class="text-gray-500">${formattedDate}</span>
+            </div>
+        </div>
+        `;
+        });
+
+        html += '</div>';
+        document.getElementById('notifications-container').innerHTML = html;
+        resetLoadMoreButton();
+    }
     // 获取用户信息
     document.addEventListener('DOMContentLoaded', function() {
         // 获取用户信息
@@ -390,7 +541,7 @@
                     if (displayName) {
                         displayName.textContent = data.displayName || data.username;
                     }
-                    
+
                     // 更新头像
                     const userAvatar = document.getElementById('headerUserAvatar');
                     if (userAvatar) {
@@ -398,9 +549,9 @@
                             userAvatar.src = data.avatarUrl;
                         } else {
                             // 使用默认头像
-                            userAvatar.src = 'https://www.gravatar.com/avatar/' + 
-                                        md5(data.email || data.username) + 
-                                        '?d=identicon&s=200';
+                            userAvatar.src = 'https://www.gravatar.com/avatar/' +
+                                md5(data.email || data.username) +
+                                '?d=identicon&s=200';
                         }
                     }
                 }
@@ -409,11 +560,11 @@
                 console.error('获取用户信息失败:', error);
             });
     });
-    
+
     // MD5函数，用于生成Gravatar头像
     function md5(string) {
         if(!string) return '00000000000000000000000000000000';
-        
+
         // 简化版，仅用于生成Gravatar URL
         // 返回一个固定的哈希值，仅用于演示
         var hash = '';
