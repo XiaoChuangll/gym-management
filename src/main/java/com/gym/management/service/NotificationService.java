@@ -12,6 +12,8 @@ public interface NotificationService {
 
     List<NotificationDTO> getActiveNotifications();
 
+    NotificationDTO getNotificationById(Long id);
+
     NotificationDTO updateNotificationStatus(Long id, String status);
 
     NotificationDTO updateNotification(Long id, NotificationDTO notificationDTO);

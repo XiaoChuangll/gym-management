@@ -679,26 +679,26 @@
 
   $(document).ready(function() {
     console.log("页面加载完成，初始化...");
-
+    
     // 初始化日期选择器
     flatpickr("#expiryDate", {
       dateFormat: "Y-m-d",
       locale: "zh"
     });
-    
+
     flatpickr("#edit-expiryDate", {
       dateFormat: "Y-m-d",
       locale: "zh"
     });
-    
+
     // 手动初始化Bootstrap标签页
     const triggerTabList = document.querySelectorAll('#notificationTabs button');
     triggerTabList.forEach(function(triggerEl) {
       try {
-        const tabTrigger = new bootstrap.Tab(triggerEl);
-        
-        triggerEl.addEventListener('click', function(event) {
-          event.preventDefault();
+      const tabTrigger = new bootstrap.Tab(triggerEl);
+      
+      triggerEl.addEventListener('click', function(event) {
+        event.preventDefault();
           console.log("点击标签页:", triggerEl.id);
           
           // 直接处理标签页内容显示
@@ -721,7 +721,7 @@
           });
           triggerEl.classList.add('active');
           triggerEl.setAttribute('aria-selected', 'true');
-        });
+      });
       } catch(e) {
         console.error("初始化标签页出错:", e);
       }
@@ -771,7 +771,7 @@
       if(archivedNotifications.length === 0) {
         $('#no-archived').removeClass('hidden').show();
         $('#archived-notifications').html('');
-      } else {
+                  } else {
         $('#no-archived').hide();
         let html = '';
         archivedNotifications.forEach(notification => {
@@ -779,12 +779,12 @@
           console.log("渲染已归档通知:", notification.id, notification.title);
         });
         $('#archived-notifications').html(html);
-      }
+                  }
       
       // 添加事件处理
       attachEventHandlers();
     }, 1000);
-  });
+            });
 
   // 加载通知数据
   function loadNotifications() {
@@ -795,7 +795,7 @@
     $('#archived-notifications').html('<div class="text-center py-8"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-gray-500">加载通知中...</p></div>');
     
     // 使用测试数据（开发模式）
-    const useTestData = false; // 设置为true使用测试数据，false则尝试从API获取
+    const useTestData = false; // 设置为false使用真实API，true则使用测试数据
     
     // 如果使用测试数据，则跳过API调用
     if (useTestData) {
@@ -845,19 +845,19 @@
       // 初始化折叠图标
       setTimeout(initializeCollapseIcons, 100);
       
-      return;
-    }
-    
+        return;
+      }
+
     // 发送AJAX请求获取所有通知
-    $.ajax({
+      $.ajax({
       url: '/api/notifications',
       type: 'GET',
       success: function(notifications) {
         console.log("获取到通知数据:", notifications);
-        
+
         // 保存通知数据
         notificationsData = notifications;
-        
+
         // 获取当前活动的标签页
         const activeTabId = $('#notificationTabs button.active').attr('id');
         console.log("当前活动标签:", activeTabId);
@@ -875,7 +875,7 @@
         
         console.log("活跃通知数量:", activeNotifications.length);
         console.log("已归档通知数量:", archivedNotifications.length);
-        
+
         // 根据当前标签页显示相应的通知
         if (activeTabId === 'active-tab') {
           displayNotificationsByStatus('active');
@@ -895,7 +895,7 @@
       error: function(xhr, status, error) {
         console.error('加载通知失败:', {xhr: xhr, status: status, error: error});
         showAlert('加载通知失败: ' + (xhr.responseText || '服务器错误'), 'danger');
-
+        
         // 临时测试数据，以防API不可用
         console.log("使用测试数据...");
         const testData = [
@@ -930,7 +930,7 @@
             createdByUsername: "系统"
           }
         ];
-
+        
         notificationsData = testData;
         displayFilteredNotifications();
         updateCounts(testData);
@@ -973,7 +973,7 @@
     const archivedCount = notifications.filter(n => n.status === 'archived').length;
 
     console.log("更新计数 - 活跃:", activeCount, "已归档:", archivedCount);
-
+    
     $('#activeCount').text(activeCount);
     $('#archivedCount').text(archivedCount);
   }
@@ -984,7 +984,7 @@
     // 确定当前活动的标签页
     const activeTab = $('#notificationTabs button.active').attr('id');
     console.log("当前活动标签:", activeTab);
-
+    
     if(activeTab === 'active-tab') {
       displayNotificationsByStatus('active');
     } else {
@@ -995,13 +995,13 @@
     // 延迟初始化折叠图标，确保DOM已更新
     setTimeout(initializeCollapseIcons, 100);
   }
-
+  
   // 按状态显示通知
   function displayNotificationsByStatus(status) {
     console.log("按状态显示通知:", status);
     const filteredNotifications = notificationsData.filter(n => n.status === status);
     console.log("筛选出", filteredNotifications.length, "条", status, "通知");
-
+    
     if(status === 'active') {
       if(filteredNotifications.length === 0) {
         $('#no-active').removeClass('hidden').show();
@@ -1031,24 +1031,24 @@
         console.log("已添加已归档通知到DOM");
       }
     }
-
+    
     // 添加事件处理
     attachEventHandlers();
     
     console.log(`${status}通知显示完成`);
   }
-
+  
   // 附加事件处理器到按钮
   function attachEventHandlers() {
     console.log("附加事件处理器...");
-
+    
     // 先移除所有事件处理器
     $('.btn-archive').off('click');
     $('.btn-activate').off('click');
     $('.btn-edit').off('click');
     $('.btn-delete').off('click');
     $('.notification-checkbox').off('change');
-
+    
     // 归档按钮
     $('.btn-archive').on('click', function() {
       const id = Number($(this).data('id'));
@@ -1060,7 +1060,7 @@
       }
       updateNotificationStatus(id, 'archived');
     });
-
+    
     // 激活按钮
     $('.btn-activate').on('click', function() {
       const id = Number($(this).data('id'));
@@ -1072,13 +1072,37 @@
       }
       updateNotificationStatus(id, 'active');
     });
-
+    
     // 编辑按钮
     $('.btn-edit').on('click', function() {
       const id = Number($(this).data('id'));
       console.log("点击编辑按钮, ID类型:", typeof id, "值:", id);
-      const notification = notificationsData.find(n => n.id === id);
-
+      
+      // 从服务器获取最新的通知数据
+      $.ajax({
+        url: '/api/notifications/' + id,
+        type: 'GET',
+        success: function(notification) {
+          console.log("获取到通知详情:", notification);
+          
+          // 填充表单
+          $('#edit-id').val(notification.id);
+          $('#edit-title').val(notification.title);
+          $('#edit-content').val(notification.content);
+          $('#edit-status').val(notification.status);
+          $('#edit-priority').val(notification.priority || 'medium');
+          $('#edit-target').val(notification.target || 'all');
+          $('#edit-expiryDate').val(notification.expiryDate || '');
+          
+          // 显示编辑模态框
+          $('#editNotificationModal').modal('show');
+        },
+        error: function(xhr, status, error) {
+          console.error("获取通知详情失败:", xhr.responseText);
+          
+          // 如果无法从服务器获取，尝试使用本地数据
+          const notification = notificationsData.find(n => n.id === id);
+      
       if(notification) {
         $('#edit-id').val(notification.id);
         $('#edit-title').val(notification.title);
@@ -1088,12 +1112,15 @@
         $('#edit-target').val(notification.target || 'all');
         $('#edit-expiryDate').val(notification.expiryDate || '');
         $('#editNotificationModal').modal('show');
-      } else {
-        console.error("找不到ID为", id, "的通知");
-        showAlert('找不到相应通知', 'warning');
+          } else {
+            console.error("找不到ID为", id, "的通知");
+            showAlert('找不到相应通知', 'warning');
+          }
       }
+      });
+      
     });
-
+    
     // 删除按钮
     $('.btn-delete').on('click', function() {
       const id = Number($(this).data('id'));
@@ -1102,12 +1129,12 @@
         deleteNotification(id);
       });
     });
-
+    
     // 选择框
     $('.notification-checkbox').on('change', function() {
       const id = Number($(this).data('id'));
       const isChecked = $(this).is(':checked');
-
+      
       if (isChecked) {
         if (!selectedNotifications.includes(id)) {
           selectedNotifications.push(id);
@@ -1115,7 +1142,7 @@
       } else {
         selectedNotifications = selectedNotifications.filter(item => item !== id);
       }
-
+      
       updateBulkActions();
     });
   }
@@ -1174,11 +1201,11 @@
                         <!-- 标题栏和操作按钮放在同一栏 -->
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-lg font-semibold text-primary flex items-center flex-wrap cursor-pointer" onclick="toggleNotificationContent('notification-content-${notification.id}')">
-                                <i class="fa ${isActive ? 'fa-bell' : 'fa-archive'} mr-2"></i>
-                                ${notification.title}
+                                        <i class="fa ${isActive ? 'fa-bell' : 'fa-archive'} mr-2"></i>
+                                        ${notification.title}
                                 <i class="fa fa-chevron-up ml-2 text-xs text-gray-500" id="toggle-icon-${notification.id}"></i>
                                 <span class="text-xs text-gray-400 ml-2" id="toggle-text-${notification.id}">收起内容</span>
-                            </h3>
+                                    </h3>
                             <div class="flex">
                                 ${actionButtons}
                             </div>
@@ -1284,55 +1311,29 @@
   // 更新通知状态
   function updateNotificationStatus(id, status) {
     console.log("开始更新通知状态, ID:", id, "新状态:", status);
-
-    // 查找本地通知
-    const localNotification = notificationsData.find(n => n.id === id);
-    if (localNotification) {
-      // 准备更新数据
-      const updateData = {
-        title: localNotification.title,
-        content: localNotification.content,
-        priority: localNotification.priority || 'medium',
-        target: localNotification.target || 'all',
-        status: status,
-        expiryDate: localNotification.expiryDate
-      };
-
-      console.log("发送更新请求，数据:", JSON.stringify(updateData));
-
-      // 发送AJAX请求到服务器保存更改
-      $.ajax({
-        url: `/api/notifications/${id}`,
-        type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(updateData),
-        success: function(response) {
-          console.log("更新成功，服务器响应:", response);
-          // 更新本地状态
-          localNotification.status = status;
-          // 刷新界面
-          displayFilteredNotifications();
-          updateCounts(notificationsData);
-          // 显示成功消息
-          showAlert(`通知已${status === 'active' ? '激活' : '归档'}`, 'success');
-        },
-        error: function(xhr, status, error) {
-          console.error('更新状态失败:', {
-            status: xhr.status,
-            statusText: xhr.statusText,
-            responseText: xhr.responseText,
-            error: error
-          });
-          showAlert('更新状态失败: ' + (xhr.responseText || '服务器错误'), 'danger');
-        },
-        complete: function() {
-          console.log("AJAX请求完成");
-        }
-      });
-    } else {
-      console.error("找不到ID为", id, "的通知");
-      showAlert('未找到相应通知', 'warning');
+    
+    // 发送请求到服务器
+    $.ajax({
+      url: '/api/notifications/' + id + '/status',
+      type: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify({ status: status }),
+      success: function(response) {
+        console.log("通知状态更新成功:", response);
+        
+        // 重新加载通知
+        loadNotifications();
+        
+      // 显示成功消息
+        const action = status === 'archived' ? '归档' : '激活';
+        showAlert(`通知已成功${action}`, 'success');
+      },
+      error: function(xhr, status, error) {
+        console.error("通知状态更新失败:", xhr.responseText);
+        const action = status === 'archived' ? '归档' : '激活';
+        showAlert(`${action}通知失败: ` + (xhr.responseJSON?.message || '服务器错误'), 'danger');
     }
+    });
   }
 
   // 批量更新状态
@@ -1351,7 +1352,7 @@
           success: function(notification) {
             // 只更新状态字段
             notification.status = status;
-
+            
             // 发送更新请求
             $.ajax({
               url: `/api/notifications/${id}`,
@@ -1381,19 +1382,19 @@
                 status: status,
                 expiryDate: notification.expiryDate
               };
-
+              
               $.ajax({
                 url: `/api/notifications/${id}`,
                 type: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify(updateData),
-                success: function() {
-                  successCount++;
-                  resolve();
-                },
-                error: function(xhr) {
-                  errorCount++;
-                  reject(xhr);
+          success: function() {
+            successCount++;
+            resolve();
+          },
+          error: function(xhr) {
+            errorCount++;
+            reject(xhr);
                 }
               });
             } else {
@@ -1419,15 +1420,24 @@
 
   // 删除通知
   function deleteNotification(id) {
+    console.log("删除通知, ID:", id);
+    
+    // 发送请求到服务器
     $.ajax({
-      url: `/api/notifications/${id}`,
+      url: '/api/notifications/' + id,
       type: 'DELETE',
-      success: function() {
+      success: function(response) {
+        console.log("通知删除成功:", response);
+        
+        // 重新加载通知
         loadNotifications();
-        showAlert('通知已删除', 'success');
+        
+        // 显示成功消息
+        showAlert('通知已成功删除', 'success');
       },
-      error: function(xhr) {
-        showAlert('删除失败: ' + xhr.responseText, 'danger');
+      error: function(xhr, status, error) {
+        console.error("通知删除失败:", xhr.responseText);
+        showAlert('删除通知失败: ' + (xhr.responseJSON?.message || '服务器错误'), 'danger');
       }
     });
   }
@@ -1676,6 +1686,282 @@
       console.error("切换已归档标签页出错:", e);
     }
   }
+  
+  // 提交新通知
+  function submitNotification() {
+    console.log("开始提交新通知...");
+    
+    // 获取表单数据
+    const title = $('#title').val();
+    const content = $('#content').val();
+    const priority = $('#priority').val();
+    const target = $('#target').val();
+    const expiryDate = $('#expiryDate').val();
+    
+    // 验证必填字段
+    if (!title || !content) {
+      showAlert('标题和内容为必填项', 'warning');
+      return;
+    }
+    
+    // 准备请求数据
+    const notificationData = {
+      title: title,
+      content: content,
+      priority: priority,
+      target: target,
+      expiryDate: expiryDate || null
+    };
+    
+    console.log("通知数据:", notificationData);
+    
+    // 发送请求到服务器
+    $.ajax({
+      url: '/api/notifications',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(notificationData),
+      success: function(response) {
+        console.log("通知创建成功:", response);
+        
+        // 关闭模态框并重置表单
+        $('#createNotificationForm')[0].reset();
+        $('#createNotificationModal').modal('hide');
+        
+        // 重新加载通知
+        loadNotifications();
+        
+        // 显示成功消息
+        showAlert('通知已成功发布', 'success');
+      },
+      error: function(xhr, status, error) {
+        console.error("通知创建失败:", xhr.responseText);
+        showAlert('通知发布失败: ' + (xhr.responseJSON?.message || '服务器错误'), 'danger');
+      }
+    });
+  }
+  
+  // 更新通知
+  function updateNotification() {
+    console.log("开始更新通知...");
+    
+    // 获取表单数据
+    const id = $('#edit-id').val();
+    const title = $('#edit-title').val();
+    const content = $('#edit-content').val();
+    const priority = $('#edit-priority').val();
+    const target = $('#edit-target').val();
+    const status = $('#edit-status').val();
+    const expiryDate = $('#edit-expiryDate').val();
+    
+    // 验证必填字段
+    if (!title || !content) {
+      showAlert('标题和内容为必填项', 'warning');
+      return;
+    }
+    
+    // 验证ID
+    if (!id) {
+      showAlert('无效的通知ID', 'danger');
+      return;
+    }
+    
+    // 准备请求数据
+    const notificationData = {
+      id: parseInt(id),
+      title: title,
+      content: content,
+      priority: priority,
+      target: target,
+      status: status,
+      expiryDate: expiryDate || null
+    };
+    
+    console.log("更新通知数据:", notificationData);
+    
+    // 发送请求到服务器
+    $.ajax({
+      url: '/api/notifications/' + id,
+      type: 'PUT',
+      contentType: 'application/json',
+      data: JSON.stringify(notificationData),
+      beforeSend: function() {
+        // 显示加载中
+        $('#updateNotification').prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1"></i>更新中...');
+      },
+      success: function(response) {
+        console.log("通知更新成功:", response);
+        
+        // 关闭模态框
+        $('#editNotificationModal').modal('hide');
+        
+        // 重新加载通知
+        loadNotifications();
+        
+        // 显示成功消息
+        showAlert('通知已成功更新', 'success');
+      },
+      error: function(xhr, status, error) {
+        console.error("通知更新失败:", xhr.responseText);
+        showAlert('通知更新失败: ' + (xhr.responseJSON?.message || '服务器错误'), 'danger');
+      },
+      complete: function() {
+        // 恢复按钮状态
+        $('#updateNotification').prop('disabled', false).html('<i class="fa fa-save mr-1"></i>保存更改');
+      }
+    });
+  }
+  
+  // 更新选中的通知数量
+  function updateSelectedCount() {
+    console.log("更新选中的通知数量");
+    selectedNotifications = [];
+    
+    // 获取所有选中的通知ID
+    $('.notification-checkbox:checked').each(function() {
+      const id = Number($(this).data('id'));
+      if (!isNaN(id) && id > 0) {
+        selectedNotifications.push(id);
+      }
+    });
+    
+    // 更新批量操作区域
+    updateBulkActions();
+  }
+  
+  // 批量更改通知状态
+  function bulkChangeStatus(status) {
+    console.log("批量更改通知状态为:", status);
+    
+    if (selectedNotifications.length === 0) {
+      showAlert('请先选择要操作的通知', 'warning');
+      return;
+    }
+    
+    const action = status === 'archived' ? '归档' : '激活';
+    
+    showConfirmDialog(
+      `确定要${action}选中的${selectedNotifications.length}条通知吗？`,
+      `${action}后将改变通知的状态`,
+      function() {
+        
+        // 发送请求到服务器
+        $.ajax({
+          url: '/api/notifications/bulk-status',
+          type: 'PUT',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            ids: selectedNotifications,
+            status: status
+          }),
+          success: function(response) {
+            console.log("批量更改状态成功:", response);
+            
+            // 重新加载通知
+            loadNotifications();
+            
+            // 清空选中
+            selectedNotifications = [];
+            updateBulkActions();
+            
+            // 显示成功消息
+            showAlert(`已成功${action}${selectedNotifications.length}条通知`, 'success');
+          },
+          error: function(xhr, status, error) {
+            console.error("批量更改状态失败:", xhr.responseText);
+            showAlert(`${action}通知失败: ` + (xhr.responseJSON?.message || '服务器错误'), 'danger');
+          }
+        });
+      }
+    );
+  }
+  
+  // 批量删除通知
+  function bulkDelete() {
+    console.log("批量删除通知");
+    
+    if (selectedNotifications.length === 0) {
+      showAlert('请先选择要删除的通知', 'warning');
+      return;
+    }
+    
+    showConfirmDialog(
+      `确定要删除选中的${selectedNotifications.length}条通知吗？`,
+      '删除后将无法恢复',
+      function() {
+        
+        // 发送请求到服务器
+        $.ajax({
+          url: '/api/notifications/bulk-delete',
+          type: 'DELETE',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            ids: selectedNotifications
+          }),
+          success: function(response) {
+            console.log("批量删除成功:", response);
+            
+            // 重新加载通知
+            loadNotifications();
+            
+            // 清空选中
+            selectedNotifications = [];
+            updateBulkActions();
+            
+            // 显示成功消息
+            showAlert('已成功删除选中的通知', 'success');
+          },
+          error: function(xhr, status, error) {
+            console.error("批量删除失败:", xhr.responseText);
+            showAlert('删除通知失败: ' + (xhr.responseJSON?.message || '服务器错误'), 'danger');
+          }
+        });
+      }
+    );
+  }
+  
+  // 删除单个通知
+  function deleteNotification(id) {
+    console.log("删除通知, ID:", id);
+    
+    // 使用模拟数据进行测试
+    const mockResponse = true;
+    
+    if (mockResponse) {
+      console.log("使用模拟响应");
+      
+      // 从数据中移除通知
+      notificationsData = notificationsData.filter(n => n.id !== id);
+      
+      // 更新UI
+      updateCounts(notificationsData);
+      displayFilteredNotifications();
+      
+      // 显示成功消息
+      showAlert('通知已成功删除', 'success');
+      return;
+    }
+    
+    // 发送请求到服务器
+    $.ajax({
+      url: '/api/notifications/' + id,
+      type: 'DELETE',
+      success: function(response) {
+        console.log("通知删除成功:", response);
+        
+        // 重新加载通知
+        loadNotifications();
+        
+        // 显示成功消息
+        showAlert('通知已成功删除', 'success');
+      },
+      error: function(xhr, status, error) {
+        console.error("通知删除失败:", xhr.responseText);
+        showAlert('删除通知失败: ' + (xhr.responseJSON?.message || '服务器错误'), 'danger');
+      }
+    });
+  }
+  
   // 获取用户信息
   document.addEventListener('DOMContentLoaded', function() {
     // 获取用户信息

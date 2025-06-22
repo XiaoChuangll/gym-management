@@ -59,6 +59,13 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public NotificationDTO getNotificationById(Long id) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("通知不存在，ID: " + id));
+        return convertToDTO(notification);
+    }
+
+    @Override
     public NotificationDTO updateNotificationStatus(Long id, String status) {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("通知不存在"));

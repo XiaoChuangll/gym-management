@@ -62,6 +62,41 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
+    // 获取单个通知详情
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getNotificationById(@PathVariable Long id) {
+        try {
+            NotificationDTO notification = notificationService.getNotificationById(id);
+            return ResponseEntity.ok(notification);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("通知不存在: " + e.getMessage());
+        }
+    }
+
+    // 更新通知状态 - 仅管理员可用
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateNotificationStatus(@PathVariable Long id, @RequestBody Map<String, String> statusMap, HttpSession session) {
+        // 检查用户是否登录
+        String username = (String) session.getAttribute("loggedInUser");
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("请先登录");
+        }
+
+        // 检查用户角色
+        String userRole = (String) session.getAttribute("userRole");
+        if (userRole == null || !"ADMIN".equals(userRole)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("只有管理员可以更新通知状态");
+        }
+
+        String status = statusMap.get("status");
+        if (status == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("状态参数不能为空");
+        }
+
+        NotificationDTO updatedNotification = notificationService.updateNotificationStatus(id, status);
+        return ResponseEntity.ok(updatedNotification);
+    }
+
     // 更新通知 - 仅管理员可用
     @PutMapping("/{id}")
     public ResponseEntity<?> updateNotification(@PathVariable Long id, @RequestBody NotificationDTO notificationDTO, HttpSession session) {
