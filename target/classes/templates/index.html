@@ -9,7 +9,10 @@
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- 最新版 Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- 添加jQuery支持 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 添加Markdown支持 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <!-- Tailwind配置 -->
     <script>
@@ -156,6 +159,9 @@
                 <a th:href="@{/reservations}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
                     <i class="fa fa-book mr-1"></i> 预约管理
                 </a>
+                <a th:href="@{/notifications}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
+                    <i class="fa fa-bullhorn mr-1"></i> 通知公告
+                </a>
                 <div class="px-4 py-2">
                     <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">统计报表</div>
                     <a th:href="@{/reports/course-attendance}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
@@ -183,21 +189,41 @@
         <p class="text-lg text-gray-600 mb-6 max-w-3xl">
             本系统提供会员管理、教练管理、课程管理和预约管理等功能，帮助您高效管理健身房业务。
         </p>
-        <div class="flex flex-wrap gap-3">
-            <a class="btn-primary flex items-center" th:href="@{/members}">
-                <i class="fa fa-users mr-2"></i> 会员管理
+        <div class="grid grid-cols-2 sm:flex flex-wrap gap-2 sm:gap-3">
+            <!-- 会员管理 -->
+            <a class="btn-primary flex items-center justify-center col-span-1" th:href="@{/members}">
+                <i class="fa fa-users mr-2"></i>
+                <span class="truncate">会员管理</span>
             </a>
-            <a class="btn-primary flex items-center" th:href="@{/coaches}">
-                <i class="fa fa-user-circle mr-2"></i> 教练管理
+
+            <!-- 教练管理 -->
+            <a class="btn-primary flex items-center justify-center col-span-1" th:href="@{/coaches}">
+                <i class="fa fa-user-circle mr-2"></i>
+                <span class="truncate">教练管理</span>
             </a>
-            <a class="btn-primary flex items-center" th:href="@{/courses}">
-                <i class="fa fa-calendar mr-2"></i> 课程管理
+
+            <!-- 课程管理 -->
+            <a class="btn-primary flex items-center justify-center col-span-1" th:href="@{/courses}">
+                <i class="fa fa-calendar mr-2"></i>
+                <span class="truncate">课程管理</span>
             </a>
-            <a class="btn-primary flex items-center" th:href="@{/reservations}">
-                <i class="fa fa-book mr-2"></i> 预约管理
+
+            <!-- 预约管理 -->
+            <a class="btn-primary flex items-center justify-center col-span-1" th:href="@{/reservations}">
+                <i class="fa fa-book mr-2"></i>
+                <span class="truncate">预约管理</span>
             </a>
-            <a class="btn-primary flex items-center" th:href="@{/about}">
-                <i class="fa fa-info-circle mr-2"></i> 关于我们
+
+            <!-- 通知公告 -->
+            <a class="btn-primary flex items-center justify-center col-span-1" th:href="@{/notifications}">
+                <i class="fa fa-bullhorn mr-1"></i>
+                <span class="truncate">通知公告</span>
+            </a>
+
+            <!-- 关于我们 -->
+            <a class="btn-primary flex items-center justify-center col-span-1" th:href="@{/about}">
+                <i class="fa fa-info-circle mr-2"></i>
+                <span class="truncate">关于我们</span>
             </a>
         </div>
     </div>
@@ -251,7 +277,6 @@
     </div>
 
     <!-- 通知公告 -->
-    <!-- 修改通知公告部分的HTML（保持不变） -->
     <div class="mb-8">
         <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
@@ -259,7 +284,7 @@
                 <a th:href="@{/notifications}" class="text-primary text-sm font-medium hover:underline">查看全部</a>
             </div>
             <div class="p-6">
-                <div id="notifications-container">
+                <div id="notification-list">
                     <div class="text-center py-10">
                         <div class="inline-block animate-spin rounded-full h-6 w-6 border-t-2 border-primary border-r-2 border-gray-200 mb-4"></div>
                         <p class="text-gray-500">加载通知中...</p>
@@ -399,6 +424,18 @@
 
 <!-- 添加移动菜单切换脚本 -->
 <script>
+    // 配置marked.js
+    marked.setOptions({
+        breaks: true,        // 允许换行符转换为<br>
+        gfm: true,           // 使用GitHub风格Markdown
+        headerIds: true,     // 为标题添加id
+        mangle: false,       // 不转义HTML标签中的内容
+        sanitize: false,     // 不过滤HTML标签
+        smartLists: true,    // 使用更智能的列表行为
+        smartypants: true,   // 使用更智能的标点符号
+        xhtml: false         // 不使用xhtml格式的标签
+    });
+
     // 移动端菜单切换
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         const mobileMenu = document.getElementById('mobile-menu');
@@ -406,77 +443,160 @@
         mobileMenu.classList.toggle('h-auto');
     });
 
-
-    // 加载首页通知
+    // 页面加载时执行
     document.addEventListener('DOMContentLoaded', function() {
-        loadActiveNotifications();
-
+        console.log("页面加载完成，初始化通知功能...");
+        
+        // 加载通知
+        loadHomeNotifications();
+        
         // 添加加载更多按钮事件
-        document.getElementById('load-more-btn')?.addEventListener('click', function() {
-            loadAllActiveNotifications();
-        });
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        if (loadMoreBtn) {
+            console.log("找到加载更多按钮，添加点击事件");
+            loadMoreBtn.addEventListener('click', function() {
+                console.log("点击了加载更多按钮");
+                loadAllActiveNotifications();
+            });
+        } else {
+            console.warn("未找到加载更多按钮");
+        }
 
         // 添加收起按钮事件
-        document.getElementById('collapse-btn')?.addEventListener('click', function() {
-            collapseNotifications();
-        });
+        const collapseBtn = document.getElementById('collapse-btn');
+        if (collapseBtn) {
+            console.log("找到收起按钮，添加点击事件");
+            collapseBtn.addEventListener('click', function() {
+                console.log("点击了收起按钮");
+                collapseNotifications();
+            });
+        } else {
+            console.warn("未找到收起按钮");
+        }
+        
+        // 获取用户信息
+        getUserInfo();
     });
 
-    // 加载活跃通知（首页默认只显示最新的1条）
-    function loadActiveNotifications() {
+    // 全局变量存储所有通知数据
+    let allNotificationsData = [];
+
+    // 加载首页通知
+    function loadHomeNotifications() {
         fetch('/api/notifications/active')
             .then(response => response.json())
-            .then(notifications => {
-                if (notifications.length > 1) {
-                    document.getElementById('load-more-container').classList.remove('hidden');
+            .then(data => {
+                console.log("获取到通知数据:", data);
+                if (data && Array.isArray(data)) {
+                    // 保存所有通知数据到全局变量
+                    allNotificationsData = [...data];
+                    
+                    // 按创建时间倒序排序
+                    allNotificationsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    
+                    // 显示通知
+                    const notificationList = document.getElementById('notification-list');
+                    if (notificationList) {
+                        if (allNotificationsData.length === 0) {
+                            notificationList.innerHTML = '<div class="text-center py-8 text-gray-500">暂无通知</div>';
+                        } else {
+                            // 默认只显示第一条
+                            displayHomePageNotifications(allNotificationsData.slice(0, 1), false);
+                            
+                            // 如果有多条通知，显示加载更多按钮
+                            if (allNotificationsData.length > 1) {
+                                document.getElementById('load-more-container').classList.remove('hidden');
+                            }
+                        }
+                    }
                 }
-                displayHomePageNotifications(notifications.slice(0, 1), false);
             })
             .catch(error => {
-                console.error('加载通知失败:', error);
-                document.getElementById('notifications-container').innerHTML =
-                    '<div class="text-center py-10"><p class="text-gray-500">加载通知失败</p></div>';
+                console.error('获取通知失败:', error);
+                const notificationList = document.getElementById('notification-list');
+                if (notificationList) {
+                    notificationList.innerHTML = '<div class="text-center py-8 text-red-500">加载通知失败</div>';
+                }
             });
     }
 
     // 加载所有活跃通知
     function loadAllActiveNotifications() {
-        document.getElementById('load-more-btn').innerHTML =
-            '<i class="fa fa-spinner fa-spin mr-1"></i> 加载中...';
-        document.getElementById('load-more-btn').disabled = true;
+        console.log("执行loadAllActiveNotifications函数");
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const collapseBtn = document.getElementById('collapse-btn');
+        
+        if (loadMoreBtn) {
+            loadMoreBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> 加载中...';
+            loadMoreBtn.disabled = true;
+        }
 
-        fetch('/api/notifications/active')
-            .then(response => response.json())
-            .then(notifications => {
-                document.getElementById('load-more-btn').classList.add('hidden');
-                document.getElementById('collapse-btn').classList.remove('hidden');
-                displayHomePageNotifications(notifications, true);
-            })
-            .catch(error => {
-                console.error('加载通知失败:', error);
-                resetLoadMoreButton();
-                document.getElementById('notifications-container').innerHTML +=
-                    '<div class="text-center py-4 text-red-500">加载更多通知失败</div>';
-            });
+        // 使用已经加载的通知数据，不再重新请求
+        if (allNotificationsData && allNotificationsData.length > 0) {
+            console.log("显示所有通知 - 共", allNotificationsData.length, "条");
+            if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
+            if (collapseBtn) collapseBtn.classList.remove('hidden');
+            displayHomePageNotifications(allNotificationsData, true);
+        } else {
+            // 如果没有加载过通知数据，则重新请求
+            fetch('/api/notifications/active')
+                .then(response => response.json())
+                .then(notifications => {
+                    console.log("加载更多 - 原始通知数据:", notifications);
+                    
+                    // 保存所有通知数据到全局变量
+                    allNotificationsData = [...notifications];
+                    
+                    // 确保通知按时间降序排序（最新的在前面）
+                    allNotificationsData.sort((a, b) => {
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                    });
+                    
+                    console.log("加载更多 - 排序后通知数据:", allNotificationsData);
+                    
+                    if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
+                    if (collapseBtn) collapseBtn.classList.remove('hidden');
+                    displayHomePageNotifications(allNotificationsData, true);
+                })
+                .catch(error => {
+                    console.error('加载通知失败:', error);
+                    resetLoadMoreButton();
+                    const notificationList = document.getElementById('notification-list');
+                    if (notificationList) {
+                        notificationList.innerHTML += '<div class="text-center py-4 text-red-500">加载更多通知失败</div>';
+                    }
+                });
+        }
     }
 
     // 收起通知
     function collapseNotifications() {
-        document.getElementById('collapse-btn').innerHTML =
-            '<i class="fa fa-spinner fa-spin mr-1"></i> 收起中...';
-        document.getElementById('collapse-btn').disabled = true;
+        console.log("执行collapseNotifications函数");
+        const collapseBtn = document.getElementById('collapse-btn');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        
+        if (collapseBtn) {
+            collapseBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> 收起中...';
+            collapseBtn.disabled = true;
+        }
 
-        // 模拟异步操作
+        // 不需要重新加载数据，直接使用已有的数据
         setTimeout(() => {
-            loadActiveNotifications();
-            document.getElementById('load-more-btn').classList.remove('hidden');
-            document.getElementById('collapse-btn').classList.add('hidden');
+            // 显示第一条通知
+            if (allNotificationsData && allNotificationsData.length > 0) {
+                displayHomePageNotifications(allNotificationsData.slice(0, 1), false);
+            }
+            
+            // 更新按钮状态
+            if (loadMoreBtn) loadMoreBtn.classList.remove('hidden');
+            if (collapseBtn) collapseBtn.classList.add('hidden');
             resetLoadMoreButton();
         }, 300);
     }
 
     // 重置加载更多按钮状态
     function resetLoadMoreButton() {
+        console.log("重置按钮状态");
         const loadMoreBtn = document.getElementById('load-more-btn');
         if (loadMoreBtn) {
             loadMoreBtn.innerHTML = '<i class="fa fa-angle-down mr-1"></i> 加载更多公告';
@@ -493,42 +613,126 @@
     // 在首页显示通知（优化后的排版）
     function displayHomePageNotifications(notifications, showAll) {
         if (!notifications || notifications.length === 0) {
-            document.getElementById('notifications-container').innerHTML =
+            document.getElementById('notification-list').innerHTML =
                 '<div class="text-center py-10"><p class="text-gray-500">暂无通知</p></div>';
             return;
         }
 
+        // 确保通知按照创建时间降序排列（最新的在前）
+        const sortedNotifications = [...notifications].sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+
         let html = '<div class="space-y-6">';
 
-        notifications.forEach((notification, index) => {
+        sortedNotifications.forEach((notification, index) => {
             // 如果不是显示全部且不是第一条，则跳过
             if (!showAll && index > 0) return;
 
             const date = new Date(notification.createdAt);
             const formattedDate = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 
+            // 使用marked.js解析Markdown内容
+            const markdownContent = marked.parse(notification.content || '');
+            
+            // 获取优先级和目标信息
+            const priorityClass = getPriorityBadge(notification.priority || 'medium');
+            const targetText = getTargetText(notification.target || 'all');
+
+            // 为每个通知卡片生成唯一ID
+            const notificationId = `notification-${notification.id || index}`;
+
             // 优化排版：添加更好的间距、行高和文字处理
             html += `
         <div class="border border-gray-100 rounded-lg p-5 hover:bg-gray-50 transition-colors duration-200">
-            <div class="flex justify-between items-start mb-3">
-                <h3 class="text-lg font-semibold text-neutral-dark leading-tight">${notification.title}</h3>
-                ${notification.important ?
-                '<span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full whitespace-nowrap ml-2">重要</span>' : ''}
+            <div class="flex flex-col md:flex-row justify-between items-start mb-3">
+                <div>
+                    <h3 class="text-lg font-semibold text-neutral-dark leading-tight cursor-pointer hover:text-primary flex items-center transition-colors duration-200" onclick="toggleNotificationContent('${notificationId}')">
+                        ${notification.title}
+                        <i class="fa fa-chevron-down ml-1 text-xs text-gray-500" id="${notificationId}-icon"></i>
+                        <span class="text-xs text-gray-400 ml-2" id="${notificationId}-hint">点击展开</span>
+                    </h3>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        ${priorityClass}
+                        <span class="px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-800">目标: ${targetText}</span>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-500 mt-2 md:mt-0">
+                    <span><i class="fa fa-user mr-1"></i>${notification.createdByUsername || '系统'}</span>
+                    <span class="mx-2">•</span>
+                    <span><i class="fa fa-clock-o mr-1"></i>${formattedDate}</span>
+                </div>
             </div>
-            <div class="prose max-w-none text-gray-600 mb-4">
-                <p class="whitespace-pre-line break-words">${notification.content}</p>
-            </div>
-            <div class="flex justify-between items-center text-sm">
-                <span class="text-gray-500">${formattedDate}</span>
+            <div id="${notificationId}" class="prose max-w-none border-t pt-3 mt-2 hidden">
+                ${markdownContent}
             </div>
         </div>
         `;
         });
 
         html += '</div>';
-        document.getElementById('notifications-container').innerHTML = html;
+        document.getElementById('notification-list').innerHTML = html;
         resetLoadMoreButton();
     }
+    
+    // 切换通知内容显示/隐藏
+    function toggleNotificationContent(notificationId) {
+        const contentElement = document.getElementById(notificationId);
+        const iconElement = document.getElementById(`${notificationId}-icon`);
+        const hintElement = document.getElementById(`${notificationId}-hint`);
+        
+        if (contentElement) {
+            if (contentElement.classList.contains('hidden')) {
+                // 显示内容
+                contentElement.classList.remove('hidden');
+                if (iconElement) {
+                    iconElement.classList.remove('fa-chevron-down');
+                    iconElement.classList.add('fa-chevron-up');
+                }
+                if (hintElement) {
+                    hintElement.textContent = '点击收起';
+                }
+            } else {
+                // 隐藏内容
+                contentElement.classList.add('hidden');
+                if (iconElement) {
+                    iconElement.classList.remove('fa-chevron-up');
+                    iconElement.classList.add('fa-chevron-down');
+                }
+                if (hintElement) {
+                    hintElement.textContent = '点击展开';
+                }
+            }
+        }
+    }
+
+    // 获取优先级徽章HTML
+    function getPriorityBadge(priority) {
+        const classes = {
+            'high': 'bg-red-100 text-red-800',
+            'medium': 'bg-yellow-100 text-yellow-800',
+            'low': 'bg-green-100 text-green-800'
+        };
+        const texts = {
+            'high': '高优先级',
+            'medium': '中优先级',
+            'low': '低优先级'
+        };
+        const className = classes[priority] || classes['medium'];
+        const text = texts[priority] || texts['medium'];
+        return `<span class="px-2 py-1 rounded-full text-xs ${className}">${text}</span>`;
+    }
+
+    // 获取目标文本
+    function getTargetText(target) {
+        const texts = {
+            'all': '所有用户',
+            'members': '仅会员',
+            'coaches': '仅教练'
+        };
+        return texts[target] || texts['all'];
+    }
+
     // 获取用户信息
     document.addEventListener('DOMContentLoaded', function() {
         // 获取用户信息
@@ -559,6 +763,34 @@
             .catch(error => {
                 console.error('获取用户信息失败:', error);
             });
+            
+        // 手动处理用户菜单下拉功能
+        const userMenuButton = document.querySelector('.relative.group button');
+        const userMenuDropdown = document.querySelector('.relative.group .absolute');
+        
+        if (userMenuButton && userMenuDropdown) {
+            userMenuButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                // 切换下拉菜单的可见性
+                const isVisible = userMenuDropdown.classList.contains('visible');
+                
+                if (isVisible) {
+                    userMenuDropdown.classList.remove('visible', 'opacity-100');
+                    userMenuDropdown.classList.add('invisible', 'opacity-0');
+                } else {
+                    userMenuDropdown.classList.remove('invisible', 'opacity-0');
+                    userMenuDropdown.classList.add('visible', 'opacity-100');
+                }
+            });
+            
+            // 点击页面其他地方关闭下拉菜单
+            document.addEventListener('click', function(e) {
+                if (!userMenuButton.contains(e.target) && !userMenuDropdown.contains(e.target)) {
+                    userMenuDropdown.classList.remove('visible', 'opacity-100');
+                    userMenuDropdown.classList.add('invisible', 'opacity-0');
+                }
+            });
+        }
     });
 
     // MD5函数，用于生成Gravatar头像

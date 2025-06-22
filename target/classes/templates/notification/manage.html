@@ -9,10 +9,77 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Bootstrap CSS：一定要放在 Tailwind 之后 -->
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <!-- 添加Markdown支持 -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    /* Markdown样式 */
+    .markdown-content {
+      line-height: 1.6;
+    }
+    .markdown-content h1, .markdown-content h2, .markdown-content h3, 
+    .markdown-content h4, .markdown-content h5, .markdown-content h6 {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .markdown-content h1 { font-size: 1.5rem; }
+    .markdown-content h2 { font-size: 1.35rem; }
+    .markdown-content h3 { font-size: 1.25rem; }
+    .markdown-content h4 { font-size: 1.15rem; }
+    .markdown-content h5 { font-size: 1.05rem; }
+    .markdown-content h6 { font-size: 1rem; }
+    .markdown-content p {
+      margin-bottom: 1rem;
+    }
+    .markdown-content ul, .markdown-content ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .markdown-content ul { list-style-type: disc; }
+    .markdown-content ol { list-style-type: decimal; }
+    .markdown-content a {
+      color: #165DFF;
+      text-decoration: underline;
+    }
+    .markdown-content blockquote {
+      border-left: 4px solid #e5e7eb;
+      padding-left: 1rem;
+      color: #6b7280;
+      margin-bottom: 1rem;
+    }
+    .markdown-content pre {
+      background-color: #f3f4f6;
+      padding: 1rem;
+      border-radius: 0.375rem;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+    }
+    .markdown-content code {
+      background-color: #f3f4f6;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      font-family: monospace;
+    }
+    .markdown-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+    .markdown-content table th, .markdown-content table td {
+      border: 1px solid #e5e7eb;
+      padding: 0.5rem;
+    }
+    .markdown-content table th {
+      background-color: #f9fafb;
+    }
+    .markdown-content hr {
+      border: 0;
+      border-top: 1px solid #e5e7eb;
+      margin: 1rem 0;
+    }
+  </style>
 
   <!-- Tailwind配置 -->
   <script>
@@ -178,11 +245,10 @@
               <img id="headerUserAvatar" class="w-full h-full object-cover" src="/uploads/avatars/default.jpg" alt="头像">
             </div>
             <span id="headerDisplayName" class="hidden md:inline text-sm font-medium">用户</span>
-            <i class="fa fa-chevron-down text-xs text-gray-500"></i>
           </button>
           <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-            <a th:href="@{/settings}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              <i class="fa fa-user-circle mr-2"></i> 个人资料
+            <a th:if="${session.userRole != null && session.userRole == 'ADMIN'}" th:href="@{/notifications/manage}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
+              <i class="fa fa-bullhorn mr-1"></i> 通知管理
             </a>
             <a th:href="@{/settings}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
               <i class="fa fa-cog mr-2"></i> 设置
@@ -218,7 +284,7 @@
         <a th:href="@{/reservations}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
           <i class="fa fa-book mr-1"></i> 预约管理
         </a>
-        <a th:href="@{/notifications}" class="block px-4 py-2 rounded-md text-sm font-medium bg-primary/10 text-primary">
+        <a th:if="${session.userRole != null && session.userRole == 'ADMIN'}" th:href="@{/notifications/manage}" class="block px-4 py-2 rounded-md text-sm font-medium bg-primary/10 text-primary">
           <i class="fa fa-bullhorn mr-1"></i> 通知管理
         </a>
         <div class="px-4 py-2">
@@ -347,7 +413,12 @@
             <i class="fa fa-bell-slash text-4xl text-gray-300 mb-3"></i>
             <p class="text-gray-500">目前没有活跃的通知</p>
           </div>
-          <div id="active-notifications" class="space-y-4"></div>
+          <div id="active-notifications" class="space-y-4">
+            <div class="text-center py-8">
+              <div class="spinner-border text-primary" role="status"></div>
+              <p class="mt-2 text-gray-500">加载通知中...</p>
+            </div>
+          </div>
         </div>
 
         <!-- 已归档通知 -->
@@ -356,7 +427,12 @@
             <i class="fa fa-box-open text-4xl text-gray-300 mb-3"></i>
             <p class="text-gray-500">目前没有已归档的通知</p>
           </div>
-          <div id="archived-notifications" class="space-y-4"></div>
+          <div id="archived-notifications" class="space-y-4">
+            <div class="text-center py-8">
+              <div class="spinner-border text-primary" role="status"></div>
+              <p class="mt-2 text-gray-500">加载通知中...</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -553,7 +629,7 @@
 </div>
 
 <!-- 页脚 -->
-<footer class="bg-white border-t border-gray-200 py-6">
+<footer class="bg-white border-t border-gray-200 py-6 mt-auto">
   <div class="container mx-auto px-4">
     <div class="flex flex-col md:flex-row justify-between items-center">
       <div class="mb-4 md:mb-0">
@@ -577,12 +653,25 @@
   </div>
 </footer>
 
-<!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JavaScript依赖 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
+
 <script>
+  // 配置marked.js
+  marked.setOptions({
+    breaks: true,        // 允许换行符转换为<br>
+    gfm: true,           // 使用GitHub风格Markdown
+    headerIds: true,     // 为标题添加id
+    mangle: false,       // 不转义HTML标签中的内容
+    sanitize: false,     // 不过滤HTML标签
+    smartLists: true,    // 使用更智能的列表行为
+    smartypants: true,   // 使用更智能的标点符号
+    xhtml: false         // 不使用xhtml格式的标签
+  });
+
   // 定义管理员标志
   const isAdmin = true; // 由于这个页面只有管理员能访问，所以直接设置为true
   let selectedNotifications = [];
@@ -590,224 +679,223 @@
 
   $(document).ready(function() {
     console.log("页面加载完成，初始化...");
-    
+
     // 初始化日期选择器
     flatpickr("#expiryDate", {
-      locale: "zh",
       dateFormat: "Y-m-d",
-      minDate: "today"
-    });
-
-    flatpickr("#edit-expiryDate", {
-      locale: "zh",
-      dateFormat: "Y-m-d",
-      minDate: "today"
-    });
-
-    // 手动初始化Bootstrap标签页
-    const triggerTabList = [].slice.call(document.querySelectorAll('#notificationTabs button[data-bs-toggle="tab"]'));
-    triggerTabList.forEach(function(triggerEl) {
-      console.log("初始化标签页:", triggerEl.getAttribute('id'));
-      const tabTrigger = new bootstrap.Tab(triggerEl);
-      
-      triggerEl.addEventListener('click', function(event) {
-        event.preventDefault();
-        console.log("切换标签页:", triggerEl.getAttribute('id'));
-        tabTrigger.show();
-      });
+      locale: "zh"
     });
     
-    // 标签切换事件
+    flatpickr("#edit-expiryDate", {
+      dateFormat: "Y-m-d",
+      locale: "zh"
+    });
+    
+    // 手动初始化Bootstrap标签页
+    const triggerTabList = document.querySelectorAll('#notificationTabs button');
+    triggerTabList.forEach(function(triggerEl) {
+      try {
+        const tabTrigger = new bootstrap.Tab(triggerEl);
+        
+        triggerEl.addEventListener('click', function(event) {
+          event.preventDefault();
+          console.log("点击标签页:", triggerEl.id);
+          
+          // 直接处理标签页内容显示
+          if(triggerEl.id === 'active-tab') {
+            console.log("手动显示活跃通知");
+            $('#active').addClass('show active');
+            $('#archived').removeClass('show active');
+            displayNotificationsByStatus('active');
+          } else if(triggerEl.id === 'archived-tab') {
+            console.log("手动显示已归档通知");
+            $('#archived').addClass('show active');
+            $('#active').removeClass('show active');
+            displayNotificationsByStatus('archived');
+          }
+          
+          // 更新标签页状态
+          document.querySelectorAll('#notificationTabs button').forEach(function(btn) {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-selected', 'false');
+          });
+          triggerEl.classList.add('active');
+          triggerEl.setAttribute('aria-selected', 'true');
+        });
+      } catch(e) {
+        console.error("初始化标签页出错:", e);
+      }
+    });
+    
+    // 初始化标签页切换事件
     $('#notificationTabs button[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
       const activeTabId = $(e.target).attr('id');
       console.log("标签已切换:", activeTabId);
       
-      if(activeTabId === "active-tab") {
-        console.log("显示活跃通知...");
-        displayFilteredNotifications();
-      } else if(activeTabId === "archived-tab") {
-        console.log("显示已归档通知...");
-        displayFilteredNotifications();
+      // 根据当前标签页显示相应的通知
+      if (activeTabId === 'active-tab') {
+        displayNotificationsByStatus('active');
+      } else if (activeTabId === 'archived-tab') {
+        console.log("显示已归档通知");
+        displayNotificationsByStatus('archived');
       }
     });
 
-    // 移动端菜单切换
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    if (mobileMenuButton) {
-      mobileMenuButton.addEventListener('click', function() {
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu) {
-          mobileMenu.classList.toggle('h-0');
-          mobileMenu.classList.toggle('h-auto');
-        }
-      });
-    }
-
-    // 获取用户信息
-    fetch('/api/user-profile')
-            .then(response => response.json())
-            .then(data => {
-              if (data.success) {
-                // 更新用户名
-                const displayName = document.getElementById('headerDisplayName');
-                if (displayName) {
-                  displayName.textContent = data.displayName || data.username;
-                }
-
-                // 更新头像
-                const userAvatar = document.getElementById('headerUserAvatar');
-                if (userAvatar) {
-                  if (data.avatarUrl) {
-                    userAvatar.src = data.avatarUrl;
-                  } else {
-                    // 使用默认头像
-                    userAvatar.src = 'https://www.gravatar.com/avatar/' +
-                            md5(data.email || data.username) +
-                            '?d=identicon&s=200';
-                  }
-                }
-              }
-            })
-            .catch(error => {
-              console.error('获取用户信息失败:', error);
-            });
-
-    // 提交新通知
-    $('#submitNotification').click(function() {
-      const title = $('#title').val().trim();
-      const content = $('#content').val().trim();
-      const priority = $('#priority').val();
-      const target = $('#target').val();
-      const expiryDate = $('#expiryDate').val();
-
-      if (!title || !content) {
-        showAlert('请填写完整信息', 'warning');
-        return;
-      }
-
-      $.ajax({
-        url: '/api/notifications',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          title: title,
-          content: content,
-          priority: priority,
-          target: target,
-          expiryDate: expiryDate
-        }),
-        success: function(response) {
-          $('#createNotificationModal').modal('hide');
-          $('#createNotificationForm')[0].reset();
-          loadNotifications();
-          showAlert('通知发布成功', 'success');
-        },
-        error: function(xhr) {
-          showAlert('发布失败: ' + xhr.responseText, 'danger');
-        }
-      });
-    });
-
-    // 更新通知
-    $('#updateNotification').click(function() {
-      const id = $('#edit-id').val();
-      const title = $('#edit-title').val().trim();
-      const content = $('#edit-content').val().trim();
-      const status = $('#edit-status').val();
-      const priority = $('#edit-priority').val();
-      const target = $('#edit-target').val();
-      const expiryDate = $('#edit-expiryDate').val();
-
-      if (!title || !content) {
-        showAlert('请填写完整信息', 'warning');
-        return;
-      }
-
-      $.ajax({
-        url: `/api/notifications/${id}`,
-        type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          title: title,
-          content: content,
-          status: status,
-          priority: priority,
-          target: target,
-          expiryDate: expiryDate
-        }),
-        success: function(response) {
-          $('#editNotificationModal').modal('hide');
-          loadNotifications();
-          showAlert('通知更新成功', 'success');
-        },
-        error: function(xhr) {
-          showAlert('更新失败: ' + xhr.responseText, 'danger');
-        }
-      });
-    });
-
-    // 搜索功能
-    $('#searchInput').on('keyup', function() {
-      const searchTerm = $(this).val().toLowerCase();
-      filterNotifications(searchTerm);
-    });
-
-    // 筛选功能
-    $('#filterPriority, #filterTarget').change(function() {
-      filterNotifications();
-    });
-
-    // 重置筛选
-    $('#resetFilters').click(function() {
-      $('#searchInput').val('');
-      $('#filterPriority').val('');
-      $('#filterTarget').val('');
-      filterNotifications();
-    });
-
-    // 批量操作
-    $('#bulkArchive').click(function() {
-      if (selectedNotifications.length === 0) return;
-      showConfirmDialog('确定要归档选中的通知吗？', `将归档 ${selectedNotifications.length} 条通知`, function() {
-        bulkUpdateStatus(selectedNotifications, 'archived');
-      });
-    });
-
-    $('#bulkActivate').click(function() {
-      if (selectedNotifications.length === 0) return;
-      showConfirmDialog('确定要激活选中的通知吗？', `将激活 ${selectedNotifications.length} 条通知`, function() {
-        bulkUpdateStatus(selectedNotifications, 'active');
-      });
-    });
-
-    $('#bulkDelete').click(function() {
-      if (selectedNotifications.length === 0) return;
-      showConfirmDialog('确定要删除选中的通知吗？', `将永久删除 ${selectedNotifications.length} 条通知`, function() {
-        bulkDelete(selectedNotifications);
-      });
-    });
-    
-    // 立即加载通知
-    console.log("初始加载通知...");
+    // 加载通知
     loadNotifications();
+
+    // 绑定事件
+    bindEvents();
+
+    // 初始化提示工具
+    initializeTooltips();
+    
+    // 确保已归档标签页可以正常显示
+    console.log("设置已归档标签页测试");
+    setTimeout(function() {
+      // 测试已归档标签页是否可以正常显示
+      console.log("测试已归档标签页显示");
+      
+      // 直接执行归档标签页显示逻辑
+      $('#notificationTabs button').removeClass('active').attr('aria-selected', 'false');
+      $('#archived-tab').addClass('active').attr('aria-selected', 'true');
+      
+      // 手动切换内容区域
+      $('.tab-pane').removeClass('show active');
+      $('#archived').addClass('show active');
+      
+      // 确保已归档通知显示
+      const archivedNotifications = notificationsData.filter(n => n.status === 'archived');
+      console.log("已归档通知数量:", archivedNotifications.length);
+      
+      if(archivedNotifications.length === 0) {
+        $('#no-archived').removeClass('hidden').show();
+        $('#archived-notifications').html('');
+      } else {
+        $('#no-archived').hide();
+        let html = '';
+        archivedNotifications.forEach(notification => {
+          html += renderNotificationItem(notification, false);
+          console.log("渲染已归档通知:", notification.id, notification.title);
+        });
+        $('#archived-notifications').html(html);
+      }
+      
+      // 添加事件处理
+      attachEventHandlers();
+    }, 1000);
   });
 
-  // 加载通知列表
+  // 加载通知数据
   function loadNotifications() {
-    console.log("开始加载通知...");
+    console.log("开始加载通知数据...");
+    
+    // 显示加载中状态
+    $('#active-notifications').html('<div class="text-center py-8"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-gray-500">加载通知中...</p></div>');
+    $('#archived-notifications').html('<div class="text-center py-8"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-gray-500">加载通知中...</p></div>');
+    
+    // 使用测试数据（开发模式）
+    const useTestData = false; // 设置为true使用测试数据，false则尝试从API获取
+    
+    // 如果使用测试数据，则跳过API调用
+    if (useTestData) {
+      console.log("使用测试数据...");
+      const testData = [
+        {
+          id: 1,
+          title: "测试通知1",
+          content: "这是活跃通知内容",
+          status: "active",
+          priority: "high",
+          target: "all",
+          createdAt: new Date().toISOString(),
+          createdByUsername: "系统"
+        },
+        {
+          id: 2,
+          title: "测试通知2 - 已归档",
+          content: "这是已归档通知内容",
+          status: "archived",
+          priority: "medium",
+          target: "members",
+          createdAt: new Date().toISOString(),
+          createdByUsername: "系统"
+        },
+        {
+          id: 3,
+          title: "测试通知3 - 已归档",
+          content: "这是另一条已归档通知内容",
+          status: "archived",
+          priority: "low",
+          target: "coaches",
+          createdAt: new Date().toISOString(),
+          createdByUsername: "系统"
+        }
+      ];
+      
+      // 使用测试数据
+      notificationsData = testData;
+      
+      // 更新计数
+      updateCounts(testData);
+      
+      // 默认显示活跃通知
+      displayNotificationsByStatus('active');
+      
+      // 初始化折叠图标
+      setTimeout(initializeCollapseIcons, 100);
+      
+      return;
+    }
+    
+    // 发送AJAX请求获取所有通知
     $.ajax({
       url: '/api/notifications',
       type: 'GET',
       success: function(notifications) {
-        console.log("成功获取通知:", notifications.length, "条");
-        notificationsData = notifications; // 保存通知数据
-        displayFilteredNotifications();
+        console.log("获取到通知数据:", notifications);
+        
+        // 保存通知数据
+        notificationsData = notifications;
+        
+        // 获取当前活动的标签页
+        const activeTabId = $('#notificationTabs button.active').attr('id');
+        console.log("当前活动标签:", activeTabId);
+        
+        // 预处理通知数据，确保状态字段存在
+        notifications.forEach(notification => {
+          if (!notification.status) {
+            notification.status = 'active'; // 默认为活跃状态
+          }
+        });
+        
+        // 分别准备活跃和已归档通知
+        const activeNotifications = notifications.filter(n => n.status === 'active');
+        const archivedNotifications = notifications.filter(n => n.status === 'archived');
+        
+        console.log("活跃通知数量:", activeNotifications.length);
+        console.log("已归档通知数量:", archivedNotifications.length);
+        
+        // 根据当前标签页显示相应的通知
+        if (activeTabId === 'active-tab') {
+          displayNotificationsByStatus('active');
+        } else if (activeTabId === 'archived-tab') {
+          displayNotificationsByStatus('archived');
+        } else {
+          // 默认显示活跃通知
+          displayNotificationsByStatus('active');
+        }
+        
+        // 更新计数
         updateCounts(notifications);
+
+        // 初始化折叠图标
+        setTimeout(initializeCollapseIcons, 100);
       },
       error: function(xhr, status, error) {
         console.error('加载通知失败:', {xhr: xhr, status: status, error: error});
         showAlert('加载通知失败: ' + (xhr.responseText || '服务器错误'), 'danger');
-        
+
         // 临时测试数据，以防API不可用
         console.log("使用测试数据...");
         const testData = [
@@ -823,19 +911,58 @@
           },
           {
             id: 2,
-            title: "测试通知2",
+            title: "测试通知2 - 已归档",
             content: "这是已归档通知内容",
             status: "archived",
             priority: "medium",
             target: "members",
             createdAt: new Date().toISOString(),
             createdByUsername: "系统"
+          },
+          {
+            id: 3,
+            title: "测试通知3 - 已归档",
+            content: "这是另一条已归档通知内容",
+            status: "archived",
+            priority: "low",
+            target: "coaches",
+            createdAt: new Date().toISOString(),
+            createdByUsername: "系统"
           }
         ];
-        
+
         notificationsData = testData;
         displayFilteredNotifications();
         updateCounts(testData);
+        
+        // 初始化折叠图标
+        setTimeout(initializeCollapseIcons, 500);
+      }
+    });
+  }
+
+  // 初始化折叠图标
+  function initializeCollapseIcons() {
+    // 获取所有通知内容元素
+    const notificationContents = document.querySelectorAll('[id^="notification-content-"]');
+    
+    // 为每个通知内容设置初始状态
+    notificationContents.forEach(content => {
+      const notificationId = content.id.replace('notification-content-', '');
+      const iconElement = document.getElementById(`toggle-icon-${notificationId}`);
+      const textElement = document.getElementById(`toggle-text-${notificationId}`);
+      
+      // 默认是展开状态
+      content.style.display = 'block';
+      
+      if (iconElement) {
+        // 默认是展开状态，所以图标应该是向上的
+        iconElement.classList.remove('fa-chevron-down');
+        iconElement.classList.add('fa-chevron-up');
+      }
+      
+      if (textElement) {
+        textElement.textContent = '收起内容';
       }
     });
   }
@@ -846,7 +973,7 @@
     const archivedCount = notifications.filter(n => n.status === 'archived').length;
 
     console.log("更新计数 - 活跃:", activeCount, "已归档:", archivedCount);
-    
+
     $('#activeCount').text(activeCount);
     $('#archivedCount').text(archivedCount);
   }
@@ -857,81 +984,101 @@
     // 确定当前活动的标签页
     const activeTab = $('#notificationTabs button.active').attr('id');
     console.log("当前活动标签:", activeTab);
-    
+
     if(activeTab === 'active-tab') {
       displayNotificationsByStatus('active');
-    } else if(activeTab === 'archived-tab') {
+    } else {
+      // 如果不是活跃标签，则显示已归档通知（默认情况）
       displayNotificationsByStatus('archived');
     }
+    
+    // 延迟初始化折叠图标，确保DOM已更新
+    setTimeout(initializeCollapseIcons, 100);
   }
-  
+
   // 按状态显示通知
   function displayNotificationsByStatus(status) {
     console.log("按状态显示通知:", status);
     const filteredNotifications = notificationsData.filter(n => n.status === status);
     console.log("筛选出", filteredNotifications.length, "条", status, "通知");
-    
+
     if(status === 'active') {
       if(filteredNotifications.length === 0) {
-        $('#no-active').show();
+        $('#no-active').removeClass('hidden').show();
         $('#active-notifications').html('');
       } else {
         $('#no-active').hide();
         let html = '';
         filteredNotifications.forEach(notification => {
-          html += createNotificationCard(notification, true);
+          html += renderNotificationItem(notification, true);
         });
         $('#active-notifications').html(html);
       }
     } else if(status === 'archived') {
+      console.log("处理已归档通知显示");
       if(filteredNotifications.length === 0) {
-        $('#no-archived').show();
+        $('#no-archived').removeClass('hidden').show();
         $('#archived-notifications').html('');
+        console.log("没有已归档通知，显示空状态");
       } else {
         $('#no-archived').hide();
         let html = '';
         filteredNotifications.forEach(notification => {
-          html += createNotificationCard(notification, false);
+          html += renderNotificationItem(notification, false);
+          console.log("添加已归档通知:", notification.id, notification.title);
         });
         $('#archived-notifications').html(html);
+        console.log("已添加已归档通知到DOM");
       }
     }
-    
+
     // 添加事件处理
     attachEventHandlers();
+    
+    console.log(`${status}通知显示完成`);
   }
-  
+
   // 附加事件处理器到按钮
   function attachEventHandlers() {
     console.log("附加事件处理器...");
-    
+
     // 先移除所有事件处理器
     $('.btn-archive').off('click');
     $('.btn-activate').off('click');
     $('.btn-edit').off('click');
     $('.btn-delete').off('click');
     $('.notification-checkbox').off('change');
-    
+
     // 归档按钮
     $('.btn-archive').on('click', function() {
-      const id = $(this).data('id');
-      console.log("点击归档按钮, ID:", id);
+      const id = Number($(this).data('id'));
+      console.log("点击归档按钮, ID类型:", typeof id, "值:", id);
+      if (isNaN(id) || id <= 0) {
+        console.error("无效的通知ID:", $(this).data('id'));
+        showAlert('无效的通知ID', 'warning');
+        return;
+      }
       updateNotificationStatus(id, 'archived');
     });
-    
+
     // 激活按钮
     $('.btn-activate').on('click', function() {
-      const id = $(this).data('id');
-      console.log("点击激活按钮, ID:", id);
+      const id = Number($(this).data('id'));
+      console.log("点击激活按钮, ID类型:", typeof id, "值:", id);
+      if (isNaN(id) || id <= 0) {
+        console.error("无效的通知ID:", $(this).data('id'));
+        showAlert('无效的通知ID', 'warning');
+        return;
+      }
       updateNotificationStatus(id, 'active');
     });
-    
+
     // 编辑按钮
     $('.btn-edit').on('click', function() {
-      const id = $(this).data('id');
-      console.log("点击编辑按钮, ID:", id);
-      const notification = notificationsData.find(n => n.id == id);
-      
+      const id = Number($(this).data('id'));
+      console.log("点击编辑按钮, ID类型:", typeof id, "值:", id);
+      const notification = notificationsData.find(n => n.id === id);
+
       if(notification) {
         $('#edit-id').val(notification.id);
         $('#edit-title').val(notification.title);
@@ -941,23 +1088,26 @@
         $('#edit-target').val(notification.target || 'all');
         $('#edit-expiryDate').val(notification.expiryDate || '');
         $('#editNotificationModal').modal('show');
+      } else {
+        console.error("找不到ID为", id, "的通知");
+        showAlert('找不到相应通知', 'warning');
       }
     });
-    
+
     // 删除按钮
     $('.btn-delete').on('click', function() {
-      const id = $(this).data('id');
-      console.log("点击删除按钮, ID:", id);
+      const id = Number($(this).data('id'));
+      console.log("点击删除按钮, ID类型:", typeof id, "值:", id);
       showConfirmDialog('确定要删除这条通知吗？', '删除后将无法恢复', function() {
         deleteNotification(id);
       });
     });
-    
+
     // 选择框
     $('.notification-checkbox').on('change', function() {
-      const id = $(this).data('id');
+      const id = Number($(this).data('id'));
       const isChecked = $(this).is(':checked');
-      
+
       if (isChecked) {
         if (!selectedNotifications.includes(id)) {
           selectedNotifications.push(id);
@@ -965,20 +1115,14 @@
       } else {
         selectedNotifications = selectedNotifications.filter(item => item !== id);
       }
-      
+
       updateBulkActions();
     });
   }
 
-  // 显示通知列表 - 废弃，由displayFilteredNotifications替代
-  function displayNotifications(notifications) {
-    console.log("显示通知列表 - 此方法已废弃");
-    notificationsData = notifications;
-    displayFilteredNotifications();
-  }
-
-  // 创建通知卡片HTML
-  function createNotificationCard(notification, isActive) {
+  // 显示通知项
+  function renderNotificationItem(notification, isActive) {
+    // 格式化日期
     const date = new Date(notification.createdAt);
     const formattedDate = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 
@@ -986,7 +1130,7 @@
     if (isAdmin) {
       if (isActive) {
         actionButtons = `
-                    <button class="btn-action btn-archive" data-id="${notification.id}" title="归档">
+                    <button class="btn-action btn-archive" data-id="${notification.id}" title="归档" onclick="console.log('归档按钮点击, ID:', ${notification.id});">
                         <i class="fa fa-archive"></i>
                     </button>
                     <button class="btn-action btn-edit" data-id="${notification.id}" title="编辑">
@@ -998,7 +1142,7 @@
                 `;
       } else {
         actionButtons = `
-                    <button class="btn-action btn-activate" data-id="${notification.id}" title="激活">
+                    <button class="btn-action btn-activate" data-id="${notification.id}" title="激活" onclick="console.log('激活按钮点击, ID:', ${notification.id});">
                         <i class="fa fa-check"></i>
                     </button>
                     <button class="btn-action btn-edit" data-id="${notification.id}" title="编辑">
@@ -1027,31 +1171,40 @@
                         <input type="checkbox" class="notification-checkbox rounded border-gray-300 text-primary focus:ring-primary" data-id="${notification.id}">
                     </div>
                     <div class="flex-1">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <div class="flex items-center flex-wrap gap-2 mb-2">
-                                    <h3 class="text-lg font-semibold text-primary flex items-center">
-                                        <i class="fa ${isActive ? 'fa-bell' : 'fa-archive'} mr-2"></i>
-                                        ${notification.title}
-                                    </h3>
-                                    <span class="priority-badge ${priorityClass}">${priorityText}</span>
-                                </div>
-                                <p class="text-gray-600 mt-2">${notification.content.replace(/\n/g, '<br>')}</p>
-                            </div>
+                        <!-- 标题栏和操作按钮放在同一栏 -->
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-lg font-semibold text-primary flex items-center flex-wrap cursor-pointer" onclick="toggleNotificationContent('notification-content-${notification.id}')">
+                                <i class="fa ${isActive ? 'fa-bell' : 'fa-archive'} mr-2"></i>
+                                ${notification.title}
+                                <i class="fa fa-chevron-up ml-2 text-xs text-gray-500" id="toggle-icon-${notification.id}"></i>
+                                <span class="text-xs text-gray-400 ml-2" id="toggle-text-${notification.id}">收起内容</span>
+                            </h3>
                             <div class="flex">
                                 ${actionButtons}
                             </div>
                         </div>
+                        
+                        <!-- 优先级和目标信息 -->
+                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                            <span class="priority-badge ${priorityClass}">${priorityText}</span>
+                            <span class="text-sm text-gray-500 flex items-center">
+                                <i class="fa fa-users mr-1"></i>目标: ${targetText}
+                            </span>
+                        </div>
+                        
+                        <!-- 通知内容 - 可折叠 -->
+                        <div id="notification-content-${notification.id}" class="mb-3">
+                            <div class="text-gray-600 markdown-content">${typeof marked !== 'undefined' && typeof marked.parse === 'function' ? marked.parse(notification.content || '') : notification.content || ''}</div>
+                        </div>
+                        
+                        <!-- 底部信息 - 移动端优化 -->
                         <div class="text-sm text-gray-500">
-                            <div class="flex flex-wrap items-center gap-4">
+                            <div class="flex flex-wrap items-center gap-2 sm:gap-4">
                                 <span class="flex items-center">
                                     <i class="fa fa-user-circle mr-1"></i>发布者: ${notification.createdByUsername || '系统'}
                                 </span>
                                 <span class="flex items-center">
                                     <i class="fa fa-clock mr-1"></i>发布时间: ${formattedDate}
-                                </span>
-                                <span class="flex items-center">
-                                    <i class="fa fa-users mr-1"></i>目标: ${targetText}
                                 </span>
                                 ${notification.expiryDate ? `
                                 <span class="flex items-center">
@@ -1096,47 +1249,90 @@
     }
   }
 
-  // 更新通知状态
-  function updateNotificationStatus(id, status) {
-    console.log("更新通知状态, ID:", id, "新状态:", status);
+  // 切换通知内容显示/隐藏
+  function toggleNotificationContent(contentId) {
+    const contentElement = document.getElementById(contentId);
+    const notificationId = contentId.replace('notification-content-', '');
+    const iconElement = document.getElementById(`toggle-icon-${notificationId}`);
+    const textElement = document.getElementById(`toggle-text-${notificationId}`);
     
-    $.ajax({
-      url: `/api/notifications/${id}`,
-      type: 'PUT',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        status: status
-      }),
-      success: function(response) {
-        console.log("更新状态成功:", response);
-        
-        // 直接更新本地数据，避免重新加载
-        const notification = notificationsData.find(n => n.id == id);
-        if(notification) {
-          notification.status = status;
-          displayFilteredNotifications();
-          updateCounts(notificationsData);
-        } else {
-          loadNotifications(); // 如果找不到，则重新加载
+    if (contentElement) {
+      if (contentElement.style.display === 'none') {
+        // 显示内容
+        contentElement.style.display = 'block';
+        if (iconElement) {
+          iconElement.classList.remove('fa-chevron-down');
+          iconElement.classList.add('fa-chevron-up');
         }
-        
-        showAlert(`通知已${status === 'active' ? '激活' : '归档'}`, 'success');
-      },
-      error: function(xhr, status, error) {
-        console.error('更新通知状态失败:', {xhr: xhr, status: status, error: error, responseText: xhr.responseText});
-        showAlert('操作失败: ' + (xhr.responseText || '服务器错误'), 'danger');
-        
-        // 模拟成功响应，用于测试UI而不依赖API
-        console.log("模拟更新状态成功...");
-        const notification = notificationsData.find(n => n.id == id);
-        if(notification) {
-          notification.status = status;
-          displayFilteredNotifications();
-          updateCounts(notificationsData);
-          showAlert(`通知已${status === 'active' ? '激活' : '归档'} (测试模式)`, 'success');
+        if (textElement) {
+          textElement.textContent = '收起内容';
+        }
+      } else {
+        // 隐藏内容
+        contentElement.style.display = 'none';
+        if (iconElement) {
+          iconElement.classList.remove('fa-chevron-up');
+          iconElement.classList.add('fa-chevron-down');
+        }
+        if (textElement) {
+          textElement.textContent = '展开内容';
         }
       }
-    });
+    }
+  }
+
+  // 更新通知状态
+  function updateNotificationStatus(id, status) {
+    console.log("开始更新通知状态, ID:", id, "新状态:", status);
+
+    // 查找本地通知
+    const localNotification = notificationsData.find(n => n.id === id);
+    if (localNotification) {
+      // 准备更新数据
+      const updateData = {
+        title: localNotification.title,
+        content: localNotification.content,
+        priority: localNotification.priority || 'medium',
+        target: localNotification.target || 'all',
+        status: status,
+        expiryDate: localNotification.expiryDate
+      };
+
+      console.log("发送更新请求，数据:", JSON.stringify(updateData));
+
+      // 发送AJAX请求到服务器保存更改
+      $.ajax({
+        url: `/api/notifications/${id}`,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(updateData),
+        success: function(response) {
+          console.log("更新成功，服务器响应:", response);
+          // 更新本地状态
+          localNotification.status = status;
+          // 刷新界面
+          displayFilteredNotifications();
+          updateCounts(notificationsData);
+          // 显示成功消息
+          showAlert(`通知已${status === 'active' ? '激活' : '归档'}`, 'success');
+        },
+        error: function(xhr, status, error) {
+          console.error('更新状态失败:', {
+            status: xhr.status,
+            statusText: xhr.statusText,
+            responseText: xhr.responseText,
+            error: error
+          });
+          showAlert('更新状态失败: ' + (xhr.responseText || '服务器错误'), 'danger');
+        },
+        complete: function() {
+          console.log("AJAX请求完成");
+        }
+      });
+    } else {
+      console.error("找不到ID为", id, "的通知");
+      showAlert('未找到相应通知', 'warning');
+    }
   }
 
   // 批量更新状态
@@ -1148,20 +1344,62 @@
     // 使用Promise.all处理多个请求
     const promises = ids.map(id => {
       return new Promise((resolve, reject) => {
+        // 先从服务器获取最新的通知详情
         $.ajax({
           url: `/api/notifications/${id}`,
-          type: 'PUT',
-          contentType: 'application/json',
-          data: JSON.stringify({
-            status: status
-          }),
-          success: function() {
-            successCount++;
-            resolve();
+          type: 'GET',
+          success: function(notification) {
+            // 只更新状态字段
+            notification.status = status;
+
+            // 发送更新请求
+            $.ajax({
+              url: `/api/notifications/${id}`,
+              type: 'PUT',
+              contentType: 'application/json',
+              data: JSON.stringify(notification),
+              success: function() {
+                successCount++;
+                resolve();
+              },
+              error: function(xhr) {
+                console.error('批量更新失败:', xhr);
+                errorCount++;
+                reject(xhr);
+              }
+            });
           },
           error: function(xhr) {
-            errorCount++;
-            reject(xhr);
+            // 如果无法获取服务器数据，尝试使用本地数据
+            const notification = notificationsData.find(n => n.id == id);
+            if (notification) {
+              const updateData = {
+                title: notification.title,
+                content: notification.content,
+                priority: notification.priority || 'medium',
+                target: notification.target || 'all',
+                status: status,
+                expiryDate: notification.expiryDate
+              };
+
+              $.ajax({
+                url: `/api/notifications/${id}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(updateData),
+                success: function() {
+                  successCount++;
+                  resolve();
+                },
+                error: function(xhr) {
+                  errorCount++;
+                  reject(xhr);
+                }
+              });
+            } else {
+              errorCount++;
+              reject(new Error("找不到通知"));
+            }
           }
         });
       });
@@ -1339,6 +1577,164 @@
       confirmModal.hide();
     });
   }
+
+  // MD5函数，用于生成Gravatar头像
+  function md5(string) {
+    if(!string) return '00000000000000000000000000000000';
+
+    // 简化版，仅用于生成Gravatar URL
+    // 返回一个固定的哈希值，仅用于演示
+    var hash = '';
+    for (var i = 0; i < 32; i++) {
+      hash += (Math.floor(Math.random() * 16)).toString(16);
+    }
+    return hash;
+  }
+
+  // 绑定事件
+  function bindEvents() {
+    console.log("绑定事件...");
+
+    // 创建通知表单提交
+    $('#submitNotification').on('click', function() {
+      console.log("提交新通知");
+      submitNotification();
+    });
+
+    // 更新通知表单提交
+    $('#updateNotification').on('click', function() {
+      console.log("更新通知");
+      updateNotification();
+    });
+
+    // 重置筛选器
+    $('#resetFilters').on('click', function() {
+      console.log("重置筛选器");
+      $('#searchInput').val('');
+      $('#filterPriority').val('');
+      $('#filterTarget').val('');
+      displayFilteredNotifications();
+    });
+
+    // 搜索和筛选
+    $('#searchInput, #filterPriority, #filterTarget').on('input change', function() {
+      console.log("应用筛选器");
+      displayFilteredNotifications();
+    });
+
+    // 批量归档
+    $('#bulkArchive').on('click', function() {
+      console.log("批量归档");
+      bulkChangeStatus('archived');
+    });
+
+    // 批量激活
+    $('#bulkActivate').on('click', function() {
+      console.log("批量激活");
+      bulkChangeStatus('active');
+    });
+
+    // 批量删除
+    $('#bulkDelete').on('click', function() {
+      console.log("批量删除");
+      bulkDelete();
+    });
+
+    // 全选/取消全选
+    $('#selectAll').on('change', function() {
+      console.log("全选/取消全选");
+      const isChecked = $(this).prop('checked');
+      $('.notification-checkbox').prop('checked', isChecked);
+      updateSelectedCount();
+    });
+    
+    // 已归档标签页点击事件
+    $('#archived-tab').on('click', function(e) {
+      console.log("手动点击已归档标签页");
+      switchToArchivedTab();
+    });
+  }
+  
+  // 切换到已归档标签页
+  function switchToArchivedTab() {
+    console.log("切换到已归档标签页");
+    
+    try {
+      // 手动切换标签页状态
+      $('#notificationTabs button').removeClass('active').attr('aria-selected', 'false');
+      $('#archived-tab').addClass('active').attr('aria-selected', 'true');
+      
+      // 手动切换内容区域
+      $('.tab-pane').removeClass('show active');
+      $('#archived').addClass('show active');
+      
+      // 显示已归档通知
+      displayNotificationsByStatus('archived');
+      
+      console.log("已归档标签页切换完成");
+    } catch(e) {
+      console.error("切换已归档标签页出错:", e);
+    }
+  }
+  // 获取用户信息
+  document.addEventListener('DOMContentLoaded', function() {
+    // 获取用户信息
+    fetch('/api/user-profile')
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                // 更新用户名
+                const displayName = document.getElementById('headerDisplayName');
+                if (displayName) {
+                  displayName.textContent = data.displayName || data.username;
+                }
+
+                // 更新头像
+                const userAvatar = document.getElementById('headerUserAvatar');
+                if (userAvatar) {
+                  if (data.avatarUrl) {
+                    userAvatar.src = data.avatarUrl;
+                  } else {
+                    // 使用默认头像
+                    userAvatar.src = 'https://www.gravatar.com/avatar/' +
+                            md5(data.email || data.username) +
+                            '?d=identicon&s=200';
+                  }
+                }
+              }
+            })
+            .catch(error => {
+              console.error('获取用户信息失败:', error);
+            });
+
+    // 手动处理用户菜单下拉功能
+    const userMenuButton = document.querySelector('.relative.group button');
+    const userMenuDropdown = document.querySelector('.relative.group .absolute');
+
+    if (userMenuButton && userMenuDropdown) {
+      userMenuButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        // 切换下拉菜单的可见性
+        const isVisible = userMenuDropdown.classList.contains('visible');
+
+        if (isVisible) {
+          userMenuDropdown.classList.remove('visible', 'opacity-100');
+          userMenuDropdown.classList.add('invisible', 'opacity-0');
+        } else {
+          userMenuDropdown.classList.remove('invisible', 'opacity-0');
+          userMenuDropdown.classList.add('visible', 'opacity-100');
+        }
+      });
+
+      // 点击页面其他地方关闭下拉菜单
+      document.addEventListener('click', function(e) {
+        if (!userMenuButton.contains(e.target) && !userMenuDropdown.contains(e.target)) {
+          userMenuDropdown.classList.remove('visible', 'opacity-100');
+          userMenuDropdown.classList.add('invisible', 'opacity-0');
+        }
+      });
+    }
+  });
 
   // MD5函数，用于生成Gravatar头像
   function md5(string) {

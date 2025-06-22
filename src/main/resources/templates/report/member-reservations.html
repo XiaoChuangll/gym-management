@@ -100,6 +100,9 @@
                         <a th:href="@{/reports/member-reservations-selection}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">会员预约情况</a>
                     </div>
                 </div>
+                <a th:href="@{/notifications}" class="nav-link">
+                    <i class="fa fa-bullhorn mr-1"></i> 通知公告
+                </a>
             </nav>
 
             <!-- 用户菜单 -->
@@ -153,6 +156,9 @@
                 </a>
                 <a th:href="@{/reservations}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
                     <i class="fa fa-book mr-1"></i> 预约管理
+                </a>
+                <a th:href="@{/notifications}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
+                    <i class="fa fa-bullhorn mr-1"></i> 通知公告
                 </a>
                 <div class="px-4 py-2">
                     <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">统计报表</div>

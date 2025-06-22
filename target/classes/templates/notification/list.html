@@ -8,6 +8,91 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- 添加Markdown支持 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Markdown样式 -->
+    <style>
+        /* Markdown渲染样式 */
+        .prose {
+            line-height: 1.6;
+        }
+        .prose h1 {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+        .prose h2 {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+        .prose h3 {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-top: 1em;
+            margin-bottom: 0.5em;
+        }
+        .prose p {
+            margin-bottom: 1em;
+        }
+        .prose ul, .prose ol {
+            padding-left: 2em;
+            margin-bottom: 1em;
+        }
+        .prose ul {
+            list-style-type: disc;
+        }
+        .prose ol {
+            list-style-type: decimal;
+        }
+        .prose li {
+            margin-bottom: 0.5em;
+        }
+        .prose a {
+            color: #165DFF;
+            text-decoration: underline;
+        }
+        .prose code {
+            background-color: #f3f4f6;
+            padding: 0.2em 0.4em;
+            border-radius: 0.25em;
+            font-family: monospace;
+        }
+        .prose pre {
+            background-color: #f3f4f6;
+            padding: 1em;
+            border-radius: 0.5em;
+            overflow-x: auto;
+            margin-bottom: 1em;
+        }
+        .prose blockquote {
+            border-left: 4px solid #e5e7eb;
+            padding-left: 1em;
+            color: #6b7280;
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 1em;
+        }
+        .prose img {
+            max-width: 100%;
+            height: auto;
+        }
+        .prose table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 1em;
+        }
+        .prose table td, .prose table th {
+            border: 1px solid #e5e7eb;
+            padding: 0.5em;
+        }
+        .prose table th {
+            background-color: #f3f4f6;
+        }
+    </style>
 
     <!-- Tailwind配置 -->
     <script>
@@ -122,8 +207,8 @@
                         <i class="fa fa-chevron-down text-xs text-gray-500"></i>
                     </button>
                     <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <a th:href="@{/settings}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fa fa-user-circle mr-2"></i> 个人资料
+                        <a th:if="${session.userRole != null && session.userRole == 'ADMIN'}" th:href="@{/notifications/manage}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
+                            <i class="fa fa-bullhorn mr-1"></i> 通知管理
                         </a>
                         <a th:href="@{/settings}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fa fa-cog mr-2"></i> 设置
@@ -159,7 +244,7 @@
                 <a th:href="@{/reservations}" class="block px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100">
                     <i class="fa fa-book mr-1"></i> 预约管理
                 </a>
-                <a th:href="@{/notifications}" class="block px-4 py-2 rounded-md text-sm font-medium bg-primary/10 text-primary">
+                <a th:href="@{/notifications}" class="block px-4 py-2 mt-1 rounded-md text-sm text-gray-600 hover:bg-gray-100">
                     <i class="fa fa-bullhorn mr-1"></i> 通知公告
                 </a>
                 <div class="px-4 py-2">
@@ -206,15 +291,30 @@
 
     <!-- 通知公告内容 -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-            <h2 class="text-xl font-bold text-neutral-dark">最新通知</h2>
-            <div class="flex space-x-2">
-                <button id="sort-by-time" class="btn-secondary text-sm flex items-center">
-                    <i class="fa fa-clock-o mr-1"></i> 按时间
-                </button>
-                <button id="sort-by-priority" class="btn-secondary text-sm flex items-center">
-                    <i class="fa fa-star mr-1"></i> 按优先级
-                </button>
+        <div class="px-4 sm:px-6 py-4 border-b border-gray-100">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-2 sm:space-y-0">
+                <h2 class="text-xl font-bold text-neutral-dark">最新通知</h2>
+
+                <!-- 按钮组 - 移动端垂直排列，PC端水平排列 -->
+                <div class="w-full sm:w-auto grid grid-cols-2 sm:flex gap-2">
+                    <!-- 测试Markdown按钮 - 移动端全宽 -->
+                    <button id="test-markdown" class="btn-secondary text-sm flex items-center justify-center col-span-2 sm:col-span-1">
+                        <i class="fa fa-code mr-1"></i>
+                        <span class="truncate">测试Markdown</span>
+                    </button>
+
+                    <!-- 排序按钮组 - 移动端两列 -->
+                    <div class="col-span-2 grid grid-cols-2 gap-2 sm:flex sm:gap-2">
+                        <button id="sort-by-time" class="btn-secondary text-sm flex items-center justify-center">
+                            <i class="fa fa-clock-o mr-1"></i>
+                            <span class="truncate">按时间</span>
+                        </button>
+                        <button id="sort-by-priority" class="btn-secondary text-sm flex items-center justify-center">
+                            <i class="fa fa-star mr-1"></i>
+                            <span class="truncate">按优先级</span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="p-6">
@@ -259,13 +359,6 @@
 
 <!-- JavaScript -->
 <script>
-    // 移动端菜单切换
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenu.classList.toggle('h-0');
-        mobileMenu.classList.toggle('h-auto');
-    });
-
     // 优先级映射，用于排序和显示
     const priorityMap = {
         'high': 3,
@@ -274,16 +367,50 @@
         'none': 0
     };
 
+    // 全局变量存储当前通知数据
+    let currentNotifications = [];
+
     // 获取优先级数值
     function getPriorityValue(priority) {
         return priorityMap[priority?.toLowerCase()] || 0;
     }
 
-    // 全局变量存储当前通知数据
-    let currentNotifications = [];
-
-    // 获取用户信息
+    // 页面加载完成后执行
     document.addEventListener('DOMContentLoaded', function() {
+        // 初始化marked.js
+        if (typeof marked !== 'undefined') {
+            console.log('marked.js已加载');
+            // 测试marked.js是否正常工作
+            try {
+                const testMarkdown = '# 测试标题\n\n这是一个**粗体**测试';
+                const rendered = marked.parse(testMarkdown);
+                console.log('Markdown测试成功:', rendered);
+            } catch (error) {
+                console.error('Markdown测试失败:', error);
+            }
+
+            // 配置marked.js
+            marked.setOptions({
+                breaks: true,        // 允许换行符转换为<br>
+                gfm: true,           // 使用GitHub风格Markdown
+                headerIds: true,     // 为标题添加id
+                mangle: false,       // 不转义HTML标签中的内容
+                sanitize: false,     // 不过滤HTML标签
+                smartLists: true,    // 使用更智能的列表行为
+                smartypants: true,   // 使用更智能的标点符号
+                xhtml: false         // 不使用xhtml格式的标签
+            });
+        } else {
+            console.error('marked.js未加载');
+        }
+
+        // 移动端菜单切换
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('h-0');
+            mobileMenu.classList.toggle('h-auto');
+        });
+
         // 获取用户信息
         fetch('/api/user-profile')
             .then(response => response.json())
@@ -321,6 +448,10 @@
         document.getElementById('sort-by-priority').addEventListener('click', () => {
             sortNotifications('priority');
         });
+
+        // 添加Markdown测试按钮事件
+        const testButton = document.getElementById('test-markdown');
+        testButton.addEventListener('click', testMarkdownRendering);
 
         // 加载通知
         loadActiveNotifications();
@@ -402,6 +533,20 @@
                 </span>`;
             }
 
+            // 使用try-catch处理Markdown解析可能的错误
+            let renderedContent = '';
+            try {
+                if (typeof marked !== 'undefined' && marked && typeof marked.parse === 'function') {
+                    renderedContent = marked.parse(notification.content || '');
+                } else {
+                    console.error('marked.js未正确加载或初始化');
+                    renderedContent = notification.content ? notification.content.replace(/\n/g, '<br>') : '';
+                }
+            } catch (error) {
+                console.error('Markdown解析错误:', error);
+                renderedContent = notification.content ? notification.content.replace(/\n/g, '<br>') : '';
+            }
+
             html += `
                 <div class="notification-card">
                     <div class="mb-3">
@@ -410,7 +555,7 @@
                             ${notification.title}
                             ${priorityBadge}
                         </h3>
-                        <p class="text-gray-600 mt-1">${notification.content.replace(/\n/g, '<br>')}</p>
+                        <div class="prose max-w-none mt-3">${renderedContent}</div>
                     </div>
                     <div class="text-sm text-gray-500">
                         <span class="flex items-center">
@@ -457,6 +602,129 @@
             hash += (Math.floor(Math.random() * 16)).toString(16);
         }
         return hash;
+    }
+
+    // 测试Markdown渲染
+    function testMarkdownRendering() {
+        // 保存当前通知列表状态，以便返回时恢复
+        const originalContent = document.getElementById('notifications-container').innerHTML;
+
+        const testMarkdown = `# Markdown测试
+## 二级标题
+### 三级标题
+
+**粗体文本** 和 *斜体文本*
+
+- 无序列表项1
+- 无序列表项2
+  - 嵌套列表项
+
+1. 有序列表项1
+2. 有序列表项2
+
+[链接文本](https://example.com)
+
+\`代码片段\`
+
+\`\`\`
+多行代码块
+const x = 1;
+console.log(x);
+\`\`\`
+
+> 引用文本
+
+表格示例：
+| 表头1 | 表头2 |
+| ----- | ----- |
+| 单元格1 | 单元格2 |
+| 单元格3 | 单元格4 |`;
+
+        // 创建一个测试通知
+        const testNotification = {
+            id: 9999,
+            title: "Markdown测试通知",
+            content: testMarkdown,
+            priority: "high",
+            target: "all",
+            createdAt: new Date().toISOString(),
+            createdByUsername: "系统"
+        };
+
+        // 显示测试通知
+        const container = document.getElementById('notifications-container');
+        const emptyState = document.getElementById('no-notifications');
+
+        emptyState.classList.add('hidden');
+
+        // 使用try-catch处理Markdown解析可能的错误
+        let renderedContent = '';
+        try {
+            if (typeof marked !== 'undefined' && marked && typeof marked.parse === 'function') {
+                renderedContent = marked.parse(testNotification.content || '');
+                console.log('测试Markdown渲染成功');
+            } else {
+                console.error('marked.js未正确加载或初始化');
+                renderedContent = testNotification.content ? testNotification.content.replace(/\n/g, '<br>') : '';
+            }
+        } catch (error) {
+            console.error('Markdown解析错误:', error);
+            renderedContent = testNotification.content ? testNotification.content.replace(/\n/g, '<br>') : '';
+        }
+
+        const date = new Date(testNotification.createdAt);
+        const formattedDate = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+        container.innerHTML = `
+            <div class="notification-card" style="border-left-color: #FF4D4F;">
+                <div class="mb-3">
+                    <h3 class="text-lg font-semibold text-primary flex items-center">
+                        <i class="fa fa-bell mr-2"></i>
+                        ${testNotification.title}
+                        <span class="ml-2 text-xs px-2 py-1 rounded-full bg-red-100 text-red-800">
+                            测试
+                        </span>
+                    </h3>
+                    <div class="prose max-w-none mt-3">${renderedContent}</div>
+                </div>
+                <div class="text-sm text-gray-500">
+                    <span class="flex items-center">
+                        <i class="fa fa-user-circle mr-1"></i>发布者: ${testNotification.createdByUsername}
+                    </span>
+                    <span class="flex items-center mt-1">
+                        <i class="fa fa-clock mr-1"></i>发布时间: ${formattedDate}
+                    </span>
+                </div>
+            </div>
+        `;
+
+        // 显示提示
+        showAlert('Markdown测试渲染完成', 'info');
+
+        // 将测试按钮变为返回按钮
+        const testButton = document.getElementById('test-markdown');
+        testButton.innerHTML = '<i class="fa fa-arrow-left mr-1"></i> 返回通知列表';
+        testButton.classList.remove('btn-secondary');
+        testButton.classList.add('btn-primary');
+
+        // 更改按钮点击事件为返回功能
+        testButton.removeEventListener('click', testMarkdownRendering);
+        testButton.addEventListener('click', function returnToList() {
+            // 恢复原始通知列表
+            container.innerHTML = originalContent;
+
+            // 恢复按钮状态
+            testButton.innerHTML = '<i class="fa fa-code mr-1"></i> 测试Markdown';
+            testButton.classList.remove('btn-primary');
+            testButton.classList.add('btn-secondary');
+
+            // 重新绑定测试事件
+            testButton.removeEventListener('click', returnToList);
+            testButton.addEventListener('click', testMarkdownRendering);
+
+            // 显示提示
+            showAlert('已返回通知列表', 'info');
+        });
     }
 </script>
 </body>
