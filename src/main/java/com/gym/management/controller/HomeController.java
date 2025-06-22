@@ -101,18 +101,8 @@ public class HomeController {
      * 显示关于页面
      */
     @GetMapping("/about")
-    public String about(HttpServletRequest request, HttpServletResponse response) {
-        // 检查用户是否已登录
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("loggedInUser") == null) {
-            // 未登录，重定向到登录页面
-            return "redirect:/login";
-        }
-        
-        // 设置缓存控制头，防止退出后仍能通过浏览器后退访问
-        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-        response.setHeader("Pragma", "no-cache");
-        response.setHeader("Expires", "0");
+    public String about() {
+
         
         return "about";
     }
