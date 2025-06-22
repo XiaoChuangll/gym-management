@@ -427,9 +427,20 @@
         fetch('/api/notifications/active')
             .then(response => response.json())
             .then(notifications => {
+                console.log("从服务器获取的原始通知数据:", notifications);
+                
+                // 确保通知按时间降序排序（最新的在前面）
+                notifications.sort((a, b) => {
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+                
+                console.log("排序后的通知数据:", notifications);
+                
                 if (notifications.length > 1) {
                     document.getElementById('load-more-container').classList.remove('hidden');
                 }
+                
+                // 显示第一条（最新的）通知
                 displayHomePageNotifications(notifications.slice(0, 1), false);
             })
             .catch(error => {
@@ -448,6 +459,15 @@
         fetch('/api/notifications/active')
             .then(response => response.json())
             .then(notifications => {
+                console.log("加载更多 - 原始通知数据:", notifications);
+                
+                // 确保通知按时间降序排序（最新的在前面）
+                notifications.sort((a, b) => {
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+                
+                console.log("加载更多 - 排序后通知数据:", notifications);
+                
                 document.getElementById('load-more-btn').classList.add('hidden');
                 document.getElementById('collapse-btn').classList.remove('hidden');
                 displayHomePageNotifications(notifications, true);
@@ -498,9 +518,14 @@
             return;
         }
 
+        // 确保通知按照创建时间降序排列（最新的在前）
+        const sortedNotifications = [...notifications].sort((a, b) => {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+
         let html = '<div class="space-y-6">';
 
-        notifications.forEach((notification, index) => {
+        sortedNotifications.forEach((notification, index) => {
             // 如果不是显示全部且不是第一条，则跳过
             if (!showAll && index > 0) return;
 

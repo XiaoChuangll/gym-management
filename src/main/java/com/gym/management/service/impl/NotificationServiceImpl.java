@@ -53,7 +53,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationDTO> getActiveNotifications() {
-        return notificationRepository.findByStatus("active").stream()
+        return notificationRepository.findByStatusOrderByCreatedAtDesc("active").stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }

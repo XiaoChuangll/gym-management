@@ -800,6 +800,7 @@
       type: 'GET',
       success: function(notifications) {
         console.log("成功获取通知:", notifications.length, "条");
+        console.log("通知数据示例:", notifications[0]);
         notificationsData = notifications; // 保存通知数据
         displayFilteredNotifications();
         updateCounts(notifications);
@@ -914,23 +915,33 @@
     
     // 归档按钮
     $('.btn-archive').on('click', function() {
-      const id = $(this).data('id');
-      console.log("点击归档按钮, ID:", id);
+      const id = Number($(this).data('id'));
+      console.log("点击归档按钮, ID类型:", typeof id, "值:", id);
+      if (isNaN(id) || id <= 0) {
+        console.error("无效的通知ID:", $(this).data('id'));
+        showAlert('无效的通知ID', 'warning');
+        return;
+      }
       updateNotificationStatus(id, 'archived');
     });
     
     // 激活按钮
     $('.btn-activate').on('click', function() {
-      const id = $(this).data('id');
-      console.log("点击激活按钮, ID:", id);
+      const id = Number($(this).data('id'));
+      console.log("点击激活按钮, ID类型:", typeof id, "值:", id);
+      if (isNaN(id) || id <= 0) {
+        console.error("无效的通知ID:", $(this).data('id'));
+        showAlert('无效的通知ID', 'warning');
+        return;
+      }
       updateNotificationStatus(id, 'active');
     });
     
     // 编辑按钮
     $('.btn-edit').on('click', function() {
-      const id = $(this).data('id');
-      console.log("点击编辑按钮, ID:", id);
-      const notification = notificationsData.find(n => n.id == id);
+      const id = Number($(this).data('id'));
+      console.log("点击编辑按钮, ID类型:", typeof id, "值:", id);
+      const notification = notificationsData.find(n => n.id === id);
       
       if(notification) {
         $('#edit-id').val(notification.id);
@@ -941,13 +952,16 @@
         $('#edit-target').val(notification.target || 'all');
         $('#edit-expiryDate').val(notification.expiryDate || '');
         $('#editNotificationModal').modal('show');
+      } else {
+        console.error("找不到ID为", id, "的通知");
+        showAlert('找不到相应通知', 'warning');
       }
     });
     
     // 删除按钮
     $('.btn-delete').on('click', function() {
-      const id = $(this).data('id');
-      console.log("点击删除按钮, ID:", id);
+      const id = Number($(this).data('id'));
+      console.log("点击删除按钮, ID类型:", typeof id, "值:", id);
       showConfirmDialog('确定要删除这条通知吗？', '删除后将无法恢复', function() {
         deleteNotification(id);
       });
@@ -955,7 +969,7 @@
     
     // 选择框
     $('.notification-checkbox').on('change', function() {
-      const id = $(this).data('id');
+      const id = Number($(this).data('id'));
       const isChecked = $(this).is(':checked');
       
       if (isChecked) {
@@ -986,7 +1000,7 @@
     if (isAdmin) {
       if (isActive) {
         actionButtons = `
-                    <button class="btn-action btn-archive" data-id="${notification.id}" title="归档">
+                    <button class="btn-action btn-archive" data-id="${notification.id}" title="归档" onclick="console.log('归档按钮点击, ID:', ${notification.id});">
                         <i class="fa fa-archive"></i>
                     </button>
                     <button class="btn-action btn-edit" data-id="${notification.id}" title="编辑">
@@ -998,7 +1012,7 @@
                 `;
       } else {
         actionButtons = `
-                    <button class="btn-action btn-activate" data-id="${notification.id}" title="激活">
+                    <button class="btn-action btn-activate" data-id="${notification.id}" title="激活" onclick="console.log('激活按钮点击, ID:', ${notification.id});">
                         <i class="fa fa-check"></i>
                     </button>
                     <button class="btn-action btn-edit" data-id="${notification.id}" title="编辑">
@@ -1098,45 +1112,56 @@
 
   // 更新通知状态
   function updateNotificationStatus(id, status) {
-    console.log("更新通知状态, ID:", id, "新状态:", status);
+    console.log("开始更新通知状态, ID:", id, "新状态:", status);
     
-    $.ajax({
-      url: `/api/notifications/${id}`,
-      type: 'PUT',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        status: status
-      }),
-      success: function(response) {
-        console.log("更新状态成功:", response);
-        
-        // 直接更新本地数据，避免重新加载
-        const notification = notificationsData.find(n => n.id == id);
-        if(notification) {
-          notification.status = status;
+    // 查找本地通知
+    const localNotification = notificationsData.find(n => n.id === id);
+    if (localNotification) {
+      // 准备更新数据
+      const updateData = {
+        title: localNotification.title,
+        content: localNotification.content,
+        priority: localNotification.priority || 'medium',
+        target: localNotification.target || 'all',
+        status: status,
+        expiryDate: localNotification.expiryDate
+      };
+      
+      console.log("发送更新请求，数据:", JSON.stringify(updateData));
+      
+      // 发送AJAX请求到服务器保存更改
+      $.ajax({
+        url: `/api/notifications/${id}`,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(updateData),
+        success: function(response) {
+          console.log("更新成功，服务器响应:", response);
+          // 更新本地状态
+          localNotification.status = status;
+          // 刷新界面
           displayFilteredNotifications();
           updateCounts(notificationsData);
-        } else {
-          loadNotifications(); // 如果找不到，则重新加载
+          // 显示成功消息
+          showAlert(`通知已${status === 'active' ? '激活' : '归档'}`, 'success');
+        },
+        error: function(xhr, status, error) {
+          console.error('更新状态失败:', {
+            status: xhr.status,
+            statusText: xhr.statusText,
+            responseText: xhr.responseText,
+            error: error
+          });
+          showAlert('更新状态失败: ' + (xhr.responseText || '服务器错误'), 'danger');
+        },
+        complete: function() {
+          console.log("AJAX请求完成");
         }
-        
-        showAlert(`通知已${status === 'active' ? '激活' : '归档'}`, 'success');
-      },
-      error: function(xhr, status, error) {
-        console.error('更新通知状态失败:', {xhr: xhr, status: status, error: error, responseText: xhr.responseText});
-        showAlert('操作失败: ' + (xhr.responseText || '服务器错误'), 'danger');
-        
-        // 模拟成功响应，用于测试UI而不依赖API
-        console.log("模拟更新状态成功...");
-        const notification = notificationsData.find(n => n.id == id);
-        if(notification) {
-          notification.status = status;
-          displayFilteredNotifications();
-          updateCounts(notificationsData);
-          showAlert(`通知已${status === 'active' ? '激活' : '归档'} (测试模式)`, 'success');
-        }
-      }
-    });
+      });
+    } else {
+      console.error("找不到ID为", id, "的通知");
+      showAlert('未找到相应通知', 'warning');
+    }
   }
 
   // 批量更新状态
@@ -1148,20 +1173,62 @@
     // 使用Promise.all处理多个请求
     const promises = ids.map(id => {
       return new Promise((resolve, reject) => {
+        // 先从服务器获取最新的通知详情
         $.ajax({
           url: `/api/notifications/${id}`,
-          type: 'PUT',
-          contentType: 'application/json',
-          data: JSON.stringify({
-            status: status
-          }),
-          success: function() {
-            successCount++;
-            resolve();
+          type: 'GET',
+          success: function(notification) {
+            // 只更新状态字段
+            notification.status = status;
+            
+            // 发送更新请求
+            $.ajax({
+              url: `/api/notifications/${id}`,
+              type: 'PUT',
+              contentType: 'application/json',
+              data: JSON.stringify(notification),
+              success: function() {
+                successCount++;
+                resolve();
+              },
+              error: function(xhr) {
+                console.error('批量更新失败:', xhr);
+                errorCount++;
+                reject(xhr);
+              }
+            });
           },
           error: function(xhr) {
-            errorCount++;
-            reject(xhr);
+            // 如果无法获取服务器数据，尝试使用本地数据
+            const notification = notificationsData.find(n => n.id == id);
+            if (notification) {
+              const updateData = {
+                title: notification.title,
+                content: notification.content,
+                priority: notification.priority || 'medium',
+                target: notification.target || 'all',
+                status: status,
+                expiryDate: notification.expiryDate
+              };
+              
+              $.ajax({
+                url: `/api/notifications/${id}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(updateData),
+                success: function() {
+                  successCount++;
+                  resolve();
+                },
+                error: function(xhr) {
+                  errorCount++;
+                  reject(xhr);
+                }
+              });
+            } else {
+              errorCount++;
+              reject(new Error("找不到通知"));
+            }
           }
         });
       });

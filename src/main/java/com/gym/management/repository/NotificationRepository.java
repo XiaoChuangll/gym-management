@@ -11,5 +11,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     List<Notification> findByStatus(String status);
 
+    List<Notification> findByStatusOrderByCreatedAtDesc(String status);
+
     List<Notification> findAllByOrderByCreatedAtDesc();
 }
