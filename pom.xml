@@ -8,14 +8,24 @@
         <version>3.1.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
+    <!-- 项目基本信息 -->
     <groupId>com.gym</groupId>
     <artifactId>management</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.2.0</version> <!-- 版本号改为正式发布版本 -->
     <name>Gym Management System</name>
     <description>健身房管理系统</description>
 
+    <!-- 开发者信息 -->
+    <developers>
+        <developer>
+            <name>XiaoChuangll</name>
+        </developer>
+    </developers>
+
     <properties>
         <java.version>17</java.version>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
     </properties>
 
     <dependencies>
@@ -64,7 +74,38 @@
     </dependencies>
 
     <build>
+            <resources>
+                <resource>
+                    <directory>src/main/resources</directory>
+                    <filtering>true</filtering>
+                </resource>
+            </resources>
+
+
         <plugins>
+            <!-- 配置maven-jar-plugin来定制MANIFEST.MF -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Built-By>${user.name}</Built-By>
+                            <Build-Date>${maven.build.timestamp}</Build-Date>
+                            <Created-By>${java.version} (${java.vendor})</Created-By>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- 配置spring-boot-maven-plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
