@@ -91,7 +91,15 @@ public class HomeController {
         
         // 获取最新课程
         if (!courses.isEmpty()) {
-            model.addAttribute("latestCourses", courses.subList(0, Math.min(5, courses.size())));
+            List<CourseDTO> latestCourses = courses.subList(0, Math.min(5, courses.size()));
+            
+            // 为每个课程添加attendancePercent属性用于进度条显示
+            for (CourseDTO course : latestCourses) {
+                // 使用CourseDTO中的percent属性
+                course.setAttendancePercent(course.getPercent());
+            }
+            
+            model.addAttribute("latestCourses", latestCourses);
         }
         
         return "index";

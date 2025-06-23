@@ -131,6 +131,7 @@ public class CourseServiceImpl implements CourseService {
         courseDTO.setCoachName(course.getCoach().getName());
         Integer currentReservations = reservationRepository.countByCourseId(course.getCourseId());
         courseDTO.setCurrentReservations(currentReservations != null ? currentReservations : 0);
+        courseDTO.setCurrentAttendees(currentReservations != null ? currentReservations : 0);
 
 
         // 计算百分比
@@ -139,6 +140,7 @@ public class CourseServiceImpl implements CourseService {
             percent = currentReservations * 100.0 / course.getCapacity();
         }
         courseDTO.setPercent((int) percent);
+        courseDTO.setAttendancePercent((int) percent);
 
         // 日志打印
         System.out.println("课程: " + course.getCourseName() + " 当前预约: " + courseDTO.getCurrentReservations() + " 容量: " + courseDTO.getCapacity() + " 百分比: " + percent);

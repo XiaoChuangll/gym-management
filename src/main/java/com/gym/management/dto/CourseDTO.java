@@ -16,6 +16,10 @@ public class CourseDTO {
     // 当前预约人数
     private Integer currentReservations;
     private Integer percent;
+    // 添加用于进度条显示的属性
+    private Integer attendancePercent;
+    // 添加当前出席人数属性（与currentReservations相同，但命名更符合首页展示）
+    private Integer currentAttendees;
 
     public String getCourseId() { return courseId; }
     public void setCourseId(String courseId) { this.courseId = courseId; }
@@ -40,4 +44,13 @@ public class CourseDTO {
 
     public Integer getPercent() { return percent; }
     public void setPercent(Integer percent) { this.percent = percent; }
+    
+    public Integer getAttendancePercent() { return attendancePercent; }
+    public void setAttendancePercent(Integer attendancePercent) { this.attendancePercent = attendancePercent; }
+    
+    public Integer getCurrentAttendees() { 
+        // 如果未设置，则返回currentReservations
+        return currentAttendees != null ? currentAttendees : currentReservations; 
+    }
+    public void setCurrentAttendees(Integer currentAttendees) { this.currentAttendees = currentAttendees; }
 } 

@@ -306,11 +306,15 @@
                 <div th:each="reservation : ${reservations}" class="bg-white rounded-lg p-4 shadow flex flex-col gap-3 relative">
                     <!-- 顶部：会员名+课程名+操作按钮 -->
                     <div class="flex items-start justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <i class="fa fa-user text-blue-500"></i>
-                            <span class="font-bold text-neutral-dark text-lg" th:text="${reservation.memberName}">张三</span>
-                            <span class="text-sm text-gray-500 ml-1">-</span>
-                            <span class="text-sm text-gray-700" th:text="${reservation.courseName}">瑜伽课</span>
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center">
+                                <i class="fa fa-user text-blue-500 w-6 text-center"></i>
+                                <span class="font-bold text-neutral-dark text-lg ml-2" th:text="${reservation.memberName}">张三</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa fa-calendar text-blue-500 w-6 text-center"></i>
+                                <span class="text-sm text-gray-700 ml-2" th:text="${reservation.courseName}">瑜伽课</span>
+                            </div>
                         </div>
                         <div class="flex gap-2">
                             <a th:href="@{/reservations/edit/{id}(id=${reservation.reservationId})}"
@@ -327,26 +331,28 @@
                         </div>
                     </div>
                     <!-- 预约编号 -->
-                    <div class="flex items-center gap-2 w-full">
-                        <div class="bg-blue-600 text-white rounded-full px-3 py-1 text-xs w-full flex items-center gap-1 truncate">
-                            <i class="fa fa-id-card text-white text-base"></i>
-                            <span class="break-all truncate" th:text="${reservation.reservationId}">R001</span>
-                        </div>
+                    <div class="mt-1">
+                        <span class="bg-blue-500 text-white px-4 py-1.5 rounded-full text-xs inline-flex items-center">
+                            <i class="fa fa-id-card mr-1"></i>
+                            <span th:text="${reservation.reservationId}">R001</span>
+                        </span>
                     </div>
-                    <!-- 预约时间 -->
-                    <div class="flex items-center gap-2 w-full">
-                        <div class="bg-purple-600 text-white rounded-full px-3 py-1 text-xs w-full flex items-center gap-1">
-                            <i class="fa fa-clock-o text-white text-base"></i>
-                            <span class="break-all" th:text="${#temporals.format(reservation.reservationTime, 'yyyy-MM-dd HH:mm')}">2023-01-01 10:00</span>
+                    <!-- 预约时间和状态 -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <!-- 预约时间 -->
+                        <div class="bg-purple-50 p-3 rounded-lg flex flex-col items-center">
+                            <span class="text-xs text-gray-500 mb-1">预约时间</span>
+                            <span class="font-bold text-purple-600 text-sm" th:text="${#temporals.format(reservation.reservationTime, 'yyyy-MM-dd HH:mm')}">2023-01-01 10:00</span>
                         </div>
-                    </div>
-                    <!-- 状态 -->
-                    <div class="flex items-center gap-2 w-full">
-                        <div class="w-full px-3 py-1 text-xs flex items-center gap-1 rounded-full"
-                             th:classappend="${reservation.status == '已完成' ? 'bg-green-600 text-white' : 
-                                             (reservation.status == '已取消' ? 'bg-red-600 text-white' : 'bg-yellow-600 text-white')}">
-                            <i class="fa fa-info-circle text-white text-base"></i>
-                            <span class="break-all" th:text="${reservation.status}">待确认</span>
+                        <!-- 状态 -->
+                        <div class="p-3 rounded-lg flex flex-col items-center"
+                             th:classappend="${reservation.status == '已完成' ? 'bg-green-50' : 
+                                             (reservation.status == '已取消' ? 'bg-red-50' : 'bg-yellow-50')}">
+                            <span class="text-xs text-gray-500 mb-1">状态</span>
+                            <span class="font-bold text-sm" 
+                                  th:classappend="${reservation.status == '已完成' ? 'text-green-600' : 
+                                                 (reservation.status == '已取消' ? 'text-red-600' : 'text-yellow-600')}"
+                                  th:text="${reservation.status}">待确认</span>
                         </div>
                     </div>
                 </div>
