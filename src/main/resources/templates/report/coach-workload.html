@@ -220,7 +220,8 @@
             </a>
         </div>
         <div class="p-6">
-            <div class="overflow-x-auto">
+            <!-- 桌面端表格 -->
+            <div class="overflow-x-auto hidden sm:block">
                 <table class="min-w-full">
                     <thead>
                     <tr class="bg-gray-50">
@@ -244,6 +245,42 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
+            
+            <!-- 移动端卡片 -->
+            <div class="block sm:hidden space-y-4">
+                <div th:if="${coachWorkload == null}" class="text-center text-gray-500 py-4">暂无教练数据</div>
+                <div th:each="coach : ${coachWorkload}" class="bg-white rounded-lg p-4 shadow flex flex-col gap-3 relative">
+                    <!-- 顶部：教练姓名+ID -->
+                    <div class="flex flex-col mb-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fa fa-user-circle text-blue-500"></i>
+                            <span class="font-bold text-neutral-dark text-lg" th:text="${coach.coachName}">李教练</span>
+                        </div>
+                        <div class="mt-2">
+                            <span class="bg-blue-500 text-white px-4 py-1.5 rounded-full text-xs inline-flex items-center">
+                                <i class="fa fa-id-card mr-1"></i>
+                                <span th:text="${coach.coachId}">C001</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- 统计数据 -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="bg-blue-50 p-3 rounded-lg flex flex-col items-center">
+                            <span class="text-xs text-gray-500 mb-1">课程数量</span>
+                            <span class="font-bold text-blue-600" th:text="${coach.totalCourses}">5</span>
+                        </div>
+                        <div class="bg-green-50 p-3 rounded-lg flex flex-col items-center">
+                            <span class="text-xs text-gray-500 mb-1">预约总数</span>
+                            <span class="font-bold text-green-600" th:text="${coach.totalReservations}">50</span>
+                        </div>
+                        <div class="bg-purple-50 p-3 rounded-lg flex flex-col items-center">
+                            <span class="text-xs text-gray-500 mb-1">平均预约</span>
+                            <span class="font-bold text-purple-600" th:text="${coach.totalCourses > 0 ? #numbers.formatDecimal(coach.totalReservations / coach.totalCourses, 1, 2) : 0}">10.00</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

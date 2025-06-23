@@ -105,6 +105,16 @@ public class ReservationServiceImpl implements ReservationService {
                 .collect(Collectors.toList());
     }
     
+    @Override
+    public List<ReservationDTO> searchReservations(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return getAllReservations();
+        }
+        return reservationRepository.searchReservations(query).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    
     /**
      * 将实体转换为DTO
      * @param reservation 预约实体

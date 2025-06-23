@@ -116,6 +116,16 @@ public class ReservationController {
     }
 
     /**
+     * 搜索预约
+     */
+    @GetMapping("/search")
+    public String searchReservations(@RequestParam("query") String query, Model model) {
+        List<ReservationDTO> reservations = reservationService.searchReservations(query);
+        model.addAttribute("reservations", reservations);
+        return "reservation/list";
+    }
+
+    /**
      * API接口：获取所有预约
      */
     @GetMapping("/api")

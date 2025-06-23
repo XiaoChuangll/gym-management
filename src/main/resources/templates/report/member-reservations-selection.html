@@ -221,7 +221,7 @@
 
             <!-- 搜索结果提示 -->
             <div class="mb-4" th:if="${searchName != null}">
-                <div class="p-4 border border-gray-200 rounded-lg bg-gray-50 flex justify-between items-center">
+                <div class="p-4 border border-gray-200 rounded-lg bg-gray-50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                     <div>
                         <span class="font-medium text-gray-700">搜索结果：</span>
                         <span class="text-primary font-medium" th:text="${searchName}"></span>
@@ -233,7 +233,8 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
+            <!-- 桌面端表格 -->
+            <div class="overflow-x-auto hidden sm:block">
                 <table class="min-w-full">
                     <thead>
                     <tr class="bg-gray-50">
@@ -270,6 +271,57 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
+            
+            <!-- 移动端卡片 -->
+            <div class="block sm:hidden space-y-4">
+                <div th:if="${members == null || members.isEmpty()}" class="text-center text-gray-500 py-4">
+                    <span th:if="${searchName != null}">
+                        没有找到符合条件的会员 "<span th:text="${searchName}"></span>"
+                    </span>
+                    <span th:unless="${searchName != null}">暂无会员数据</span>
+                </div>
+                <div th:each="member : ${members}" class="bg-white rounded-lg p-4 shadow flex flex-col gap-3 relative">
+                    <!-- 顶部：会员姓名+联系方式 -->
+                    <div class="flex flex-col mb-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fa fa-user-circle text-blue-500"></i>
+                            <span class="font-bold text-neutral-dark text-lg" th:text="${member.name}">张三</span>
+                            <span class="flex items-center gap-1 ml-2">
+                                <i class="fa fa-phone text-gray-400 text-xs"></i>
+                                <span class="text-sm text-gray-700" th:text="${member.contact}">13800138000</span>
+                            </span>
+                        </div>
+                        <div class="mt-2">
+                            <span class="bg-blue-500 text-white px-4 py-1.5 rounded-full text-xs inline-flex items-center">
+                                <i class="fa fa-id-card mr-1"></i>
+                                <span th:text="${member.memberId}">M001</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- 会员信息卡片 -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <!-- 会员类型 -->
+                        <div class="bg-green-50 p-3 rounded-lg flex flex-col items-center">
+                            <span class="text-xs text-gray-500 mb-1">会员类型</span>
+                            <span class="font-bold text-green-600" th:text="${member.memberType}">普通会员</span>
+                        </div>
+                        
+                        <!-- 入会日期 -->
+                        <div class="bg-purple-50 p-3 rounded-lg flex flex-col items-center">
+                            <span class="text-xs text-gray-500 mb-1">入会日期</span>
+                            <span class="font-bold text-purple-600" th:text="${#temporals.format(member.joinDate, 'yyyy-MM-dd')}">2023-01-01</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 操作按钮 -->
+                    <div class="mt-2">
+                        <a th:href="@{/reports/member-reservations/{id}(id=${member.memberId})}" class="btn-primary w-full flex items-center justify-center py-3">
+                            <i class="fa fa-calendar-check-o mr-2 text-lg"></i> 查看预约情况
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

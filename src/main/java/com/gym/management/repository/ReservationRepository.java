@@ -25,4 +25,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, String
     
     @Query("SELECT COUNT(r) FROM Reservation r WHERE r.course.courseId = :courseId AND r.status = '已完成'")
     Integer countCompletedByCourseId(@Param("courseId") String courseId);
+    
+    @Query("SELECT r FROM Reservation r WHERE r.reservationId LIKE %:query% OR " +
+           "r.member.name LIKE %:query% OR " +
+           "r.member.memberId LIKE %:query% OR " +
+           "r.course.courseName LIKE %:query% OR " +
+           "r.course.courseId LIKE %:query% OR " +
+           "r.status LIKE %:query%")
+    List<Reservation> searchReservations(@Param("query") String query);
 } 

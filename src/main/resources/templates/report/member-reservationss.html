@@ -218,14 +218,15 @@
       <div class="bg-primary/5 p-4 rounded-lg mb-6">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <h3 class="text-lg font-semibold text-neutral-dark">会员预约列表</h3>
-          <span class="bg-primary text-white px-3 py-1 rounded-full text-sm flex items-center">
-                        <i class="fa fa-id-card mr-2"></i>
-                        <span th:text="${'会员ID: ' + memberId}">会员ID: M001</span>
-                    </span>
+          <span class="bg-blue-500 text-white px-4 py-1.5 rounded-full text-xs inline-flex items-center">
+            <i class="fa fa-id-card mr-1"></i>
+            <span th:text="${memberId}">M001</span>
+          </span>
         </div>
       </div>
 
-      <div class="overflow-x-auto">
+      <!-- 桌面端表格 -->
+      <div class="overflow-x-auto hidden sm:block">
         <table class="min-w-full">
           <thead>
           <tr class="bg-gray-50">
@@ -266,6 +267,52 @@
           </tr>
           </tbody>
         </table>
+      </div>
+      
+      <!-- 移动端卡片 -->
+      <div class="block sm:hidden space-y-4">
+        <div th:if="${memberReservations == null}" class="text-center text-gray-500 py-4">
+          <div class="flex flex-col items-center p-6">
+            <i class="fa fa-clipboard text-4xl text-gray-300 mb-4"></i>
+            <p>该会员暂无预约记录</p>
+          </div>
+        </div>
+        <div th:each="reservation : ${memberReservations}" class="bg-white rounded-lg p-4 shadow flex flex-col gap-3 relative">
+          <!-- 顶部：课程名称 -->
+          <div class="flex flex-col mb-2">
+            <div class="flex items-center gap-2">
+              <i class="fa fa-calendar-check-o text-blue-500"></i>
+              <span class="font-bold text-neutral-dark text-lg" th:text="${reservation.courseName}">瑜伽课</span>
+            </div>
+            <span th:classappend="${reservation.status == '已完成' ? 'bg-green-500' :
+                                (reservation.status == '已取消' ? 'bg-red-500' :
+                                (reservation.status == '已确认' ? 'bg-blue-500' : 'bg-yellow-500'))}"
+                  class="text-white px-3 py-1 rounded-full text-xs ml-auto -mt-6"
+                  th:text="${reservation.status}">待确认</span>
+          </div>
+          
+          <!-- 课程时间 -->
+          <div class="flex items-center gap-2 bg-blue-50 p-3 rounded-lg">
+            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+              <i class="fa fa-clock-o text-blue-600"></i>
+            </div>
+            <div>
+              <span class="text-xs text-gray-500">课程时间</span>
+              <div class="text-sm font-medium" th:text="${#temporals.format(reservation.courseTime, 'yyyy-MM-dd HH:mm')}">2023-01-01 10:00</div>
+            </div>
+          </div>
+          
+          <!-- 预约时间 -->
+          <div class="flex items-center gap-2 bg-purple-50 p-3 rounded-lg">
+            <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+              <i class="fa fa-calendar-plus-o text-purple-600"></i>
+            </div>
+            <div>
+              <span class="text-xs text-gray-500">预约时间</span>
+              <div class="text-sm font-medium" th:text="${#temporals.format(reservation.reservationTime, 'yyyy-MM-dd HH:mm')}">2022-12-28 15:30</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="mt-8 bg-gray-50 p-6 rounded-xl">

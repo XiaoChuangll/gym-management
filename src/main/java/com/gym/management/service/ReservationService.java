@@ -55,4 +55,11 @@ public interface ReservationService {
      * @return 预约DTO列表
      */
     List<ReservationDTO> getReservationsByCourseId(String courseId);
+    
+    /**
+     * 搜索预约
+     * @param query 搜索关键词
+     * @return 预约DTO列表
+     */
+    List<ReservationDTO> searchReservations(String query);
 } 
