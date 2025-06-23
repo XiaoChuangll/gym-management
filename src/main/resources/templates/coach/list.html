@@ -218,7 +218,8 @@
                 </form>
             </div>
 
-            <div class="overflow-x-auto">
+            <!-- 桌面端表格 -->
+            <div class="overflow-x-auto hidden sm:block">
                 <table class="min-w-full">
                     <thead>
                     <tr class="bg-gray-50">
@@ -255,6 +256,55 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
+            <!-- 移动端卡片 -->
+            <div class="block sm:hidden space-y-4">
+                <div th:if="${coaches == null}" class="text-center text-gray-500 py-4">暂无教练数据</div>
+                <div th:each="coach : ${coaches}" class="bg-white rounded-lg p-4 shadow flex flex-col gap-3 relative">
+                    <!-- 顶部：名字+联系方式+操作按钮 -->
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fa fa-user text-blue-500"></i>
+                            <span class="font-bold text-neutral-dark text-lg" th:text="${coach.name}">李教练</span>
+                            <span class="flex items-center gap-1 ml-2">
+                                <i class="fa fa-phone text-gray-400 text-xs"></i>
+                                <span class="text-sm text-gray-700" th:text="${coach.contact}">13900139000</span>
+                            </span>
+                        </div>
+                        <div class="flex gap-2">
+                            <a th:href="@{/courses/coach/{id}(id=${coach.coachId})}"
+                               class="p-2 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                               title="查看课程">
+                                <i class="fa fa-calendar-check-o"></i>
+                            </a>
+                            <a th:href="@{/coaches/edit/{id}(id=${coach.coachId})}"
+                               class="p-2 rounded-md bg-yellow-50 text-yellow-600 hover:bg-yellow-100 transition-colors"
+                               title="编辑">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                            <a th:href="@{/coaches/delete/{id}(id=${coach.coachId})}"
+                               class="p-2 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                               onclick="return confirm('确定要删除该教练吗？')"
+                               title="删除">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 编号 -->
+                    <div class="flex items-center gap-2 w-full">
+                        <div class="bg-blue-600 text-white rounded-full px-3 py-1 text-xs w-full flex items-center gap-1 truncate">
+                            <i class="fa fa-id-card text-white text-base"></i>
+                            <span class="break-all truncate" th:text="${coach.coachId}">C001</span>
+                        </div>
+                    </div>
+                    <!-- 擅长领域 -->
+                    <div class="flex items-center gap-2 w-full">
+                        <div class="bg-green-600 text-white rounded-full px-3 py-1 text-xs w-full flex items-center gap-1">
+                            <i class="fa fa-certificate text-white text-base"></i>
+                            <span class="break-all" th:text="${coach.specialty}">瑜伽、普拉提</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

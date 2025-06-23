@@ -313,7 +313,8 @@
                     <a th:href="@{/courses}" class="text-primary text-sm font-medium hover:underline">查看全部</a>
                 </div>
                 <div class="p-6">
-                    <div class="overflow-x-auto">
+                    <!-- 桌面端表格 -->
+                    <div class="overflow-x-auto hidden sm:block">
                         <table class="min-w-full">
                             <thead>
                             <tr class="border-b border-gray-200">
@@ -349,6 +350,28 @@
                             </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <!-- 移动端卡片 -->
+                    <div class="block sm:hidden space-y-4">
+                        <div th:if="${latestCourses == null}" class="text-center text-gray-500 py-4">暂无课程数据</div>
+                        <div th:each="course : ${latestCourses}" class="bg-gray-50 rounded-lg p-4 shadow flex flex-col gap-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded bg-primary/10 flex items-center justify-center text-primary">
+                                    <i class="fa fa-dumbbell"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-neutral-dark" th:text="${course.courseName}">瑜伽课</div>
+                                    <div class="text-xs text-gray-500" th:text="${#temporals.format(course.courseTime, 'yyyy-MM-dd HH:mm')}">2023-01-01 10:00</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-sm text-gray-600">
+                                <span>教练：<span th:text="${course.coachName}">张教练</span></span>
+                                <span>容量：<span th:text="${course.capacity}">20</span></span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
