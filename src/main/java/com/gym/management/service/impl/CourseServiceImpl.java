@@ -6,6 +6,7 @@ import com.gym.management.model.Coach;
 import com.gym.management.model.Course;
 import com.gym.management.repository.CoachRepository;
 import com.gym.management.repository.CourseRepository;
+import com.gym.management.repository.ReservationRepository;
 import com.gym.management.service.CourseService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,13 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final CoachRepository coachRepository;
+    private final ReservationRepository reservationRepository;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, CoachRepository coachRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, CoachRepository coachRepository, ReservationRepository reservationRepository) {
         this.courseRepository = courseRepository;
         this.coachRepository = coachRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -126,6 +129,21 @@ public class CourseServiceImpl implements CourseService {
         courseDTO.setCapacity(course.getCapacity());
         courseDTO.setCoachId(course.getCoach().getCoachId());
         courseDTO.setCoachName(course.getCoach().getName());
+        Integer currentReservations = reservationRepository.countByCourseId(course.getCourseId());
+        courseDTO.setCurrentReservations(currentReservations != null ? currentReservations : 0);
+
+
+        // 计算百分比
+        double percent = 0.0;
+        if (course.getCapacity() != null && course.getCapacity() > 0 && currentReservations != null) {
+            percent = currentReservations * 100.0 / course.getCapacity();
+        }
+        courseDTO.setPercent((int) percent);
+
+        // 日志打印
+        System.out.println("课程: " + course.getCourseName() + " 当前预约: " + courseDTO.getCurrentReservations() + " 容量: " + courseDTO.getCapacity() + " 百分比: " + percent);
+
         return courseDTO;
+
     }
 } 

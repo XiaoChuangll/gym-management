@@ -37,6 +37,10 @@ public class CourseController {
     @GetMapping
     public String listCourses(Model model) {
         List<CourseDTO> courses = courseService.getAllCourses();
+        // 日志输出每个课程的percent和class类型
+        for (CourseDTO c : courses) {
+            System.out.println("Controller: " + c.getCourseName() + " percent=" + c.getPercent());
+        }
         model.addAttribute("courses", courses);
         return "course/list";
     }
