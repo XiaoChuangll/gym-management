@@ -469,10 +469,10 @@
     // 页面加载时执行
     document.addEventListener('DOMContentLoaded', function() {
         console.log("页面加载完成，初始化通知功能...");
-        
+
         // 加载通知
         loadHomeNotifications();
-        
+
         // 添加加载更多按钮事件
         const loadMoreBtn = document.getElementById('load-more-btn');
         if (loadMoreBtn) {
@@ -496,7 +496,7 @@
         } else {
             console.warn("未找到收起按钮");
         }
-        
+
         // 获取用户信息
         getUserInfo();
     });
@@ -513,10 +513,10 @@
                 if (data && Array.isArray(data)) {
                     // 保存所有通知数据到全局变量
                     allNotificationsData = [...data];
-                    
+
                     // 按创建时间倒序排序
                     allNotificationsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                    
+
                     // 显示通知
                     const notificationList = document.getElementById('notification-list');
                     if (notificationList) {
@@ -525,7 +525,7 @@
                         } else {
                             // 默认只显示第一条
                             displayHomePageNotifications(allNotificationsData.slice(0, 1), false);
-                            
+
                             // 如果有多条通知，显示加载更多按钮
                             if (allNotificationsData.length > 1) {
                                 document.getElementById('load-more-container').classList.remove('hidden');
@@ -548,7 +548,7 @@
         console.log("执行loadAllActiveNotifications函数");
         const loadMoreBtn = document.getElementById('load-more-btn');
         const collapseBtn = document.getElementById('collapse-btn');
-        
+
         if (loadMoreBtn) {
             loadMoreBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> 加载中...';
             loadMoreBtn.disabled = true;
@@ -566,17 +566,17 @@
                 .then(response => response.json())
                 .then(notifications => {
                     console.log("加载更多 - 原始通知数据:", notifications);
-                    
+
                     // 保存所有通知数据到全局变量
                     allNotificationsData = [...notifications];
-                    
+
                     // 确保通知按时间降序排序（最新的在前面）
                     allNotificationsData.sort((a, b) => {
                         return new Date(b.createdAt) - new Date(a.createdAt);
                     });
-                    
+
                     console.log("加载更多 - 排序后通知数据:", allNotificationsData);
-                    
+
                     if (loadMoreBtn) loadMoreBtn.classList.add('hidden');
                     if (collapseBtn) collapseBtn.classList.remove('hidden');
                     displayHomePageNotifications(allNotificationsData, true);
@@ -597,7 +597,7 @@
         console.log("执行collapseNotifications函数");
         const collapseBtn = document.getElementById('collapse-btn');
         const loadMoreBtn = document.getElementById('load-more-btn');
-        
+
         if (collapseBtn) {
             collapseBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> 收起中...';
             collapseBtn.disabled = true;
@@ -609,7 +609,7 @@
             if (allNotificationsData && allNotificationsData.length > 0) {
                 displayHomePageNotifications(allNotificationsData.slice(0, 1), false);
             }
-            
+
             // 更新按钮状态
             if (loadMoreBtn) loadMoreBtn.classList.remove('hidden');
             if (collapseBtn) collapseBtn.classList.add('hidden');
@@ -657,7 +657,7 @@
 
             // 使用marked.js解析Markdown内容
             const markdownContent = marked.parse(notification.content || '');
-            
+
             // 获取优先级和目标信息
             const priorityClass = getPriorityBadge(notification.priority || 'medium');
             const targetText = getTargetText(notification.target || 'all');
@@ -697,13 +697,13 @@
         document.getElementById('notification-list').innerHTML = html;
         resetLoadMoreButton();
     }
-    
+
     // 切换通知内容显示/隐藏
     function toggleNotificationContent(notificationId) {
         const contentElement = document.getElementById(notificationId);
         const iconElement = document.getElementById(`${notificationId}-icon`);
         const hintElement = document.getElementById(`${notificationId}-hint`);
-        
+
         if (contentElement) {
             if (contentElement.classList.contains('hidden')) {
                 // 显示内容
@@ -786,17 +786,17 @@
             .catch(error => {
                 console.error('获取用户信息失败:', error);
             });
-            
+
         // 手动处理用户菜单下拉功能
         const userMenuButton = document.querySelector('.relative.group button');
         const userMenuDropdown = document.querySelector('.relative.group .absolute');
-        
+
         if (userMenuButton && userMenuDropdown) {
             userMenuButton.addEventListener('click', function(e) {
                 e.preventDefault();
                 // 切换下拉菜单的可见性
                 const isVisible = userMenuDropdown.classList.contains('visible');
-                
+
                 if (isVisible) {
                     userMenuDropdown.classList.remove('visible', 'opacity-100');
                     userMenuDropdown.classList.add('invisible', 'opacity-0');
@@ -805,7 +805,7 @@
                     userMenuDropdown.classList.add('visible', 'opacity-100');
                 }
             });
-            
+
             // 点击页面其他地方关闭下拉菜单
             document.addEventListener('click', function(e) {
                 if (!userMenuButton.contains(e.target) && !userMenuDropdown.contains(e.target)) {

@@ -11,33 +11,23 @@
   <component name="ChangeListManager">
     <list default="true" id="48e796ea-c446-4a8a-86af-3c69c2f6e4db" name="更改" comment="优化排版">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gym/management/controller/ReservationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gym/management/controller/ReservationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gym/management/repository/ReservationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gym/management/repository/ReservationRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gym/management/service/ReservationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gym/management/service/ReservationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/gym/management/service/impl/ReservationServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/gym/management/service/impl/ReservationServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/coach/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/coach/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/templates/member/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/member/list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/coach-workload.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/coach-workload.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/course-attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/course-attendance.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations-selection.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations-selection.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/report/member-reservations.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/reservation/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/reservation/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/controller/CourseController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/controller/CourseController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/controller/NotificationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/controller/NotificationController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/dto/CourseDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/dto/CourseDTO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/service/NotificationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/service/NotificationService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/service/impl/CourseServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/service/impl/CourseServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/controller/ReservationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/controller/ReservationController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/repository/ReservationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/repository/ReservationRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/service/ReservationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/service/ReservationService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/gym/management/service/impl/ReservationServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/gym/management/service/impl/ReservationServiceImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/templates/coach/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/coach/list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/course/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/course/list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/templates/member/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/member/list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/templates/reservation/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/reservation/list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/management-0.0.1-SNAPSHOT.jar.original" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/coach-workload.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/coach-workload.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/course-attendance.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/course-attendance.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/member-reservations-selection.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/member-reservations-selection.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/member-reservations.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/member-reservations.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/report/member-reservationss.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/report/member-reservationss.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,15 +177,7 @@
       <workItem from="1750652928541" duration="4165000" />
       <workItem from="1750665917809" duration="16774000" />
       <workItem from="1750686909894" duration="1856000" />
-      <workItem from="1750689225568" duration="4853000" />
-    </task>
-    <task id="LOCAL-00014" summary="优化">
-      <option name="closed" value="true" />
-      <created>1750394287290</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1750394287290</updated>
+      <workItem from="1750689225568" duration="6253000" />
     </task>
     <task id="LOCAL-00015" summary="优化">
       <option name="closed" value="true" />
@@ -581,7 +563,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750692652467</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="优化排版">
+      <option name="closed" value="true" />
+      <created>1750694351966</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1750694351966</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

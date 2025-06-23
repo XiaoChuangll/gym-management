@@ -219,7 +219,8 @@
             </a>
         </div>
         <div class="p-6">
-            <div class="overflow-x-auto">
+            <!-- 桌面端表格 -->
+            <div class="overflow-x-auto hidden sm:block">
                 <table class="min-w-full">
                     <thead>
                     <tr class="bg-gray-50">
@@ -253,6 +254,50 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
+            
+            <!-- 移动端卡片 -->
+            <div class="block sm:hidden space-y-4">
+                <div th:if="${courseAttendance == null}" class="text-center text-gray-500 py-4">暂无课程数据</div>
+                <div th:each="course : ${courseAttendance}" class="bg-white rounded-lg p-4 shadow flex flex-col gap-3 relative">
+                    <!-- 顶部：课程名称+ID -->
+                    <div class="flex flex-col mb-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fa fa-calendar text-blue-500"></i>
+                            <span class="font-bold text-neutral-dark text-lg" th:text="${course.courseName}">瑜伽课</span>
+                        </div>
+                        <div class="mt-2">
+                            <span class="bg-blue-500 text-white px-4 py-1.5 rounded-full text-xs inline-flex items-center">
+                                <i class="fa fa-id-card mr-1"></i>
+                                <span th:text="${course.courseId}">C001</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- 预约总数 -->
+                    <div class="flex items-center gap-2 bg-blue-50 p-3 rounded-lg">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fa fa-users text-blue-600"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-500">预约总数</span>
+                            <div class="font-bold text-blue-600" th:text="${course.totalReservations}">20</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 出勤率 -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-500">出勤率</span>
+                            <span class="text-sm font-medium" th:text="${#numbers.formatPercent(course.attendanceRate, 1, 2)}">75.00%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-5">
+                            <div class="bg-secondary h-5 rounded-full flex items-center justify-center text-white text-xs font-medium"
+                                 th:style="'width: ' + ${#numbers.formatPercent(course.attendanceRate, 1, 0)} + ';'"
+                                 th:text="${#numbers.formatPercent(course.attendanceRate, 1, 0)}">75%</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

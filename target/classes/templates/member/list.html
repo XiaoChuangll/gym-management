@@ -286,13 +286,15 @@
                 <div th:each="member : ${members}" class="bg-white rounded-lg p-4 shadow flex flex-col gap-3 relative">
                     <!-- 顶部：姓名+联系方式+操作按钮 -->
                     <div class="flex items-start justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <i class="fa fa-user-circle text-blue-500"></i>
-                            <span class="font-bold text-neutral-dark text-lg" th:text="${member.name}">张三</span>
-                            <span class="flex items-center gap-1 ml-2">
-                                <i class="fa fa-phone text-gray-400 text-xs"></i>
-                                <span class="text-sm text-gray-700" th:text="${member.contact}">13800138000</span>
-                            </span>
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center">
+                                <i class="fa fa-user-circle text-blue-500 w-6 text-center"></i>
+                                <span class="font-bold text-neutral-dark text-lg ml-2" th:text="${member.name}">张三</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa fa-phone text-blue-500 w-6 text-center"></i>
+                                <span class="text-sm text-gray-700 ml-2" th:text="${member.contact}">13800138000</span>
+                            </div>
                         </div>
                         <div class="flex gap-2">
                             <a th:href="@{/reports/member-reservationss/{id}(id=${member.memberId})}"
@@ -314,24 +316,23 @@
                         </div>
                     </div>
                     <!-- 会员编号 -->
-                    <div class="flex items-center gap-2 w-full">
-                        <div class="bg-blue-600 text-white rounded-full px-3 py-1 text-xs w-full flex items-center gap-1 truncate">
-                            <i class="fa fa-id-card text-white text-base"></i>
-                            <span class="break-all truncate" th:text="${member.memberId}">M001</span>
-                        </div>
+                    <div class="mt-1">
+                        <span class="bg-blue-500 text-white px-4 py-1.5 rounded-full text-xs inline-flex items-center">
+                            <i class="fa fa-id-card mr-1"></i>
+                            <span th:text="${member.memberId}">M001</span>
+                        </span>
                     </div>
-                    <!-- 入会日期 -->
-                    <div class="flex items-center gap-2 w-full">
-                        <div class="bg-purple-600 text-white rounded-full px-3 py-1 text-xs w-full flex items-center gap-1">
-                            <i class="fa fa-calendar text-white text-base"></i>
-                            <span class="break-all" th:text="${#temporals.format(member.joinDate, 'yyyy-MM-dd')}">2023-01-01</span>
+                    <!-- 入会日期和会员类型 -->
+                    <div class="grid grid-cols-2 gap-2">
+                        <!-- 入会日期 -->
+                        <div class="bg-purple-50 p-3 rounded-lg flex flex-col items-center">
+                            <span class="text-xs text-gray-500 mb-1">入会日期</span>
+                            <span class="font-bold text-purple-600" th:text="${#temporals.format(member.joinDate, 'yyyy-MM-dd')}">2023-01-01</span>
                         </div>
-                    </div>
-                    <!-- 会员类型 -->
-                    <div class="flex items-center gap-2 w-full">
-                        <div class="bg-green-600 text-white rounded-full px-3 py-1 text-xs w-full flex items-center gap-1">
-                            <i class="fa fa-tag text-white text-base"></i>
-                            <span class="break-all" th:text="${member.memberType}">普通会员</span>
+                        <!-- 会员类型 -->
+                        <div class="bg-green-50 p-3 rounded-lg flex flex-col items-center">
+                            <span class="text-xs text-gray-500 mb-1">会员类型</span>
+                            <span class="font-bold text-green-600" th:text="${member.memberType}">普通会员</span>
                         </div>
                     </div>
                 </div>

@@ -283,13 +283,15 @@
                 <div th:each="coach : ${coaches}" class="bg-white rounded-lg p-4 shadow flex flex-col gap-3 relative">
                     <!-- 顶部：名字+联系方式+操作按钮 -->
                     <div class="flex items-start justify-between mb-2">
-                        <div class="flex items-center gap-2">
-                            <i class="fa fa-user text-blue-500"></i>
-                            <span class="font-bold text-neutral-dark text-lg" th:text="${coach.name}">李教练</span>
-                            <span class="flex items-center gap-1 ml-2">
-                                <i class="fa fa-phone text-gray-400 text-xs"></i>
-                                <span class="text-sm text-gray-700" th:text="${coach.contact}">13900139000</span>
-                            </span>
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center">
+                                <i class="fa fa-user text-blue-500 w-6 text-center"></i>
+                                <span class="font-bold text-neutral-dark text-lg ml-2" th:text="${coach.name}">李教练</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa fa-phone text-blue-500 w-6 text-center"></i>
+                                <span class="text-sm text-gray-700 ml-2" th:text="${coach.contact}">13900139000</span>
+                            </div>
                         </div>
                         <div class="flex gap-2">
                             <a th:href="@{/courses/coach/{id}(id=${coach.coachId})}"
@@ -311,18 +313,16 @@
                         </div>
                     </div>
                     <!-- 编号 -->
-                    <div class="flex items-center gap-2 w-full">
-                        <div class="bg-blue-600 text-white rounded-full px-3 py-1 text-xs w-full flex items-center gap-1 truncate">
-                            <i class="fa fa-id-card text-white text-base"></i>
-                            <span class="break-all truncate" th:text="${coach.coachId}">C001</span>
-                        </div>
+                    <div class="mt-1">
+                        <span class="bg-blue-500 text-white px-4 py-1.5 rounded-full text-xs inline-flex items-center">
+                            <i class="fa fa-id-card mr-1"></i>
+                            <span th:text="${coach.coachId}">C001</span>
+                        </span>
                     </div>
                     <!-- 擅长领域 -->
-                    <div class="flex items-center gap-2 w-full">
-                        <div class="bg-green-600 text-white rounded-full px-3 py-1 text-xs w-full flex items-center gap-1">
-                            <i class="fa fa-certificate text-white text-base"></i>
-                            <span class="break-all" th:text="${coach.specialty}">瑜伽、普拉提</span>
-                        </div>
+                    <div class="bg-green-50 p-3 rounded-lg">
+                        <span class="text-xs text-gray-500 block mb-1">擅长领域</span>
+                        <span class="font-medium text-green-600" th:text="${coach.specialty}">瑜伽、普拉提</span>
                     </div>
                 </div>
             </div>
@@ -335,12 +335,17 @@
             <h2 class="text-xl font-bold text-neutral-dark">按专长搜索</h2>
         </div>
         <div class="p-6">
-            <form th:action="@{/coaches/search/specialty}" method="get" class="flex flex-col sm:flex-row gap-3">
-                <input type="text" name="specialty" placeholder="输入专长领域搜索"
-                       class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
-                <button type="submit" class="btn-primary">
-                    <i class="fa fa-search mr-1"></i> 搜索
-                </button>
+            <form th:action="@{/coaches/search/specialty}" method="get" class="flex flex-col gap-4">
+                <div class="flex flex-wrap gap-2" id="specialty-tags">
+                    <!-- 这里将动态加载常见专长标签 -->
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" name="specialty" id="specialty-input" placeholder="输入专长领域搜索"
+                           class="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                    <button type="submit" class="btn-primary">
+                        <i class="fa fa-search mr-1"></i> 搜索
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -410,6 +415,9 @@
             .catch(error => {
                 console.error('获取用户信息失败:', error);
             });
+            
+        // 加载常见专长标签
+        loadSpecialtyTags();
     });
 
     // MD5函数，用于生成Gravatar头像
@@ -423,6 +431,74 @@
             hash += (Math.floor(Math.random() * 16)).toString(16);
         }
         return hash;
+    }
+    
+    // 加载常见专长标签
+    function loadSpecialtyTags() {
+        // 常见专长列表
+        const commonSpecialties = [
+            '瑜伽', '普拉提', '有氧运动', '力量训练', '游泳', '舞蹈', 
+            '拳击', '太极', '健美', '体能训练', '康复训练', '私人定制'
+        ];
+        
+        const tagsContainer = document.getElementById('specialty-tags');
+        const specialtyInput = document.getElementById('specialty-input');
+        
+        if (tagsContainer && specialtyInput) {
+            // 清空容器
+            tagsContainer.innerHTML = '';
+            
+            // 添加标签
+            commonSpecialties.forEach(specialty => {
+                const tag = document.createElement('button');
+                tag.type = 'button';
+                tag.className = 'px-3 py-1.5 bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-700 rounded-full text-sm transition-colors';
+                tag.textContent = specialty;
+                tag.onclick = function(e) {
+                    e.preventDefault();
+                    specialtyInput.value = specialty;
+                };
+                tagsContainer.appendChild(tag);
+            });
+            
+            // 从现有教练数据中提取专长
+            try {
+                const coaches = Array.from(document.querySelectorAll('table tbody tr'));
+                const specialties = new Set();
+                
+                coaches.forEach(coach => {
+                    const specialtyCell = coach.querySelector('td:nth-child(4)');
+                    if (specialtyCell) {
+                        const text = specialtyCell.textContent.trim();
+                        if (text && text !== '暂无教练数据') {
+                            // 分割多个专长
+                            const items = text.split(/[,，、]/);
+                            items.forEach(item => {
+                                const trimmed = item.trim();
+                                if (trimmed && !commonSpecialties.includes(trimmed)) {
+                                    specialties.add(trimmed);
+                                }
+                            });
+                        }
+                    }
+                });
+                
+                // 添加从现有数据中提取的专长
+                specialties.forEach(specialty => {
+                    const tag = document.createElement('button');
+                    tag.type = 'button';
+                    tag.className = 'px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 rounded-full text-sm transition-colors';
+                    tag.textContent = specialty;
+                    tag.onclick = function(e) {
+                        e.preventDefault();
+                        specialtyInput.value = specialty;
+                    };
+                    tagsContainer.appendChild(tag);
+                });
+            } catch (error) {
+                console.error('提取专长数据失败:', error);
+            }
+        }
     }
 </script>
 </body>
