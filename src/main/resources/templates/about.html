@@ -48,6 +48,7 @@
                     animation: {
                         'float': 'float 3s ease-in-out infinite',
                         'fade-in': 'fadeIn 0.5s ease-out',
+                        'menu-slide': 'menuSlide 0.3s ease-out forwards',
                     },
                     keyframes: {
                         float: {
@@ -57,6 +58,18 @@
                         fadeIn: {
                             '0%': { opacity: '0', transform: 'translateY(10px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        menuSlide: {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(-20px)',
+                                maxHeight: '0px'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)',
+                                maxHeight: '500px'
+                            }
                         }
                     }
                 }
@@ -70,7 +83,6 @@
     <div class="container mx-auto px-4 py-3 flex justify-between items-center">
         <!-- Logo -->
         <a th:href="@{/}" class="flex items-center space-x-2 group">
-
             <span class="text-xl font-bold text-gray-800 group-hover:text-primary-600 transition-colors">健身房管理系统</span>
         </a>
 
@@ -87,12 +99,12 @@
 
         <!-- 移动端汉堡按钮（仅移动端显示） -->
         <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition-colors">
-            <i class="fa fa-bars text-xl"></i>
+            <i class="fa fa-bars text-xl transition-transform duration-300"></i>
         </button>
     </div>
 
     <!-- 移动端菜单（下拉式） -->
-    <div id="mobile-menu" class="md:hidden h-0 overflow-hidden transition-all duration-300 bg-white/95 backdrop-blur-sm">
+    <div id="mobile-menu" class="md:hidden max-h-0 overflow-hidden transition-all duration-300 bg-white/95 backdrop-blur-sm">
         <div class="container mx-auto px-4 flex flex-col space-y-2 pb-3">
             <a th:href="@{/index}" class="py-3 text-gray-600 hover:text-primary-600 transition-colors border-b border-gray-100 flex items-center">
                 <i class="fa fa-home mr-2 w-5 text-center"></i> 首页
@@ -111,7 +123,6 @@
 <main class="container mx-auto px-4 py-8 max-w-6xl">
     <!-- 项目标题和简介 -->
     <section class="text-center mb-16 animate-fade-in">
-
         <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4 gradient-text from-primary-600 to-secondary-500">
             健身房管理系统
         </h1>
@@ -299,47 +310,47 @@
     </section>
 </main>
 
-<!-- 页脚 -->
-<footer class="bg-white/80 backdrop-blur-md border-t border-gray-200 py-12 mt-12">
+<!-- 优化后的页脚 -->
+<footer class="bg-white/80 backdrop-blur-md border-t border-gray-200 py-8 md:py-12 mt-12">
     <div class="container mx-auto px-4">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div class="flex flex-col md:flex-row justify-between items-center">
             <!-- 版权信息 -->
             <div class="mb-6 md:mb-0 text-center md:text-left">
-                <div class="flex items-center justify-center md:justify-start space-x-3 mb-3">
-                    <span class="text-xl font-semibold text-gray-800">健身房管理系统</span>
+                <div class="flex justify-center md:justify-start items-center space-x-3 mb-3">
+                    <span class="text-lg md:text-xl font-semibold text-gray-800">健身房管理系统</span>
                 </div>
                 <p class="text-sm text-gray-500 mb-2">© 2025 版权所有 | MIT License</p>
                 <p class="text-xs text-gray-400">当前版本: v1.0.0 | 最后更新: <span th:text="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"></span></p>
             </div>
 
-            <!-- 社交链接 -->
-            <div class="flex flex-col items-center md:items-end space-y-4 w-full md:w-auto">
+            <!-- 社交链接 - 移动端居中显示 -->
+            <div class="flex flex-col items-center space-y-4 w-full md:w-auto">
                 <div class="flex space-x-4">
                     <a href="https://github.com/XiaoChuangll/gym-management"
                        target="_blank"
-                       class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
+                       class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
                        title="GitHub仓库">
-                        <i class="fa fa-github"></i>
+                        <i class="fa fa-github text-sm md:text-base"></i>
                     </a>
                     <a href="mailto:your-email@example.com"
-                       class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
+                       class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
                        title="联系我们">
-                        <i class="fa fa-envelope"></i>
+                        <i class="fa fa-envelope text-sm md:text-base"></i>
                     </a>
                     <a href="#"
-                       class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
+                       class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
                        title="文档中心">
-                        <i class="fa fa-book"></i>
+                        <i class="fa fa-book text-sm md:text-base"></i>
                     </a>
                     <a href="#"
-                       class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
+                       class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
                        title="演示视频">
-                        <i class="fa fa-youtube-play"></i>
+                        <i class="fa fa-youtube-play text-sm md:text-base"></i>
                     </a>
                 </div>
                 <a href="https://github.com/XiaoChuangll/gym-management/issues"
                    target="_blank"
-                   class="text-sm text-primary-600 hover:underline hover:text-primary-700 transition-colors">
+                   class="text-xs md:text-sm text-primary-600 hover:underline hover:text-primary-700 transition-colors">
                     <i class="fa fa-bug mr-1"></i> 报告问题或建议
                 </a>
             </div>
@@ -348,20 +359,38 @@
 </footer>
 
 <script>
-    // 移动端菜单切换
+    // 优化后的移动端菜单切换
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         const mobileMenu = document.getElementById('mobile-menu');
         const icon = this.querySelector('i');
 
-        // 切换菜单高度
-        if (mobileMenu.classList.contains('h-0')) {
-            mobileMenu.classList.remove('h-0');
-            mobileMenu.classList.add('h-auto', 'py-3', 'border-t');
+        // 添加按钮点击动画
+        this.classList.toggle('active');
+        icon.classList.toggle('rotate-90');
+
+        // 切换菜单显示
+        if (mobileMenu.classList.contains('max-h-0')) {
+            mobileMenu.classList.remove('max-h-0');
+            mobileMenu.classList.add('max-h-[500px]', 'py-3', 'border-t', 'animate-menu-slide');
             icon.classList.replace('fa-bars', 'fa-times');
         } else {
-            mobileMenu.classList.add('h-0');
-            mobileMenu.classList.remove('h-auto', 'py-3', 'border-t');
+            mobileMenu.classList.add('max-h-0');
+            mobileMenu.classList.remove('max-h-[500px]', 'py-3', 'border-t', 'animate-menu-slide');
             icon.classList.replace('fa-times', 'fa-bars');
+        }
+    });
+
+    // 点击菜单外区域关闭菜单
+    document.addEventListener('click', function(event) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuButton = document.getElementById('mobile-menu-button');
+
+        if (!mobileMenu.contains(event.target) && !menuButton.contains(event.target)) {
+            if (!mobileMenu.classList.contains('max-h-0')) {
+                mobileMenu.classList.add('max-h-0');
+                mobileMenu.classList.remove('max-h-[500px]', 'py-3', 'border-t', 'animate-menu-slide');
+                menuButton.querySelector('i').classList.replace('fa-times', 'fa-bars');
+            }
         }
     });
 
