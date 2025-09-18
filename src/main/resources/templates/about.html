@@ -305,10 +305,13 @@
 
     <!-- 我的 GitHub 仓库 -->
     <section id="my-github" class="mb-16">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2 flex items-center">
-            <i class="fa fa-github mr-2 text-gray-800"></i>我的 GitHub 项目
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2 flex items-center justify-between">
+            <span class="inline-flex items-center"><i class="fa fa-github mr-2 text-gray-800"></i>我的 GitHub 项目</span>
+            <button id="repos-toggle" class="md:hidden inline-flex items-center text-sm text-blue-600 hover:text-blue-800" aria-expanded="true">
+                收起 <i class="fa fa-chevron-up ml-1"></i>
+            </button>
         </h2>
-        <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 overflow-hidden">
+        <div id="repos-section" class="bg-white rounded-xl shadow-md p-4 sm:p-6 overflow-hidden">
             <div id="repos-loading" class="text-center py-8">
                 <div class="inline-flex items-center px-4 py-2 bg-gray-100 rounded-full">
                     <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-2"></div>
@@ -351,7 +354,7 @@
                 </button>
             </div>
             <div id="contrib-graph-wrap" class="hidden">
-                <img id="contrib-graph" alt="GitHub 贡献图" class="block w-full max-w-full h-auto rounded-lg select-none pointer-events-none" loading="lazy" />
+                <img id="contrib-graph" alt="GitHub 贡献图" class="block w-full max-w-full h-auto rounded-lg select-none pointer-events-none" referrerpolicy="no-referrer" />
                 <div class="text-right mt-2">
                     <a id="contrib-source" href="#" target="_blank" class="text-xs text-gray-500 hover:text-gray-700 underline">在 GitHub 查看</a>
                 </div>
@@ -501,13 +504,15 @@
             `;
         }
 
-        // 显示最新提交
+        // 显示最新提交（支持折叠）
         if (commits.length > 0) {
             html += `
                 <div>
                     <h3 class="text-lg font-semibold mb-3 text-blue-700 flex items-center">
                         <i class="fa fa-code-commit mr-2"></i>最近提交
+                        <button id="commits-toggle" class="ml-auto inline-flex items-center text-sm text-blue-600 hover:text-blue-800" aria-expanded="true">收起 <i class="fa fa-chevron-up ml-1"></i></button>
                     </h3>
+                    <div id="commits-list">
             `;
 
             commits.forEach(commit => {
@@ -525,7 +530,7 @@
                 `;
             });
 
-            html += `</div>`;
+            html += `</div></div>`;
         }
 
         // 如果没有内容
@@ -539,6 +544,24 @@
         }
 
         contentEl.innerHTML = html;
+
+        // 绑定“最近提交”折叠事件（桌面和移动端都可用）
+        const commitsToggle = document.getElementById('commits-toggle');
+        const commitsList = document.getElementById('commits-list');
+        if (commitsToggle && commitsList) {
+            commitsToggle.addEventListener('click', () => {
+                const expanded = commitsToggle.getAttribute('aria-expanded') === 'true';
+                if (expanded) {
+                    commitsList.classList.add('hidden');
+                    commitsToggle.setAttribute('aria-expanded', 'false');
+                    commitsToggle.innerHTML = '展开 <i class="fa fa-chevron-down ml-1"></i>';
+                } else {
+                    commitsList.classList.remove('hidden');
+                    commitsToggle.setAttribute('aria-expanded', 'true');
+                    commitsToggle.innerHTML = '收起 <i class="fa fa-chevron-up ml-1"></i>';
+                }
+            });
+        }
     }
 
     // 加载并展示用户的 GitHub 仓库
@@ -612,24 +635,40 @@
         errorEl.classList.add('hidden');
         wrapEl.classList.add('hidden');
 
+        // 强制非懒加载，避免被隐藏时浏览器不触发加载
+        imgEl.removeAttribute('loading');
+        try { imgEl.loading = 'eager'; } catch (_) {}
+        imgEl.setAttribute('decoding', 'sync');
+
         const username = repoOwner;
-        const svgUrl = `https://github-readme-activity-graph.vercel.app/graph?username=${encodeURIComponent(username)}&bg_color=ffffff&color=334155&line=2563eb&point=2563eb&area=true&hide_border=true`;
-        const pngFallbackUrl = `https://ghchart.rshah.org/2563eb/${encodeURIComponent(username)}`;
+        // 先尝试 PNG（更稳定），失败再回退到 SVG
+        const pngUrl = `https://ghchart.rshah.org/2563eb/${encodeURIComponent(username)}?t=${Date.now()}`;
+        const svgFallbackUrl = `https://github-readme-activity-graph.vercel.app/graph?username=${encodeURIComponent(username)}&bg_color=ffffff&color=334155&line=2563eb&point=2563eb&area=true&hide_border=true&t=${Date.now()}`;
         const profileUrl = `https://github.com/${encodeURIComponent(username)}`;
 
         if (sourceLink) sourceLink.href = profileUrl;
 
         // 清理旧事件与尝试标记
         imgEl.removeAttribute('data-fallback');
+        let timeoutId = null;
+        const clearTimer = () => { if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; } };
+
         imgEl.onload = () => {
+            clearTimer();
             loadingEl.classList.add('hidden');
             wrapEl.classList.remove('hidden');
         };
         imgEl.onerror = () => {
+            clearTimer();
             // 首次失败，尝试回退源
             if (!imgEl.dataset.fallback) {
                 imgEl.dataset.fallback = '1';
-                imgEl.src = pngFallbackUrl;
+                imgEl.src = svgFallbackUrl;
+                // 回退也增加超时保护
+                timeoutId = setTimeout(() => {
+                    loadingEl.classList.add('hidden');
+                    errorEl.classList.remove('hidden');
+                }, 10000);
             } else {
                 // 回退也失败
                 loadingEl.classList.add('hidden');
@@ -637,8 +676,15 @@
             }
         };
 
-        // 触发加载
-        imgEl.src = svgUrl;
+        // 触发加载 + 超时兜底（10 秒）
+        timeoutId = setTimeout(() => {
+            // 若长时间无 onload/onerror，主动切换到回退
+            if (!imgEl.dataset.fallback) {
+                imgEl.dataset.fallback = '1';
+                imgEl.src = svgFallbackUrl;
+            }
+        }, 10000);
+        imgEl.src = pngUrl;
     }
 
     // 页面加载完成后执行
@@ -663,6 +709,24 @@
         // 重新加载仓库按钮
         const reposRetryBtn = document.getElementById('repos-retry');
         if (reposRetryBtn) reposRetryBtn.addEventListener('click', loadUserRepos);
+
+        // “我的 GitHub 项目”移动端折叠
+        const reposToggle = document.getElementById('repos-toggle');
+        const reposSection = document.getElementById('repos-section');
+        if (reposToggle && reposSection) {
+            reposToggle.addEventListener('click', () => {
+                const expanded = reposToggle.getAttribute('aria-expanded') === 'true';
+                if (expanded) {
+                    reposSection.classList.add('hidden');
+                    reposToggle.setAttribute('aria-expanded', 'false');
+                    reposToggle.innerHTML = '展开 <i class="fa fa-chevron-down ml-1"></i>';
+                } else {
+                    reposSection.classList.remove('hidden');
+                    reposToggle.setAttribute('aria-expanded', 'true');
+                    reposToggle.innerHTML = '收起 <i class="fa fa-chevron-up ml-1"></i>';
+                }
+            });
+        }
     });
 
     // 加载GitHub基本信息
