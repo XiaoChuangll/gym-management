@@ -9,112 +9,92 @@
     <style type="text/tailwindcss">
         @layer utilities {
             .card-hover {
-                @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5;
+                transition: all 0.3s;
+                &:hover {
+                    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+                    transform: translateY(-0.25rem);
+                }
             }
             .tech-badge {
-                @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-opacity-20;
+                display: inline-flex;
+                align-items: center;
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+                padding-top: 0.25rem;
+                padding-bottom: 0.25rem;
+                border-radius: 9999px;
+                font-size: 0.875rem;
+                font-weight: 500;
             }
-            .gradient-text {
-                @apply bg-clip-text text-transparent bg-gradient-to-r;
+            .pulse {
+                animation: pulse 2s infinite;
             }
-            .gradient-bg {
-                @apply bg-gradient-to-r;
+            .update-item {
+                border-left-width: 4px;
+                border-left-color: rgb(59, 130, 246);
+                padding-left: 1rem;
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+                margin-bottom: 0.75rem;
+            }
+            @keyframes pulse {
+                0% { opacity: 1; }
+                50% { opacity: 0.5; }
+                100% { opacity: 1; }
+            }
+            .fade-in {
+                animation: fadeIn 0.5s ease-in;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
             }
         }
     </style>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
-                        },
-                        secondary: {
-                            400: '#f472b6',
-                            500: '#ec4899',
-                            600: '#db2777',
-                        }
-                    },
-                    animation: {
-                        'float': 'float 3s ease-in-out infinite',
-                        'fade-in': 'fadeIn 0.5s ease-out',
-                        'menu-slide': 'menuSlide 0.3s ease-out forwards',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        menuSlide: {
-                            '0%': {
-                                opacity: '0',
-                                transform: 'translateY(-20px)',
-                                maxHeight: '0px'
-                            },
-                            '100%': {
-                                opacity: '1',
-                                transform: 'translateY(0)',
-                                maxHeight: '500px'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen font-sans antialiased">
+<body class="bg-gray-50 min-h-screen">
 <!-- 响应式导航栏 -->
-<header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100">
+<header class="bg-white shadow-sm sticky top-0 z-50">
     <div class="container mx-auto px-4 py-3 flex justify-between items-center">
         <!-- Logo -->
-        <a th:href="@{/}" class="flex items-center space-x-2 group">
-            <span class="text-xl font-bold text-gray-800 group-hover:text-primary-600 transition-colors">健身房管理系统</span>
+        <a th:href="@{/}" class="flex items-center space-x-2">
+            <i class="fa fa-dumbbell text-blue-600 text-2xl"></i>
+            <span class="text-xl font-bold">健身房管理系统</span>
         </a>
 
         <!-- 桌面导航（隐藏于移动端） -->
         <nav class="hidden md:flex space-x-6">
-            <a th:href="@{/index}" class="text-gray-600 hover:text-primary-600 transition-colors flex items-center py-1 border-b-2 border-transparent hover:border-primary-500">首页</a>
-            <a th:href="@{https://github.com/XiaoChuangll/gym-management}" class="text-gray-600 hover:text-primary-600 transition-colors flex items-center py-1 border-b-2 border-transparent hover:border-primary-500" target="_blank">
+            <a th:href="@{/index}" class="hover:text-blue-600">首页</a>
+            <a th:href="@{https://github.com/XiaoChuangll/gym-management}" class="hover:text-blue-600" target="_blank">
                 <i class="fa fa-github mr-1"></i>GitHub
+                <!-- GitHub星标计数（仅桌面端显示） -->
+                <span id="github-stars" class="ml-1 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full pulse">
+                    <i class="fa fa-star"></i> 加载中...
+                </span>
             </a>
-            <a href="#" class="text-primary-600 font-medium flex items-center py-1 border-b-2 border-primary-500">
-                关于项目
-            </a>
+            <a href="#" class="text-blue-600 font-medium">关于项目</a>
         </nav>
 
         <!-- 移动端汉堡按钮（仅移动端显示） -->
-        <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition-colors">
-            <i class="fa fa-bars text-xl transition-transform duration-300"></i>
+        <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+            <i class="fa fa-bars text-2xl"></i>
         </button>
     </div>
 
     <!-- 移动端菜单（下拉式） -->
-    <div id="mobile-menu" class="md:hidden max-h-0 overflow-hidden transition-all duration-300 bg-white/95 backdrop-blur-sm">
+    <div id="mobile-menu" class="md:hidden h-0 overflow-hidden transition-all duration-300 bg-white">
         <div class="container mx-auto px-4 flex flex-col space-y-2 pb-3">
-            <a th:href="@{/index}" class="py-3 text-gray-600 hover:text-primary-600 transition-colors border-b border-gray-100 flex items-center">
-                <i class="fa fa-home mr-2 w-5 text-center"></i> 首页
+            <a th:href="@{/index}" class="py-2 hover:text-blue-600 border-b border-gray-100">首页</a>
+            <a th:href="@{https://github.com/XiaoChuangll/gym-management}" class="py-2 hover:text-blue-600 border-b border-gray-100" target="_blank">
+                <i class="fa fa-github mr-1"></i>GitHub
+                <!-- GitHub星标计数（移动端） -->
+                <span id="github-stars-mobile" class="ml-1 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full pulse">
+                    <i class="fa fa-star"></i> 加载中...
+                </span>
             </a>
-            <a th:href="@{https://github.com/XiaoChuangll/gym-management}" class="py-3 text-gray-600 hover:text-primary-600 transition-colors border-b border-gray-100 flex items-center" target="_blank">
-                <i class="fa fa-github mr-2 w-5 text-center"></i> GitHub
-            </a>
-            <a href="#" class="py-3 text-primary-600 font-medium border-b border-gray-100 flex items-center">
-                <i class="fa fa-info-circle mr-2 w-5 text-center"></i> 关于项目
-            </a>
+            <a href="#" class="py-2 text-blue-600 font-medium border-b border-gray-100">关于项目</a>
         </div>
     </div>
 </header>
@@ -122,122 +102,149 @@
 <!-- 项目介绍主内容 -->
 <main class="container mx-auto px-4 py-8 max-w-6xl">
     <!-- 项目标题和简介 -->
-    <section class="text-center mb-16 animate-fade-in">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4 gradient-text from-primary-600 to-secondary-500">
-            健身房管理系统
-        </h1>
-        <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+    <section class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">健身房管理系统</h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
             一个基于Spring Boot的现代化健身房管理解决方案，助力健身房数字化运营
         </p>
+        <!-- 版本信息 -->
+        <div class="mt-6 inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm">
+            <span class="font-medium">当前版本:</span>
+            <span id="latest-version" class="ml-1 pulse">加载中...</span>
+            <a href="https://github.com/XiaoChuangll/gym-management/releases"
+               target="_blank"
+               class="ml-2 text-blue-500 hover:text-blue-700">
+                <i class="fa fa-external-link"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- 最新更新内容 -->
+    <section class="mb-16">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2 flex items-center">
+            <i class="fa fa-history mr-2 text-blue-600"></i>最新更新
+            <button id="refresh-updates" class="ml-3 text-blue-500 hover:text-blue-700 text-sm">
+                <i class="fa fa-refresh"></i> 刷新
+            </button>
+        </h2>
+
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div id="updates-loading" class="text-center py-8">
+                <div class="inline-flex items-center px-4 py-2 bg-gray-100 rounded-full">
+                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-2"></div>
+                    <span>正在获取更新内容...</span>
+                </div>
+            </div>
+
+            <div id="updates-content" class="hidden">
+                <!-- 这里会动态填充更新内容 -->
+            </div>
+
+            <div id="updates-error" class="hidden text-center py-8 text-red-600">
+                <i class="fa fa-exclamation-triangle text-2xl mb-2"></i>
+                <p>无法获取更新内容，请稍后重试</p>
+                <button onclick="loadUpdates()" class="mt-3 text-blue-600 hover:text-blue-800 text-sm">
+                    <i class="fa fa-refresh mr-1"></i>重新加载
+                </button>
+            </div>
+        </div>
     </section>
 
     <!-- 项目特色 -->
-    <section class="mb-20">
-        <h2 class="text-2xl font-bold text-gray-800 mb-8 pb-2 border-b border-gray-200 relative">
-            <span class="gradient-text from-primary-600 to-secondary-500">项目特色</span>
-            <span class="absolute bottom-0 left-0 w-20 h-0.5 gradient-bg from-primary-500 to-secondary-500"></span>
-        </h2>
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-white p-8 rounded-2xl shadow-lg card-hover border border-gray-100 hover:border-primary-100">
-                <div class="text-white text-3xl mb-5 w-16 h-16 rounded-xl gradient-bg from-primary-500 to-secondary-500 flex items-center justify-center shadow-md">
+    <section class="mb-16">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">项目特色</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                <div class="text-blue-600 text-3xl mb-4">
                     <i class="fa fa-users"></i>
                 </div>
-                <h3 class="text-xl font-semibold mb-3 text-gray-800">会员全周期管理</h3>
-                <p class="text-gray-600 leading-relaxed">从入会登记、会籍管理到训练记录跟踪，完整覆盖会员生命周期，提升会员留存率。</p>
+                <h3 class="text-xl font-semibold mb-2">会员全周期管理</h3>
+                <p class="text-gray-600">从入会登记、会籍管理到训练记录跟踪，完整覆盖会员生命周期</p>
             </div>
-            <div class="bg-white p-8 rounded-2xl shadow-lg card-hover border border-gray-100 hover:border-primary-100">
-                <div class="text-white text-3xl mb-5 w-16 h-16 rounded-xl gradient-bg from-primary-500 to-secondary-500 flex items-center justify-center shadow-md">
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                <div class="text-blue-600 text-3xl mb-4">
                     <i class="fa fa-calendar-check-o"></i>
                 </div>
-                <h3 class="text-xl font-semibold mb-3 text-gray-800">智能预约系统</h3>
-                <p class="text-gray-600 leading-relaxed">可视化课程排期，支持微信端自主预约，降低人工管理成本，提升会员体验。</p>
+                <h3 class="text-xl font-semibold mb-2">智能预约系统</h3>
+                <p class="text-gray-600">可视化课程排期，支持微信端自主预约，降低人工管理成本</p>
             </div>
-            <div class="bg-white p-8 rounded-2xl shadow-lg card-hover border border-gray-100 hover:border-primary-100">
-                <div class="text-white text-3xl mb-5 w-16 h-16 rounded-xl gradient-bg from-primary-500 to-secondary-500 flex items-center justify-center shadow-md">
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                <div class="text-blue-600 text-3xl mb-4">
                     <i class="fa fa-bar-chart"></i>
                 </div>
-                <h3 class="text-xl font-semibold mb-3 text-gray-800">数据可视化分析</h3>
-                <p class="text-gray-600 leading-relaxed">实时生成经营报表，会员活跃度、课程满员率等关键指标一目了然，辅助决策。</p>
+                <h3 class="text-xl font-semibold mb-2">数据可视化分析</h3>
+                <p class="text-gray-600">实时生成经营报表，会员活跃度、课程满员率等关键指标一目了然</p>
             </div>
         </div>
     </section>
 
     <!-- 技术架构 -->
-    <section class="mb-20">
-        <h2 class="text-2xl font-bold text-gray-800 mb-8 pb-2 border-b border-gray-200 relative">
-            <span class="gradient-text from-primary-600 to-secondary-500">技术架构</span>
-            <span class="absolute bottom-0 left-0 w-20 h-0.5 gradient-bg from-primary-500 to-secondary-500"></span>
-        </h2>
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+    <section class="mb-16">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">技术架构</h2>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
             <div class="grid md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-200">
                 <!-- 后端技术 -->
-                <div class="p-8">
-                    <h3 class="text-lg font-semibold mb-6 flex items-center text-gray-800">
-                        <span class="w-10 h-10 rounded-lg gradient-bg from-primary-500 to-secondary-500 flex items-center justify-center text-white mr-3 shadow">
-                            <i class="fa fa-server"></i>
-                        </span>
-                        后端技术栈
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fa fa-server text-blue-600 mr-2"></i>后端技术栈
                     </h3>
-                    <ul class="space-y-4">
-                        <li class="flex items-start">
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
                             <a href="https://spring.io/projects/spring-boot" target="_blank" class="tech-badge bg-green-100 text-green-800 hover:bg-green-200 transition-colors">
                                 Spring Boot 3.1.5
                             </a>
-                            <span class="ml-3 text-gray-600 leading-snug">核心框架</span>
+                            <span class="ml-2 text-gray-600">核心框架</span>
                         </li>
-                        <li class="flex items-start">
+                        <li class="flex items-center">
                             <a href="https://spring.io/projects/spring-security" target="_blank" class="tech-badge bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors">
                                 Spring Security
                             </a>
-                            <span class="ml-3 text-gray-600 leading-snug">权限控制</span>
+                            <span class="ml-2 text-gray-600">权限控制</span>
                         </li>
-                        <li class="flex items-start">
+                        <li class="flex items-center">
                             <a href="https://hibernate.org" target="_blank" class="tech-badge bg-purple-100 text-purple-800 hover:bg-purple-200 transition-colors">
                                 Hibernate 6
                             </a>
-                            <span class="ml-3 text-gray-600 leading-snug">ORM框架</span>
+                            <span class="ml-2 text-gray-600">ORM框架</span>
                         </li>
-                        <li class="flex items-start">
+                        <li class="flex items-center">
                             <a href="https://www.mysql.com" target="_blank" class="tech-badge bg-amber-100 text-amber-800 hover:bg-amber-200 transition-colors">
                                 MySQL 8.0
                             </a>
-                            <span class="ml-3 text-gray-600 leading-snug">数据库</span>
+                            <span class="ml-2 text-gray-600">数据库</span>
                         </li>
                     </ul>
                 </div>
 
                 <!-- 前端技术 -->
-                <div class="p-8">
-                    <h3 class="text-lg font-semibold mb-6 flex items-center text-gray-800">
-                        <span class="w-10 h-10 rounded-lg gradient-bg from-primary-500 to-secondary-500 flex items-center justify-center text-white mr-3 shadow">
-                            <i class="fa fa-desktop"></i>
-                        </span>
-                        前端技术栈
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fa fa-desktop text-blue-600 mr-2"></i>前端技术栈
                     </h3>
-                    <ul class="space-y-4">
-                        <li class="flex items-start">
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
                             <a href="https://www.thymeleaf.org" target="_blank" class="tech-badge bg-cyan-100 text-cyan-800 hover:bg-cyan-200 transition-colors">
                                 Thymeleaf
                             </a>
-                            <span class="ml-3 text-gray-600 leading-snug">模板引擎</span>
+                            <span class="ml-2 text-gray-600">模板引擎</span>
                         </li>
-                        <li class="flex items-start">
+                        <li class="flex items-center">
                             <a href="https://tailwindcss.com" target="_blank" class="tech-badge bg-indigo-100 text-indigo-800 hover:bg-indigo-200 transition-colors">
                                 Tailwind CSS
                             </a>
-                            <span class="ml-3 text-gray-600 leading-snug">UI框架</span>
+                            <span class="ml-2 text-gray-600">UI框架</span>
                         </li>
-                        <li class="flex items-start">
+                        <li class="flex items-center">
                             <a href="https://www.chartjs.org" target="_blank" class="tech-badge bg-pink-100 text-pink-800 hover:bg-pink-200 transition-colors">
                                 Chart.js
                             </a>
-                            <span class="ml-3 text-gray-600 leading-snug">数据可视化</span>
+                            <span class="ml-2 text-gray-600">数据可视化</span>
                         </li>
-                        <li class="flex items-start">
+                        <li class="flex items-center">
                             <a href="https://fontawesome.com" target="_blank" class="tech-badge bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors">
                                 Font Awesome
                             </a>
-                            <span class="ml-3 text-gray-600 leading-snug">矢量图标库</span>
+                            <span class="ml-2 text-gray-600">图标库</span>
                         </li>
                     </ul>
                 </div>
@@ -247,60 +254,47 @@
 
     <!-- 项目信息 -->
     <section class="mb-16">
-        <h2 class="text-2xl font-bold text-gray-800 mb-8 pb-2 border-b border-gray-200 relative">
-            <span class="gradient-text from-primary-600 to-secondary-500">项目信息</span>
-            <span class="absolute bottom-0 left-0 w-20 h-0.5 gradient-bg from-primary-500 to-secondary-500"></span>
-        </h2>
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
-            <div class="p-8">
-                <div class="grid md:grid-cols-2 gap-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">项目信息</h2>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-6">
+                <div class="grid md:grid-cols-2 gap-6">
                     <div>
-                        <h3 class="text-lg font-semibold mb-4 flex items-center text-gray-800">
-                            <span class="w-10 h-10 rounded-lg gradient-bg from-primary-500 to-secondary-500 flex items-center justify-center text-white mr-3 shadow">
-                                <i class="fa fa-code"></i>
-                            </span>
-                            开发信息
-                        </h3>
-                        <ul class="space-y-3 text-gray-600">
-                            <li class="flex items-center">
-                                <span class="w-24 font-medium text-gray-700">开发者：</span>
+                        <h3 class="text-lg font-semibold mb-3">开发信息</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex">
+                                <span class="w-24 font-medium">开发者：</span>
                                 <span>XiaoChuangll</span>
                             </li>
-                            <li class="flex items-center">
-                                <span class="w-24 font-medium text-gray-700">版本：</span>
-                                <span class="px-2 py-0.5 rounded bg-primary-100 text-primary-800 text-sm">v1.0.0</span>
+                            <li class="flex">
+                                <span class="w-24 font-medium">版本：</span>
+                                <span id="version-info" class="pulse">加载中...</span>
                             </li>
-                            <li class="flex items-center">
-                                <span class="w-24 font-medium text-gray-700">许可证：</span>
+                            <li class="flex">
+                                <span class="w-24 font-medium">许可证：</span>
                                 <span>MIT License</span>
-                            </li>
-                            <li class="flex items-center">
-                                <span class="w-24 font-medium text-gray-700">开发周期：</span>
-                                <span>2025年1月-2025年6月</span>
                             </li>
                         </ul>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold mb-4 flex items-center text-gray-800">
-                            <span class="w-10 h-10 rounded-lg gradient-bg from-primary-500 to-secondary-500 flex items-center justify-center text-white mr-3 shadow">
-                                <i class="fa fa-github"></i>
-                            </span>
-                            代码仓库
-                        </h3>
-                        <div class="space-y-4">
+                        <h3 class="text-lg font-semibold mb-3">代码仓库</h3>
+                        <div class="space-y-2">
                             <a href="https://github.com/XiaoChuangll/gym-management"
                                target="_blank"
-                               class="inline-flex items-center px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors shadow-md">
+                               class="inline-flex items-center text-blue-600 hover:underline">
                                 <i class="fa fa-github mr-2"></i>
                                 GitHub仓库
+                                <span id="repo-stars" class="ml-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full pulse">
+                                    <i class="fa fa-star"></i> 加载中...
+                                </span>
                             </a>
                             <div class="flex items-center text-gray-600">
-                                <i class="fa fa-code-fork mr-3 text-gray-500"></i>
-                                <span>主要分支：<span class="font-mono bg-gray-100 px-2 py-0.5 rounded text-sm">main</span></span>
+                                <i class="fa fa-code-fork mr-2"></i>
+                                <span>主要分支：main</span>
                             </div>
-                            <div class="flex items-center">
-                                <i class="fa fa-star mr-3 text-yellow-500"></i>
-                                <span class="text-gray-600">欢迎Star支持项目发展！</span>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fa fa-eye mr-2"></i>
+                                <span id="repo-watchers">加载中...</span>
+                                <span class="ml-2">人关注</span>
                             </div>
                         </div>
                     </div>
@@ -308,50 +302,105 @@
             </div>
         </div>
     </section>
+
+    <!-- 我的 GitHub 仓库 -->
+    <section id="my-github" class="mb-16">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2 flex items-center">
+            <i class="fa fa-github mr-2 text-gray-800"></i>我的 GitHub 项目
+        </h2>
+        <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 overflow-hidden">
+            <div id="repos-loading" class="text-center py-8">
+                <div class="inline-flex items-center px-4 py-2 bg-gray-100 rounded-full">
+                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-2"></div>
+                    <span>正在获取仓库列表...</span>
+                </div>
+            </div>
+            <div id="repos-error" class="hidden text-center py-8 text-red-600">
+                <i class="fa fa-exclamation-triangle text-2xl mb-2"></i>
+                <p>无法获取仓库列表，请稍后重试</p>
+                <button id="repos-retry" class="mt-3 text-blue-600 hover:text-blue-800 text-sm">
+                    <i class="fa fa-refresh mr-1"></i>重新加载
+                </button>
+            </div>
+            <div id="repos-grid" class="grid grid-cols-1 gap-6 md:grid-cols-3 auto-rows-fr"></div>
+            <div class="text-center mt-6">
+                <a id="repos-more" href="#" target="_blank" class="inline-flex items-center text-blue-600 hover:underline">
+                    <i class="fa fa-external-link mr-2"></i>在 GitHub 上查看更多
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- GitHub 贡献图 -->
+    <section id="github-contrib" class="mb-16">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2 flex items-center">
+            <i class="fa fa-calendar mr-2 text-blue-600"></i>GitHub 贡献图
+        </h2>
+        <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 overflow-hidden">
+            <div id="contrib-loading" class="text-center py-8">
+                <div class="inline-flex items-center px-4 py-2 bg-gray-100 rounded-full">
+                    <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-2"></div>
+                    <span>正在加载贡献图...</span>
+                </div>
+            </div>
+            <div id="contrib-error" class="hidden text-center py-8 text-red-600">
+                <i class="fa fa-exclamation-triangle text-2xl mb-2"></i>
+                <p>无法加载贡献图，请稍后重试</p>
+                <button id="contrib-retry" class="mt-3 text-blue-600 hover:text-blue-800 text-sm">
+                    <i class="fa fa-refresh mr-1"></i>重新加载
+                </button>
+            </div>
+            <div id="contrib-graph-wrap" class="hidden">
+                <img id="contrib-graph" alt="GitHub 贡献图" class="block w-full max-w-full h-auto rounded-lg select-none pointer-events-none" loading="lazy" />
+                <div class="text-right mt-2">
+                    <a id="contrib-source" href="#" target="_blank" class="text-xs text-gray-500 hover:text-gray-700 underline">在 GitHub 查看</a>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
 
-<!-- 优化后的页脚 -->
-<footer class="bg-white/80 backdrop-blur-md border-t border-gray-200 py-8 md:py-12 mt-12">
+<!-- 页脚 -->
+<footer class="bg-gray-50 border-t border-gray-200 py-8 mt-12">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row justify-between items-center">
             <!-- 版权信息 -->
-            <div class="mb-6 md:mb-0 text-center md:text-left">
-                <div class="flex justify-center md:justify-start items-center space-x-3 mb-3">
-                    <span class="text-lg md:text-xl font-semibold text-gray-800">健身房管理系统</span>
+            <div class="mb-4 md:mb-0 text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start space-x-2 mb-2">
+                    <i class="fa fa-dumbbell text-blue-600 text-xl"></i>
+                    <span class="text-lg font-semibold text-gray-800">健身房管理系统</span>
                 </div>
                 <p class="text-sm text-gray-500 mb-2">© 2025 版权所有 | MIT License</p>
-                <p class="text-xs text-gray-400">当前版本: v1.0.0 | 最后更新: <span th:text="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"></span></p>
+                <p class="text-xs text-gray-400">当前版本: <span id="footer-version" class="pulse">加载中...</span> | 最后更新: <span id="last-updated">加载中...</span></p>
             </div>
 
-            <!-- 社交链接 - 移动端居中显示 -->
-            <div class="flex flex-col items-center space-y-4 w-full md:w-auto">
+            <!-- 社交链接 -->
+            <div class="flex flex-col items-center md:items-end space-y-2">
                 <div class="flex space-x-4">
                     <a href="https://github.com/XiaoChuangll/gym-management"
                        target="_blank"
-                       class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
+                       class="text-gray-500 hover:text-blue-600 transition-colors relative"
                        title="GitHub仓库">
-                        <i class="fa fa-github text-sm md:text-base"></i>
+                        <i class="fa fa-github text-xl"></i>
+                        <span id="footer-stars" class="absolute -top-2 -right-3 bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded-full pulse">
+                            ...
+                        </span>
                     </a>
                     <a href="mailto:your-email@example.com"
-                       class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
+                       class="text-gray-500 hover:text-blue-600 transition-colors"
                        title="联系我们">
-                        <i class="fa fa-envelope text-sm md:text-base"></i>
+                        <i class="fa fa-envelope text-xl"></i>
                     </a>
                     <a href="#"
-                       class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
+                       class="text-gray-500 hover:text-blue-600 transition-colors"
                        title="文档中心">
-                        <i class="fa fa-book text-sm md:text-base"></i>
-                    </a>
-                    <a href="#"
-                       class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors shadow-sm"
-                       title="演示视频">
-                        <i class="fa fa-youtube-play text-sm md:text-base"></i>
+                        <i class="fa fa-book text-xl"></i>
                     </a>
                 </div>
                 <a href="https://github.com/XiaoChuangll/gym-management/issues"
                    target="_blank"
-                   class="text-xs md:text-sm text-primary-600 hover:underline hover:text-primary-700 transition-colors">
-                    <i class="fa fa-bug mr-1"></i> 报告问题或建议
+                   class="text-xs text-blue-600 hover:underline">
+                    报告问题或建议
                 </a>
             </div>
         </div>
@@ -359,51 +408,342 @@
 </footer>
 
 <script>
-    // 优化后的移动端菜单切换
+    // GitHub仓库信息获取
+    const repoOwner = 'XiaoChuangll';
+    const repoName = 'gym-management';
+
+    // 格式化日期
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    // Markdown 渲染（marked + DOMPurify）
+    function renderMarkdown(md) {
+        if (!md) return '暂无详细说明';
+        try {
+            return DOMPurify.sanitize(marked.parse(md));
+        } catch (e) {
+            console.error('Markdown 解析失败:', e);
+            return DOMPurify.sanitize(String(md).replace(/\n/g, '<br>'));
+        }
+    }
+
+    // 获取更新内容
+    async function loadUpdates() {
+        const loadingEl = document.getElementById('updates-loading');
+        const contentEl = document.getElementById('updates-content');
+        const errorEl = document.getElementById('updates-error');
+
+        // 显示加载状态
+        loadingEl.classList.remove('hidden');
+        contentEl.classList.add('hidden');
+        errorEl.classList.add('hidden');
+
+        try {
+            // 获取最新发布
+            const releasesResponse = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/releases`);
+            let releases = [];
+            if (releasesResponse.ok) {
+                releases = await releasesResponse.json();
+            }
+
+            // 获取最新提交
+            const commitsResponse = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/commits?per_page=5`);
+            let commits = [];
+            if (commitsResponse.ok) {
+                commits = await commitsResponse.json();
+            }
+
+            // 渲染更新内容
+            renderUpdates(releases, commits);
+
+            // 显示内容
+            loadingEl.classList.add('hidden');
+            contentEl.classList.remove('hidden');
+
+        } catch (error) {
+            console.error('获取更新内容失败:', error);
+            loadingEl.classList.add('hidden');
+            errorEl.classList.remove('hidden');
+        }
+    }
+
+    // 渲染更新内容
+    function renderUpdates(releases, commits) {
+        const contentEl = document.getElementById('updates-content');
+        let html = '';
+
+        // 如果有发布版本
+        if (releases.length > 0) {
+            html += `
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3 text-green-700 flex items-center">
+                        <i class="fa fa-tag mr-2"></i>最新发布
+                    </h3>
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                        <h4 class="font-semibold text-green-800">${releases[0].name || releases[0].tag_name}</h4>
+                        <p class="text-sm text-green-600 mb-2">发布于 ${formatDate(releases[0].published_at)}</p>
+                        <div class="prose prose-sm max-w-none text-green-700">
+                            ${renderMarkdown(releases[0].body)}
+                        </div>
+                        <a href="${releases[0].html_url}" target="_blank" class="inline-block mt-2 text-sm text-green-600 hover:text-green-800">
+                            <i class="fa fa-external-link mr-1"></i>查看详情
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 显示最新提交
+        if (commits.length > 0) {
+            html += `
+                <div>
+                    <h3 class="text-lg font-semibold mb-3 text-blue-700 flex items-center">
+                        <i class="fa fa-code-commit mr-2"></i>最近提交
+                    </h3>
+            `;
+
+            commits.forEach(commit => {
+                html += `
+                    <div class="update-item fade-in">
+                        <div class="flex justify-between items-start mb-1">
+                            <strong class="text-gray-800">${commit.commit.message.split('\n')[0]}</strong>
+                            <span class="text-xs text-gray-500">${formatDate(commit.commit.author.date)}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-1">作者: ${commit.commit.author.name}</p>
+                        <a href="${commit.html_url}" target="_blank" class="text-xs text-blue-600 hover:text-blue-800">
+                            <i class="fa fa-external-link mr-1"></i>查看提交
+                        </a>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+        }
+
+        // 如果没有内容
+        if (!html) {
+            html = `
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fa fa-info-circle text-2xl mb-2"></i>
+                    <p>暂无更新内容</p>
+                </div>
+            `;
+        }
+
+        contentEl.innerHTML = html;
+    }
+
+    // 加载并展示用户的 GitHub 仓库
+    async function loadUserRepos() {
+        const gridEl = document.getElementById('repos-grid');
+        const loadingEl = document.getElementById('repos-loading');
+        const errorEl = document.getElementById('repos-error');
+        const moreLink = document.getElementById('repos-more');
+        if (moreLink) moreLink.href = `https://github.com/${repoOwner}?tab=repositories`;
+
+        // 显示加载，隐藏错误与内容
+        if (loadingEl) loadingEl.classList.remove('hidden');
+        if (errorEl) errorEl.classList.add('hidden');
+        if (gridEl) gridEl.innerHTML = '';
+
+        try {
+            const res = await fetch(`https://api.github.com/users/${repoOwner}/repos?per_page=100&type=owner&sort=updated`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            let repos = await res.json();
+
+            // 只展示非 fork 仓库，按 star 数排序，取前 9 个
+            repos = repos
+                .filter(r => !r.fork)
+                .sort((a, b) => b.stargazers_count - a.stargazers_count)
+                .slice(0, 9);
+
+            if (!gridEl) return;
+
+            if (repos.length === 0) {
+                gridEl.innerHTML = '<div class="col-span-full text-center text-gray-500">暂无仓库</div>';
+            } else {
+                gridEl.innerHTML = repos.map(repo => {
+                    const desc = repo.description ? repo.description.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '暂无描述';
+                    const lang = repo.language || '未标注';
+                    const updated = new Date(repo.updated_at).toLocaleDateString('zh-CN');
+                    return `
+                        <a href="${repo.html_url}" target="_blank" class="block w-full bg-white p-4 sm:p-5 rounded-xl shadow-md card-hover border border-gray-100 fade-in h-full">
+                            <div class="flex items-center justify-between mb-2 min-w-0">
+                                <h3 class="font-semibold text-gray-800 truncate flex-1 min-w-0" title="${repo.name}"><i class="fa fa-code-fork text-gray-400 mr-2"></i>${repo.name}</h3>
+                                <span class="text-xs bg-yellow-50 text-yellow-800 px-2 py-0.5 rounded-full flex-shrink-0"><i class="fa fa-star mr-1"></i>${repo.stargazers_count}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 truncate mb-3" title="${desc}">${desc}</p>
+                            <div class="flex items-center text-xs text-gray-500 space-x-4">
+                                <span><i class="fa fa-code mr-1"></i>${lang}</span>
+                                <span title="最后更新"><i class="fa fa-clock-o mr-1"></i>${updated}</span>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+            }
+
+            if (loadingEl) loadingEl.classList.add('hidden');
+        } catch (e) {
+            console.error('获取仓库失败:', e);
+            if (loadingEl) loadingEl.classList.add('hidden');
+            if (errorEl) errorEl.classList.remove('hidden');
+        }
+    }
+
+    // 加载 GitHub 贡献图（优先 SVG，失败回退 PNG）
+    function loadContributionGraph() {
+        const loadingEl = document.getElementById('contrib-loading');
+        const errorEl = document.getElementById('contrib-error');
+        const wrapEl = document.getElementById('contrib-graph-wrap');
+        const imgEl = document.getElementById('contrib-graph');
+        const sourceLink = document.getElementById('contrib-source');
+        if (!imgEl || !loadingEl || !errorEl || !wrapEl) return;
+
+        // 状态切换
+        loadingEl.classList.remove('hidden');
+        errorEl.classList.add('hidden');
+        wrapEl.classList.add('hidden');
+
+        const username = repoOwner;
+        const svgUrl = `https://github-readme-activity-graph.vercel.app/graph?username=${encodeURIComponent(username)}&bg_color=ffffff&color=334155&line=2563eb&point=2563eb&area=true&hide_border=true`;
+        const pngFallbackUrl = `https://ghchart.rshah.org/2563eb/${encodeURIComponent(username)}`;
+        const profileUrl = `https://github.com/${encodeURIComponent(username)}`;
+
+        if (sourceLink) sourceLink.href = profileUrl;
+
+        // 清理旧事件与尝试标记
+        imgEl.removeAttribute('data-fallback');
+        imgEl.onload = () => {
+            loadingEl.classList.add('hidden');
+            wrapEl.classList.remove('hidden');
+        };
+        imgEl.onerror = () => {
+            // 首次失败，尝试回退源
+            if (!imgEl.dataset.fallback) {
+                imgEl.dataset.fallback = '1';
+                imgEl.src = pngFallbackUrl;
+            } else {
+                // 回退也失败
+                loadingEl.classList.add('hidden');
+                errorEl.classList.remove('hidden');
+            }
+        };
+
+        // 触发加载
+        imgEl.src = svgUrl;
+    }
+
+    // 页面加载完成后执行
+    document.addEventListener('DOMContentLoaded', function() {
+        // 加载GitHub基本信息
+        loadGitHubInfo();
+
+        // 加载更新内容
+        loadUpdates();
+
+        // 刷新按钮事件
+        document.getElementById('refresh-updates').addEventListener('click', loadUpdates);
+
+        // 加载我的 GitHub 仓库
+        loadUserRepos();
+
+        // GitHub 贡献图
+        loadContributionGraph();
+        const contribRetryBtn = document.getElementById('contrib-retry');
+        if (contribRetryBtn) contribRetryBtn.addEventListener('click', loadContributionGraph);
+
+        // 重新加载仓库按钮
+        const reposRetryBtn = document.getElementById('repos-retry');
+        if (reposRetryBtn) reposRetryBtn.addEventListener('click', loadUserRepos);
+    });
+
+    // 加载GitHub基本信息
+    async function loadGitHubInfo() {
+        try {
+            // 获取仓库信息（星标、关注者等）
+            const repoResponse = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}`);
+            if (repoResponse.ok) {
+                const data = await repoResponse.json();
+
+                // 更新星标数
+                const starsCount = data.stargazers_count;
+                document.querySelectorAll('#github-stars, #github-stars-mobile, #repo-stars').forEach(el => {
+                    el.innerHTML = `<i class="fa fa-star"></i> ${starsCount.toLocaleString()}`;
+                    el.classList.remove('pulse');
+                });
+
+                // 更新页脚星标数
+                document.getElementById('footer-stars').textContent = starsCount.toLocaleString();
+
+                // 更新关注者数
+                const watchersCount = data.subscribers_count;
+                document.getElementById('repo-watchers').textContent = watchersCount.toLocaleString();
+
+                // 更新最后更新时间
+                const updatedAt = new Date(data.updated_at);
+                document.getElementById('last-updated').textContent = updatedAt.toLocaleDateString('zh-CN');
+            }
+
+            // 获取最新版本
+            const releasesResponse = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`);
+            if (releasesResponse.ok) {
+                const data = await releasesResponse.json();
+                const version = data.tag_name;
+                document.getElementById('latest-version').textContent = version;
+                document.getElementById('version-info').textContent = version;
+                document.getElementById('footer-version').textContent = version;
+
+                // 移除加载动画
+                document.querySelectorAll('#latest-version, #version-info, #footer-version').forEach(el => {
+                    el.classList.remove('pulse');
+                });
+            } else {
+                // 如果获取发布失败，尝试获取标签
+                const tagsResponse = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/tags`);
+                if (tagsResponse.ok) {
+                    const tags = await tagsResponse.json();
+                    if (tags.length > 0) {
+                        const version = tags[0].name;
+                        document.getElementById('latest-version').textContent = version;
+                        document.getElementById('version-info').textContent = version;
+                        document.getElementById('footer-version').textContent = version;
+
+                        document.querySelectorAll('#latest-version, #version-info, #footer-version').forEach(el => {
+                            el.classList.remove('pulse');
+                        });
+                    }
+                }
+            }
+
+        } catch (error) {
+            console.error('获取GitHub信息失败:', error);
+            // 错误处理...
+        }
+    }
+
+    // 移动端菜单切换
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         const mobileMenu = document.getElementById('mobile-menu');
         const icon = this.querySelector('i');
 
-        // 添加按钮点击动画
-        this.classList.toggle('active');
-        icon.classList.toggle('rotate-90');
-
-        // 切换菜单显示
-        if (mobileMenu.classList.contains('max-h-0')) {
-            mobileMenu.classList.remove('max-h-0');
-            mobileMenu.classList.add('max-h-[500px]', 'py-3', 'border-t', 'animate-menu-slide');
+        // 切换菜单高度
+        if (mobileMenu.classList.contains('h-0')) {
+            mobileMenu.classList.remove('h-0');
+            mobileMenu.classList.add('h-auto', 'py-2', 'border-t');
             icon.classList.replace('fa-bars', 'fa-times');
         } else {
-            mobileMenu.classList.add('max-h-0');
-            mobileMenu.classList.remove('max-h-[500px]', 'py-3', 'border-t', 'animate-menu-slide');
+            mobileMenu.classList.add('h-0');
+            mobileMenu.classList.remove('h-auto', 'py-2', 'border-t');
             icon.classList.replace('fa-times', 'fa-bars');
         }
-    });
-
-    // 点击菜单外区域关闭菜单
-    document.addEventListener('click', function(event) {
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuButton = document.getElementById('mobile-menu-button');
-
-        if (!mobileMenu.contains(event.target) && !menuButton.contains(event.target)) {
-            if (!mobileMenu.classList.contains('max-h-0')) {
-                mobileMenu.classList.add('max-h-0');
-                mobileMenu.classList.remove('max-h-[500px]', 'py-3', 'border-t', 'animate-menu-slide');
-                menuButton.querySelector('i').classList.replace('fa-times', 'fa-bars');
-            }
-        }
-    });
-
-    // 添加卡片悬停动画
-    document.querySelectorAll('.card-hover').forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-5px)';
-            card.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
-        });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-            card.style.boxShadow = '';
-        });
     });
 </script>
 </body>
