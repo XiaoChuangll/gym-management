@@ -811,10 +811,11 @@
                     <!-- 基本信息卡片 -->
                     <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
                         <div class="p-6 border-b border-gray-200">
-                            <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                                <i class="fa-solid fa-user mr-2"></i>
+                            <h2 class="text-xl font-semibold text-gray-800 flex items-center ">
+                                <i class="fa-solid fa-user mr-2 theme-icon"></i>
                                 基本信息
                             </h2>
+
                         </div>
                         <div class="p-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -866,8 +867,8 @@
                     <!-- 安全设置卡片 -->
                     <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
                         <div class="p-6 border-b border-gray-200">
-                            <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                                <i class="fa-solid fa-shield-halved mr-2"></i>
+                            <h2 class="text-xl font-semibold text-gray-800 flex items-center transition-colors duration-300">
+                                <i class="fa-solid fa-shield-halved mr-2 theme-icon"></i>
                                 安全设置
                             </h2>
                         </div>
@@ -965,7 +966,7 @@
                     <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
                         <div class="p-6 border-b border-gray-200">
                             <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                                <i class="fa-solid fa-link mr-2"></i>
+                                <i class="fa-solid fa-link mr-2 theme-icon"></i>
                                 账号绑定
                             </h2>
                         </div>
@@ -999,7 +1000,7 @@
                 <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
                     <div class="p-6 border-b border-gray-200">
                         <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                            <i class="fa-solid fa-right-from-bracket mr-2"></i>
+                            <i class="fa-solid fa-right-from-bracket mr-2 theme-icon"></i>
                             退出登录
                         </h2>
                     </div>
@@ -1008,7 +1009,7 @@
                             <!-- 安全选项 -->
                             <div class="space-y-4">
                                 <h3 class="font-medium text-gray-800 flex items-center">
-                                    <i class="fas fa-shield-alt text-blue-500 mr-2"></i>
+                                    <i class="fas fa-shield-alt text-blue-500 mr-2  "></i>
                                     安全选项
                                 </h3>
 
@@ -1029,15 +1030,15 @@
 
                             <!-- 退出统计 -->
                             <div class="p-4 bg-blue-50 rounded-lg dark:bg-blue-900">
-                                <div class="flex items-center text-sm text-blue-700 dark:text-blue-200">
-                                    <i class="fas fa-info-circle mr-2"></i>
-                                    <span>上次登录时间: <span id="lastLoginTime" class="font-medium"></span></span>
+                                <div class="flex items-center text-sm text-blue-700 dark:text-blue-200 ">
+                                    <i class="fas fa-info-circle mr-2 "></i>
+                                    <span>上次登录时间: <span id="lastLoginTime" class="font-medium "></span></span>
                                 </div>
                             </div>
 
                             <!-- 退出按钮 -->
                             <button id="logoutBtn" class="w-full px-6 py-3 text-white rounded-xl primary-action-button flex items-center justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
-                                <i class="fas fa-sign-out-alt mr-2"></i>
+                                <i class="fas fa-sign-out-alt mr-2 "></i>
                                 退出登录
                             </button>
                         </div>
